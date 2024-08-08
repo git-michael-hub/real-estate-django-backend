@@ -5,6 +5,9 @@ const API_URL: string = LOCALHOST_URL + "api/";
 const LOGIN_URL: string = LOCALHOST_URL + "user/login";
 const REGISTER_URL: string = LOCALHOST_URL + "user/register";
 
+type TErrField = "generic" | "username" | "email" | "first_name" | "last_name" | "password";
+type TErrMessages = Record<TErrField, string[]>;
+
 const get = async (endpoint: string) => {
     const response: Response = await fetch(API_URL + endpoint, { method: "GET" });
     const data: JSON = await response.json();
@@ -17,7 +20,7 @@ const post = async (endpoint: string, body: FormData) => {
         headers: { Authorization: "Token " + cookieHandler.get("token") },
         body: body,
     });
-    const data: object = await response.json();
+    const data = await response.json();
     if (response.ok) return { isSuccess: response.ok, data: data };
     return { isSuccess: response.ok, errors: data };
 };
@@ -28,7 +31,7 @@ const patch = async (endpoint: string, body: FormData) => {
         headers: { Authorization: "Token " + cookieHandler.get("token") },
         body: body,
     });
-    const data: object = await response.json();
+    const data = await response.json();
     if (response.ok) return { isSuccess: response.ok, data: data };
     return { isSuccess: response.ok, errors: data };
 };
@@ -44,7 +47,7 @@ const del = async (endpoint: string) => {
 };
 
 const login = async (body: FormData) => {
-    const response = await fetch(LOGIN_URL, {
+    const response: Response = await fetch(LOGIN_URL, {
         method: "POST",
         body: body,
     });
@@ -57,13 +60,13 @@ const login = async (body: FormData) => {
 };
 
 const register = async (body: FormData) => {
-    const response = await fetch(REGISTER_URL, {
+    const response: Response = await fetch(REGISTER_URL, {
         method: "POST",
         body: body,
         redirect: "follow",
     });
     if (response.ok) return { isSuccess: response.ok, message: "Registration complete!" };
-    const errors: object = await response.json();
+    const errors = await response.json();
     return { isSuccess: response.ok, errors: errors };
 };
 

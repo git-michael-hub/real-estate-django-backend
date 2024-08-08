@@ -7,7 +7,6 @@ from .serializers import UserSerializer
 
 
 class CustomAuthToken(ObtainAuthToken):
-
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
@@ -21,6 +20,20 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 
+user_login_view = CustomAuthToken.as_view()
+
+
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+user_list_view = UserListView.as_view()
+
+
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+user_create_view = UserCreateView.as_view()
