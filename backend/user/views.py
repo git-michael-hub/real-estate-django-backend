@@ -33,6 +33,7 @@ user_login_view = CustomAuthToken.as_view()
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [authentication.TokenAuthentication]
 
 
 user_list_view = UserListView.as_view()
@@ -46,10 +47,14 @@ class UserCreateView(generics.CreateAPIView):
 user_create_view = UserCreateView.as_view()
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    lookup_field = 'pk'
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserDetailView(APIView):
+
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get(self, request):
+        user = Token.objects.get(key=request.auth).user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 
 user_detail_view = UserDetailView.as_view()
@@ -59,6 +64,9 @@ class UserLogoutView(APIView):
 
     authentication_classes = [authentication.TokenAuthentication]
 
-    def post(self, request, format=None):
-        request.user.auth.token.delete()
+    def post(self, request):
+        request.user.auth_token.delete()
         return Response({'success_message': ['Logout successful.']})
+
+
+user_logout_view = UserLogoutView.as_view()

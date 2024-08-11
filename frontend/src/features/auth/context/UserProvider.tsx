@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { apiFns } from "../../../ts/api-service";
-import cookieHandler from "../../../ts/cookie-handler";
+import { apiFns, HeaderType } from "../../../ts/api-service";
+import cookieHandler, { Token } from "../../../ts/cookie-handler";
 
 export type UserType = {
     user_id: number;
@@ -23,18 +23,41 @@ export type FormMessageType = {
     non_field_errors?: string[];
 };
 
-const initUserState: UserType = { user_id: 0, username: "", email: "", first_name: "", last_name: "" };
+export type UserStateType = UserType | null;
 
-const useUserContext = (initUserState: UserType) => {
-    const [user, setUser] = useState<UserType>(initUserState);
+const initUserState: UserStateType = null;
+
+const useUserContext = (initUserState: UserStateType) => {
+    const [user, setUser] = useState<UserStateType>(initUserState);
     const [formMessages, setFormMessages] = useState<FormMessageType>({ no_message: [""] });
     const navigate: NavigateFunction = useNavigate();
 
+    const catchError = (error: unknown, funcName: string) => {
+        console.log(`Error encountered in UserProvider: ${funcName}() \n${error}`);
+        const errorMessage: FormMessageType = { generic_message: ["An error occurred."] };
+        setFormMessages(errorMessage);
+    };
+
+    const fetchUser = async (): Promise<UserStateType> => {
+        const token: Token = cookieHandler.get("token");
+        if (!token) return null;
+
+        try {
+            const headers: HeaderType = { Authorization: `Token ${token}` };
+            const response: Response = await apiFns.get("user/auth", headers);
+            if (!response.ok) return null;
+            const user: UserType = await response.json();
+            return user;
+        } catch (error: unknown) {
+            catchError(error, fetchUser.name);
+            return null;
+        }
+    };
+
     const login = async (formData: FormData): Promise<void> => {
         try {
-            const response = await apiFns.post("user/login", formData);
-            const isSuccess: boolean = response.ok;
-            if (isSuccess) {
+            const response: Response = await apiFns.post("user/login", formData);
+            if (response.ok) {
                 const data: { token: string; user: UserType } = await response.json();
                 const successMessage: FormMessageType = { success_message: ["Login success!"] };
                 cookieHandler.set("token", data.token);
@@ -43,21 +66,17 @@ const useUserContext = (initUserState: UserType) => {
                 navigate("/");
             } else {
                 const errorMessages: FormMessageType = await response.json();
-                console.log(errorMessages);
                 setFormMessages(errorMessages);
             }
-        } catch (error) {
-            console.log(`Error encountered in UserProvider: \n${error}`);
-            const errorMessage: FormMessageType = { generic_message: ["An error occurred."] };
-            setFormMessages(errorMessage);
+        } catch (error: unknown) {
+            catchError(error, login.name);
         }
     };
 
     const register = async (formData: FormData): Promise<void> => {
         try {
-            const response = await apiFns.post("user/register", formData);
-            const isSuccess: boolean = response.ok;
-            if (isSuccess) {
+            const response: Response = await apiFns.post("user/register", formData);
+            if (response.ok) {
                 const successMessage: FormMessageType = { success_message: ["Registration complete!"] };
                 setFormMessages(successMessage);
                 navigate("/login");
@@ -65,14 +84,30 @@ const useUserContext = (initUserState: UserType) => {
                 const errorMessages: FormMessageType = await response.json();
                 setFormMessages(errorMessages);
             }
-        } catch (error) {
-            console.log(`Error encountered in UserProvider: \n${error}`);
-            const errorMessage: FormMessageType = { generic_message: ["An error occurred."] };
-            setFormMessages(errorMessage);
+        } catch (error: unknown) {
+            catchError(error, register.name);
         }
     };
 
-    return { user, formMessages, login, register };
+    const logout = async (formData: FormData): Promise<void> => {
+        try {
+            const headers: HeaderType = { Authorization: `Token ${cookieHandler.get("token")}` };
+            const response: Response = await apiFns.post("user/logout", formData, headers);
+            if (response.ok) {
+                const successMessage: FormMessageType = await response.json();
+                cookieHandler.delete("token");
+                setFormMessages(successMessage);
+                navigate("/login");
+            } else {
+                const errorMessage: FormMessageType = await response.json();
+                setFormMessages(errorMessage);
+            }
+        } catch (error: unknown) {
+            catchError(error, logout.name);
+        }
+    };
+
+    return { user, formMessages, setUser, setFormMessages, fetchUser, login, register, logout };
 };
 
 export type UseUserContextType = ReturnType<typeof useUserContext>;
@@ -80,8 +115,12 @@ export type UseUserContextType = ReturnType<typeof useUserContext>;
 const initUserContextState: UseUserContextType = {
     user: initUserState,
     formMessages: { no_message: [""] },
+    setUser: () => {},
+    setFormMessages: () => {},
+    fetchUser: () => Promise.resolve(null),
     login: () => Promise.resolve(),
     register: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
 };
 
 const UserContext = createContext<UseUserContextType>(initUserContextState);
