@@ -1,3 +1,5 @@
+export type Token = string | null;
+
 const cookieHandler = {
     get: function (cookieName: string) {
         let cookieValue = null;
