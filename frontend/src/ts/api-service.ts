@@ -7,14 +7,14 @@ export type PayloadType = {
     body?: FormData;
 };
 
-const get = async (endpoint: string, headers?: HeaderType) => {
+const get = async (endpoint: string, headers?: HeaderType): Promise<Response> => {
     const payload: PayloadType = { method: "GET" };
     if (headers) payload.headers = headers;
     const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
     return response;
 };
 
-const post = async (endpoint: string, body?: FormData, headers?: HeaderType) => {
+const post = async (endpoint: string, body?: FormData, headers?: HeaderType): Promise<Response> => {
     const payload: PayloadType = { method: "POST" };
     if (headers) payload.headers = headers;
     if (body) payload.body = body;
@@ -22,13 +22,13 @@ const post = async (endpoint: string, body?: FormData, headers?: HeaderType) => 
     return response;
 };
 
-const patch = async (endpoint: string, body: FormData, headers: HeaderType) => {
+const patch = async (endpoint: string, body: FormData, headers: HeaderType): Promise<Response> => {
     const payload: PayloadType = { method: "PATCH", body: body, headers: headers };
     const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
     return response;
 };
 
-const del = async (endpoint: string, headers: HeaderType) => {
+const del = async (endpoint: string, headers: HeaderType): Promise<Response> => {
     const payload: PayloadType = { method: "DELETE", headers: headers };
     const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
     return response;

@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
     );
 };
 
-export type UseAuthContextType = {
+export type AuthContextType = {
     user: UserStateType;
     formMessages: FormMessageStateType;
     setUser: React.Dispatch<React.SetStateAction<UserStateType>>;
@@ -140,7 +140,7 @@ export type UseAuthContextType = {
 };
 
 // Initial state of the AuthContext
-const initAuthContextState: UseAuthContextType = {
+const initAuthContextState: AuthContextType = {
     user: null,
     formMessages: {},
     setUser: () => {},
@@ -151,6 +151,6 @@ const initAuthContextState: UseAuthContextType = {
     logout: () => Promise.resolve(),
 };
 
-const AuthContext = createContext<UseAuthContextType>(initAuthContextState);
+const AuthContext = createContext<AuthContextType>(initAuthContextState);
 
 export default AuthContext;
