@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate, Link } from "react-router-dom";
-import useUser from "../../features/auth/hooks/useUser";
-import { UserType } from "../../features/auth/context/UserProvider";
+import useAuth from "../../features/auth/hooks/useAuth";
 import RegisterForm from "../../features/auth/components/RegisterForm";
 
 export default function Register() {
     const navigate: NavigateFunction = useNavigate();
-    const { fetchUser } = useUser();
+    const { user } = useAuth();
 
     useEffect(() => {
-        fetchUser().then((response: UserType | null) => (response ? navigate("/") : {}));
+        if (user) navigate("/");
     }, []);
 
     return (

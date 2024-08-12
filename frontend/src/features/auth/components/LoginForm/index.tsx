@@ -1,10 +1,10 @@
-import useUser from "../../hooks/useUser";
+import useAuth from "../../hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
 
 export default function LoginForm() {
-    const { login, formMessages } = useUser();
+    const { login, formMessages } = useAuth();
 
     async function onSubmitForm(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();

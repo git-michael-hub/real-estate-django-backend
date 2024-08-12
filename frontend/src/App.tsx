@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Pages from "./pages";
+// import RequireAuth from "./features/auth/components/RequireAuth/RequireAuth";
 import "./App.css";
 
 function App() {

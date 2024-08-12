@@ -1,17 +1,10 @@
 import { Link } from "react-router-dom";
-import useUser from "../../features/auth/hooks/useUser";
-import { useEffect } from "react";
-import { UserType } from "../../features/auth/context/UserProvider";
+
 import "./index.css";
+import useUser from "../../features/auth/hooks/useAuth";
 
 export default function Home() {
-    const { user, logout, fetchUser, setUser } = useUser();
-
-    useEffect(() => {
-        fetchUser().then((response: UserType | null) => {
-            setUser(response);
-        });
-    }, []);
+    const { user, logout } = useUser();
 
     async function onSubmitLogout(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();

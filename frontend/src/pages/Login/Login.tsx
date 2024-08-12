@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate, Link } from "react-router-dom";
-import useUser from "../../features/auth/hooks/useUser";
+import useAuth from "../../features/auth/hooks/useAuth";
 import LoginForm from "../../features/auth/components/LoginForm";
-import { UserType } from "../../features/auth/context/UserProvider";
 
 export default function Login() {
     const navigate: NavigateFunction = useNavigate();
-    const { fetchUser } = useUser();
+    const { user } = useAuth();
 
     useEffect(() => {
-        fetchUser().then((response: UserType | null) => (response ? navigate("/") : {}));
+        if (user) navigate("/");
     }, []);
 
     return (

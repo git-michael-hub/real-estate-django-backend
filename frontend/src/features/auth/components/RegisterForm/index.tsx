@@ -1,10 +1,10 @@
-import useUser from "../../hooks/useUser";
+import useAuth from "../../hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
 
 export default function RegisterForm() {
-    const { register, formMessages } = useUser();
+    const { register, formMessages } = useAuth();
 
     async function onSubmitRegister(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
