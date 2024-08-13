@@ -1,19 +1,14 @@
-from django.core.mail import send_mail
-
-from config import settings
-
-from .serializers import ResetPasswordSerializer
-import os
-import config
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail
 from rest_framework import generics, authentication, status, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from config.settings import EMAIL_HOST_USER
 from .models import PasswordReset
-from .serializers import UserSerializer, ResetPasswordRequestSerializer
+from .serializers import UserSerializer, ResetPasswordRequestSerializer, ResetPasswordSerializer
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -102,7 +97,7 @@ class RequestPasswordReset(generics.GenericAPIView):
             send_mail(
                 "Real Estate System: Request for password reset.",
                 reset_url,
-                settings.EMAIL_HOST_USER,
+                EMAIL_HOST_USER,
                 [email],
                 fail_silently=False,
             )

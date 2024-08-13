@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
-import useAuth from "../../features/auth/hooks/useAuth";
-import InputWithLabel from "../../components/Forms/InputWithLabel";
-// //localhost:8000/user/reset-password/cbpg64-7cad4d624be59432a60a6e1792c9ac21
-// http:
+import useAuth from "../../hooks/useAuth";
+import InputWithLabel from "../../../../components/Forms/InputWithLabel";
+import "./index.css";
 
-export default function ResetPassword() {
+export default function ResetPasswordForm() {
     const { resetPassword } = useAuth();
     const { token } = useParams();
 
@@ -16,7 +15,7 @@ export default function ResetPassword() {
 
     return (
         <>
-            <form onSubmit={onSubmitPassword}>
+            <form onSubmit={onSubmitPassword} id="reset-password-form">
                 <InputWithLabel name="new_password" type="password" id="new_password">
                     Password
                 </InputWithLabel>

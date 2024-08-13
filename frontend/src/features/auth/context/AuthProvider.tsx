@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
         try {
             const headers: HeaderType = { Authorization: `Token ${token}` };
-            const response: Response = await apiFns.get("user/auth", headers);
+            const response: Response = await apiFns.get("user/auth-user", headers);
             if (!response.ok) return null;
             const user: UserStateType = await response.json();
             return user;

@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
-import InputWithLabel from "../../components/Forms/InputWithLabel";
-import useAuth from "../../features/auth/hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
+import InputWithLabel from "../../../../components/Forms/InputWithLabel";
+import "./index.css";
 
-export default function ForgotPassword() {
+export default function ForgotPasswordForm() {
     const { requestResetPassword } = useAuth();
 
     async function onSubmitRequest(e: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -13,13 +13,12 @@ export default function ForgotPassword() {
 
     return (
         <>
-            <form onSubmit={onSubmitRequest}>
+            <form onSubmit={onSubmitRequest} id="forgot-password-form">
                 <InputWithLabel name="email" type="email" id="email">
                     Email
                 </InputWithLabel>
                 <button type="submit">Submit Request</button>
             </form>
-            <Link to={"/login"}>Login</Link>
         </>
     );
 }
