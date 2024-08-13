@@ -9,6 +9,8 @@ function App() {
             <Route path="" element={<Pages.Home />} />
             <Route path="/login" element={<Pages.Login />} />
             <Route path="/register" element={<Pages.Register />} />
+            <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
+            <Route path="/password-reset/:token" element={<Pages.ResetPassword />} />
         </Routes>
     );
 }

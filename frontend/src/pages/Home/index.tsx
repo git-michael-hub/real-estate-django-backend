@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 import "./index.css";
-import useUser from "../../features/auth/hooks/useAuth";
+import useAuth from "../../features/auth/hooks/useAuth";
 
 export default function Home() {
-    const { user, logout } = useUser();
+    const { user, logout } = useAuth();
 
     async function onSubmitLogout(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();

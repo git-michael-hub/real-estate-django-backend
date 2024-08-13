@@ -20,6 +20,7 @@ export type FormMessageStateType = {
     last_name?: string[];
     password?: string[];
     non_field_errors?: string[];
+    new_password?: string[];
 };
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
@@ -119,9 +120,53 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
+    const requestResetPassword = async (formData: FormData): Promise<void> => {
+        try {
+            const response: Response = await apiFns.post("user/request-password-reset", formData);
+            if (response.ok) {
+                const successMessage: FormMessageStateType = await response.json();
+                setFormMessages(successMessage);
+                console.log(successMessage);
+            } else {
+                const errorMessage: FormMessageStateType = await response.json();
+                setFormMessages(errorMessage);
+            }
+        } catch (error) {
+            catchError(error, requestResetPassword.name);
+        }
+    };
+
+    const resetPassword = async (formData: FormData, resetToken: string): Promise<void> => {
+        try {
+            const response: Response = await apiFns.post(`user/password-reset/${resetToken}`, formData);
+            if (response.ok) {
+                const successMessage: FormMessageStateType = await response.json();
+                setFormMessages(successMessage);
+                navigate("/login");
+                console.log(successMessage);
+            } else {
+                const errorMessage: FormMessageStateType = await response.json();
+                setFormMessages(errorMessage);
+            }
+        } catch (error) {
+            catchError(error, requestResetPassword.name);
+        }
+    };
+
     return (
         <AuthContext.Provider
-            value={{ user, formMessages, setUser, setFormMessages, fetchAuthUser, login, register, logout }}
+            value={{
+                user,
+                formMessages,
+                setUser,
+                setFormMessages,
+                fetchAuthUser,
+                login,
+                register,
+                logout,
+                requestResetPassword,
+                resetPassword,
+            }}
         >
             {isReady ? children : null}
         </AuthContext.Provider>
@@ -137,6 +182,8 @@ export type AuthContextType = {
     login: (formData: FormData) => Promise<void>;
     register: (formData: FormData) => Promise<void>;
     logout: (formData: FormData) => Promise<void>;
+    requestResetPassword: (formData: FormData) => Promise<void>;
+    resetPassword: (formData: FormData, resetToken: string) => Promise<void>;
 };
 
 // Initial state of the AuthContext
@@ -149,6 +196,8 @@ const initAuthContextState: AuthContextType = {
     login: () => Promise.resolve(),
     register: () => Promise.resolve(),
     logout: () => Promise.resolve(),
+    requestResetPassword: () => Promise.resolve(),
+    resetPassword: () => Promise.resolve(),
 };
 
 const AuthContext = createContext<AuthContextType>(initAuthContextState);

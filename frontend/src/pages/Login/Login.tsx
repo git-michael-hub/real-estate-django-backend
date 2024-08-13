@@ -16,6 +16,7 @@ export default function Login() {
             <h1>Login Page</h1>
             <LoginForm></LoginForm>
             <Link to={"/register"}>Register</Link>
+            <Link to={"/forgot-password"}>Forgot Password?</Link>
         </main>
     );
 }
