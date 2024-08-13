@@ -46,8 +46,7 @@ class ResetPasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
 
     def validate(self, data):
-        print(data)
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError(
-                'Password does not match', status=400)
+                'Password does not match')
         return data

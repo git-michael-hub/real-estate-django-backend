@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate, Link } from "react-router-dom";
-import useAuth from "../../features/auth/hooks/useAuth";
-import RegisterForm from "../../features/auth/components/RegisterForm";
+import useAuth from "../../../features/auth/hooks/useAuth";
+import RegisterForm from "../../../features/auth/components/RegisterForm";
 
 export default function Register() {
     const navigate: NavigateFunction = useNavigate();

@@ -7,10 +7,10 @@ function App() {
     return (
         <Routes>
             <Route path="" element={<Pages.Home />} />
-            <Route path="/login" element={<Pages.Login />} />
-            <Route path="/register" element={<Pages.Register />} />
-            <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
-            <Route path="/password-reset/:token" element={<Pages.ResetPassword />} />
+            <Route path="/login" element={<Pages.Auth.Login />} />
+            <Route path="/register" element={<Pages.Auth.Register />} />
+            <Route path="/forgot-password" element={<Pages.Auth.ForgotPassword />} />
+            <Route path="/password-reset/:token" element={<Pages.Auth.ResetPassword />} />
         </Routes>
     );
 }

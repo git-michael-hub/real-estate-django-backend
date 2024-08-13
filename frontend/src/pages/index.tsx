@@ -1,9 +1,6 @@
 import Home from "./Home";
-import Login from "./Login/Login";
-import Register from "./Register/Register";
-import ForgotPassword from "./Auth/ForgotPassword";
-import ResetPassword from "./Auth/ResetPassword";
+import Auth from "./Auth";
 
-const Pages = { Home, Login, Register, ForgotPassword, ResetPassword };
+const Pages = { Home, Auth };
 
 export default Pages;

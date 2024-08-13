@@ -21,6 +21,7 @@ export type FormMessageStateType = {
     password?: string[];
     non_field_errors?: string[];
     new_password?: string[];
+    confirm_password?: string[];
 };
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };

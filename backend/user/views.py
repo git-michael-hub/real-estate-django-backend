@@ -102,9 +102,9 @@ class RequestPasswordReset(generics.GenericAPIView):
                 fail_silently=False,
             )
 
-            return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+            return Response({'success_message': ['We have sent you a link to reset your password']}, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "User with credentials not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"generic_error": ["User with credentials not found"]}, status=status.HTTP_404_NOT_FOUND)
 
 
 request_password_reset = RequestPasswordReset.as_view()
@@ -115,13 +115,8 @@ class ResetPassword(generics.GenericAPIView):
     permission_classes = []
 
     def post(self, request, token):
-        print(token)
         serializer = self.serializer_class(data=request.data)
-
-        print(serializer)
-
         serializer.is_valid(raise_exception=True)
-        print('valid')
         data = serializer.validated_data
         new_password = data['new_password']
         reset_obj = PasswordReset.objects.filter(token=token).first()
