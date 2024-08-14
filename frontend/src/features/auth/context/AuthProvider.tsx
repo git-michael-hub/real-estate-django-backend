@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { apiFns, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import helperFn from "../components/VerifyEmailForm/ts/helper";
 
 export type UserStateType = {
     user_id: number;
@@ -12,8 +13,8 @@ export type UserStateType = {
 } | null;
 
 export type FormMessageStateType = {
-    success_message?: string[];
-    generic_message?: string[];
+    success?: string[];
+    error?: string[];
     username?: string[];
     email?: string[];
     first_name?: string[];
@@ -29,7 +30,7 @@ type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => {
     const [user, setUser] = useState<UserStateType>(null);
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
-    const [isReady, setIsReady] = useState(false);
+    const [isReady, setIsReady] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
     // Runs everytime the page refreshes then runs fetchAuthUser.
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
     const catchError = (error: unknown, funcName: string) => {
         console.log(`Error encountered in UserProvider: ${funcName}() \n${error}`);
-        const errorMessage: FormMessageStateType = { generic_message: ["An error occurred."] };
+        const errorMessage: FormMessageStateType = { error: ["An error occurred."] };
         setFormMessages(errorMessage);
     };
 
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
             const response: Response = await apiFns.post("user/login", formData);
             if (response.ok) {
                 const data: { token: string; user: UserStateType } = await response.json();
-                const successMessage: FormMessageStateType = { success_message: ["Login success!"] };
+                const successMessage: FormMessageStateType = { success: ["Login success!"] };
                 cookieHandler.set("token", data.token);
                 setUser(data.user);
                 setFormMessages(successMessage);
@@ -87,7 +88,22 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         try {
             const response: Response = await apiFns.post("user/register", formData);
             if (response.ok) {
-                const successMessage: FormMessageStateType = { success_message: ["Registration complete!"] };
+                const data: object[] = helperFn.convertFormToArrayObjects(formData);
+                navigate("/verify-email", { state: { data: data } }); // NEEDS BUG FIXING, DATA CAN BE NULL CAUSING AN ERROR
+            } else {
+                const errorMessages: FormMessageStateType = await response.json();
+                setFormMessages(errorMessages);
+            }
+        } catch (error: unknown) {
+            catchError(error, register.name);
+        }
+    };
+
+    const completeRegistration = async (formData: FormData): Promise<void> => {
+        try {
+            const response: Response = await apiFns.post("user/complete-registration", formData);
+            if (response.ok) {
+                const successMessage: FormMessageStateType = { success: ["Registration complete!"] };
                 setFormMessages(successMessage);
                 navigate("/login");
             } else {
@@ -95,7 +111,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 setFormMessages(errorMessages);
             }
         } catch (error: unknown) {
-            catchError(error, register.name);
+            catchError(error, completeRegistration.name);
         }
     };
 
@@ -144,7 +160,6 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 const successMessage: FormMessageStateType = await response.json();
                 setFormMessages(successMessage);
                 navigate("/login");
-                console.log(successMessage);
             } else {
                 const errorMessage: FormMessageStateType = await response.json();
                 setFormMessages(errorMessage);
@@ -164,6 +179,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 fetchAuthUser,
                 login,
                 register,
+                completeRegistration,
                 logout,
                 requestResetPassword,
                 resetPassword,
@@ -182,6 +198,7 @@ export type AuthContextType = {
     fetchAuthUser: () => Promise<UserStateType>;
     login: (formData: FormData) => Promise<void>;
     register: (formData: FormData) => Promise<void>;
+    completeRegistration: (formData: FormData) => Promise<void>;
     logout: (formData: FormData) => Promise<void>;
     requestResetPassword: (formData: FormData) => Promise<void>;
     resetPassword: (formData: FormData, resetToken: string) => Promise<void>;
@@ -196,6 +213,7 @@ const initAuthContextState: AuthContextType = {
     fetchAuthUser: () => Promise.resolve(null),
     login: () => Promise.resolve(),
     register: () => Promise.resolve(),
+    completeRegistration: () => Promise.resolve(),
     logout: () => Promise.resolve(),
     requestResetPassword: () => Promise.resolve(),
     resetPassword: () => Promise.resolve(),

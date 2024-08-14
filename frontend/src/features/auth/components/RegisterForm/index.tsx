@@ -16,7 +16,7 @@ export default function RegisterForm() {
         <form onSubmit={onSubmitRegister} id="register-form">
             <h1>Register Page</h1>
 
-            {formMessages.generic_message ? <Message type="error">{formMessages.generic_message[0]}</Message> : <></>}
+            {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
             {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
             {/* <div className="radio-container">
@@ -69,7 +69,7 @@ export default function RegisterForm() {
             </InputWithLabel>
 
             <div>
-                <button type="submit">Sign Up</button>
+                <button type="submit">Next</button>
             </div>
         </form>
     );

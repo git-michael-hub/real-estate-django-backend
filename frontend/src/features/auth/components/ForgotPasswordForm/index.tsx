@@ -14,7 +14,7 @@ export default function ForgotPasswordForm() {
 
     return (
         <form onSubmit={onSubmitRequest} id="forgot-password-form">
-            {formMessages.success_message ? <Message type="success">{formMessages.success_message[0]}</Message> : <></>}
+            {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
 
             {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
 
