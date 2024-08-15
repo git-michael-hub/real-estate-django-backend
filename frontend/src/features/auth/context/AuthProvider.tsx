@@ -2,7 +2,6 @@ import { createContext, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { apiFns, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
-import helperFn from "../components/VerifyEmailForm/ts/helper";
 
 export type UserStateType = {
     user_id: number;
@@ -84,34 +83,29 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
-    const register = async (formData: FormData): Promise<void> => {
+    const register = async (formData: FormData): Promise<FormMessageStateType> => {
         try {
             const response: Response = await apiFns.post("user/register", formData);
-            if (response.ok) {
-                const data: object[] = helperFn.convertFormToArrayObjects(formData);
-                navigate("/verify-email", { state: { data: data } }); // NEEDS BUG FIXING, DATA CAN BE NULL CAUSING AN ERROR
-            } else {
-                const errorMessages: FormMessageStateType = await response.json();
-                setFormMessages(errorMessages);
-            }
+            const message = await response.json();
+            return message;
         } catch (error: unknown) {
-            catchError(error, register.name);
+            console.log(`An error occurred at function ${register.name}() inside AuthProvider.tsx. \n${error}`);
+            const message = { error: [`An error occurred.`] };
+            return message;
         }
     };
 
-    const completeRegistration = async (formData: FormData): Promise<void> => {
+    const completeRegistration = async (formData: FormData): Promise<FormMessageStateType> => {
         try {
             const response: Response = await apiFns.post("user/complete-registration", formData);
-            if (response.ok) {
-                const successMessage: FormMessageStateType = { success: ["Registration complete!"] };
-                setFormMessages(successMessage);
-                navigate("/login");
-            } else {
-                const errorMessages: FormMessageStateType = await response.json();
-                setFormMessages(errorMessages);
-            }
+            const message = await response.json();
+            return message;
         } catch (error: unknown) {
-            catchError(error, completeRegistration.name);
+            console.log(
+                `An error occurred at function ${completeRegistration.name}() inside AuthProvider.tsx: \n${error}`
+            );
+            const message = { error: [`An error occurred.`] };
+            return message;
         }
     };
 
@@ -197,8 +191,8 @@ export type AuthContextType = {
     setFormMessages: React.Dispatch<React.SetStateAction<FormMessageStateType>>;
     fetchAuthUser: () => Promise<UserStateType>;
     login: (formData: FormData) => Promise<void>;
-    register: (formData: FormData) => Promise<void>;
-    completeRegistration: (formData: FormData) => Promise<void>;
+    register: (formData: FormData) => Promise<FormMessageStateType>;
+    completeRegistration: (formData: FormData) => Promise<FormMessageStateType>;
     logout: (formData: FormData) => Promise<void>;
     requestResetPassword: (formData: FormData) => Promise<void>;
     resetPassword: (formData: FormData, resetToken: string) => Promise<void>;
@@ -212,8 +206,8 @@ const initAuthContextState: AuthContextType = {
     setFormMessages: () => {},
     fetchAuthUser: () => Promise.resolve(null),
     login: () => Promise.resolve(),
-    register: () => Promise.resolve(),
-    completeRegistration: () => Promise.resolve(),
+    register: () => Promise.resolve({}),
+    completeRegistration: () => Promise.resolve({}),
     logout: () => Promise.resolve(),
     requestResetPassword: () => Promise.resolve(),
     resetPassword: () => Promise.resolve(),

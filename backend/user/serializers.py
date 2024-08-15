@@ -23,8 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         confirm_password = self.context['request'].POST.get('confirm_password')
         if (value != confirm_password):
-            raise serializers.ValidationError(
-                "Password does not match.", status=400)
+            raise serializers.ValidationError("Password does not match.")
         return value
 
     def create(self, validated_data):
@@ -47,6 +46,5 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def validate(self, data):
         if data['new_password'] != data['confirm_password']:
-            raise serializers.ValidationError(
-                'Password does not match')
+            raise serializers.ValidationError('Password does not match')
         return data

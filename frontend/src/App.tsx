@@ -11,7 +11,6 @@ function App() {
             <Route path="/register" element={<Pages.Auth.Register />} />
             <Route path="/forgot-password" element={<Pages.Auth.ForgotPassword />} />
             <Route path="/password-reset/:token" element={<Pages.Auth.ResetPassword />} />
-            <Route path="/verify-email" element={<Pages.Auth.VerifyEmail />} />
         </Routes>
     );
 }
