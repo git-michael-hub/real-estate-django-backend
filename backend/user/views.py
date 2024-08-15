@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
-from .models import EmailVerificationRequest, PasswordResetRequest
+from .models import EmailVerificationRequest, PasswordResetRequest, Roles
 from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer
 
 
@@ -48,13 +48,16 @@ class UserCreateView(generics.GenericAPIView):
         user_serializer.is_valid(raise_exception=True)
 
         # CHECK IF EMAIL AND PIN MATCH AN EXISTING REQUEST
-        # SAVE IF MATCHES THEN DELETE THE COMPLETED REQUEST
+        # IF EXISTING: SAVE USER AND ADD USER ROLE THEN DELETE THE COMPLETED REQUEST
         email = request.data['email']
         pin = request.data['pin']
         existing_email_verification_request = EmailVerificationRequest.objects.filter(
             email=email, pin=pin).first()
         if existing_email_verification_request:
-            user_serializer.save()
+            user = user_serializer.save()
+            user_role = Roles(user=user, is_buyer=True,
+                              is_seller=False, is_agent=False)
+            user_role.save()
             existing_email_verification_request.delete()
 
             return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
