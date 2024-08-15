@@ -18,6 +18,11 @@ export default function Home() {
             {!!user ? (
                 <>
                     <h1>Welcome @{user.username}</h1>
+                    <div>
+                        <Link to={"/buyer"}>Go to Buyer Page</Link>
+                        <Link to={"/seller"}>Go to Seller Page</Link>
+                        <Link to={"/agent"}>Go to Agent Page</Link>
+                    </div>
                     <form onClick={onSubmitLogout}>
                         <button>Logout</button>
                     </form>

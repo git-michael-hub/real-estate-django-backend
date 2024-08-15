@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { apiFns, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import { RolesType } from "../components/RequireAuth/RequireAuth";
 
 export type UserStateType = {
     user_id: number;
@@ -9,6 +10,7 @@ export type UserStateType = {
     email: string;
     first_name: string;
     last_name: string;
+    roles?: RolesType;
 } | null;
 
 export type FormMessageStateType = {
@@ -137,7 +139,6 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
             if (response.ok) {
                 const successMessage: FormMessageStateType = await response.json();
                 setFormMessages(successMessage);
-                console.log(successMessage);
             } else {
                 const errorMessage: FormMessageStateType = await response.json();
                 setFormMessages(errorMessage);

@@ -14,9 +14,9 @@ export default function LoginForm() {
 
     return (
         <form onSubmit={onSubmitForm} id="login-form">
-            {formMessages.success_message ? <Message type="success">{formMessages.success_message[0]}</Message> : <></>}
+            {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
 
-            {formMessages.generic_message ? <Message type="error">{formMessages.generic_message[0]}</Message> : <></>}
+            {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
             {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
 

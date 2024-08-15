@@ -2,6 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from .models import Roles
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,6 +30,30 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super(UserSerializer, self).create(validated_data)
+
+
+class RolesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = [
+            'is_buyer',
+            'is_seller',
+            'is_agent'
+        ]
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    roles = RolesSerializer(read_only=True, source='user_roles')
+
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'roles'
+        ]
 
 
 class EmailSerializer(serializers.Serializer):

@@ -4,7 +4,8 @@ from django.db import models
 
 
 class Roles(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='user_roles')
     is_buyer = models.BooleanField(default=True)
     is_seller = models.BooleanField(default=False)
     is_agent = models.BooleanField(default=False)

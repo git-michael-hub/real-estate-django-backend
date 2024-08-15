@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
 from .models import EmailVerificationRequest, PasswordResetRequest, Roles
-from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer
+from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer, UserDetailSerializer
 
 
 class UserLoginView(ObtainAuthToken):
@@ -23,14 +23,10 @@ class UserLoginView(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+        user_data = UserDetailSerializer(user)
         return Response({
             'token': token.key,
-            'user': {
-                'user_id': user.pk,
-                'username': user.username,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name}
+            'user': user_data.data
 
         })
 
@@ -69,12 +65,13 @@ user_create_view = UserCreateView.as_view()
 
 
 class UserDetailView(generics.GenericAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserDetailSerializer
     authentication_classes = [authentication.TokenAuthentication]
 
     def get(self, request):
         user = Token.objects.get(key=request.auth).user
         serializer = self.serializer_class(user)
+        print(serializer.data)
         return Response(serializer.data)
 
 
