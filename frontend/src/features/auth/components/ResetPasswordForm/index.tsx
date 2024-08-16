@@ -3,15 +3,21 @@ import useAuth from "../../hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
+import { useState } from "react";
+import { FormMessageStateType } from "../../context/AuthProvider";
 
 export default function ResetPasswordForm() {
-    const { resetPassword, formMessages } = useAuth();
+    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
+    const { resetPassword } = useAuth();
     const { token } = useParams();
 
     async function onSubmitPassword(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
-        if (token) await resetPassword(formData, token);
+        if (token) {
+            const messages: FormMessageStateType = await resetPassword(formData, token);
+            setFormMessages(messages);
+        }
     }
 
     return (

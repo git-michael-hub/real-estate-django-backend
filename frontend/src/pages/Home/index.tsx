@@ -1,16 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./index.css";
 import useAuth from "../../features/auth/hooks/useAuth";
+import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
 
 export default function Home() {
+    const navigate = useNavigate();
     const { user, logout } = useAuth();
 
     async function onSubmitLogout(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
         e.stopPropagation();
         const formData: FormData = new FormData(e.currentTarget);
-        await logout(formData);
+        const messages: FormMessageStateType = await logout(formData);
+        if (messages.success) navigate("/login");
+        console.log(messages);
     }
 
     return (

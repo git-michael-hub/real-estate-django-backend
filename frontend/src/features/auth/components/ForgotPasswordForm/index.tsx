@@ -2,14 +2,18 @@ import useAuth from "../../hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
+import { FormMessageStateType } from "../../context/AuthProvider";
+import { useState } from "react";
 
 export default function ForgotPasswordForm() {
-    const { requestResetPassword, formMessages } = useAuth();
+    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
+    const { requestResetPassword } = useAuth();
 
     async function onSubmitRequest(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
-        await requestResetPassword(formData);
+        const messages: FormMessageStateType = await requestResetPassword(formData);
+        setFormMessages(messages);
     }
 
     return (
@@ -17,6 +21,8 @@ export default function ForgotPasswordForm() {
             {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
 
             {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
+
+            {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
             <InputWithLabel name="email" type="email" id="email">
                 Email

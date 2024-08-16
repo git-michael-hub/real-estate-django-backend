@@ -2,14 +2,23 @@ import useAuth from "../../hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
+import { useState } from "react";
+import { FormMessageStateType } from "../../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
-    const { login, formMessages } = useAuth();
+    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     async function onSubmitForm(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
-        await login(formData);
+        const messages: FormMessageStateType = await login(formData);
+        if (messages.success) {
+            navigate("/");
+        }
+        setFormMessages(messages);
     }
 
     return (

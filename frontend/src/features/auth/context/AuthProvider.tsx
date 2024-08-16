@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
-    const login = async (formData: FormData): Promise<void> => {
+    const login = async (formData: FormData): Promise<FormMessageStateType> => {
         try {
             const response: Response = await apiFns.post("user/login", formData);
             if (response.ok) {
@@ -74,14 +74,15 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 const successMessage: FormMessageStateType = { success: ["Login success!"] };
                 cookieHandler.set("token", data.token);
                 setUser(data.user);
-                setFormMessages(successMessage);
-                navigate("/");
+                return successMessage;
             } else {
                 const errorMessages: FormMessageStateType = await response.json();
-                setFormMessages(errorMessages);
+                return errorMessages;
             }
         } catch (error: unknown) {
-            catchError(error, login.name);
+            console.log(`An error occurred at function ${login.name}() inside AuthProvider.tsx. \n${error}`);
+            const message = { error: [`An error occurred.`] };
+            return message;
         }
     };
 
@@ -111,56 +112,50 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
-    const logout = async (formData: FormData): Promise<void> => {
+    const logout = async (formData: FormData): Promise<FormMessageStateType> => {
         const token: Token = cookieHandler.get("token");
         if (!token) throw Error("Not authorized.");
 
         try {
             const headers: HeaderType = { Authorization: `Token ${token}` };
             const response: Response = await apiFns.post("user/logout", formData, headers);
+            const messages: FormMessageStateType = await response.json();
             if (response.ok) {
-                const successMessage: FormMessageStateType = await response.json();
                 cookieHandler.delete("token");
                 setUser(null);
-                setFormMessages(successMessage);
                 navigate("/login");
-            } else {
-                const errorMessage: FormMessageStateType = await response.json();
-                setFormMessages(errorMessage);
             }
+            return messages;
         } catch (error: unknown) {
-            catchError(error, logout.name);
+            console.log(`An error occurred at function ${logout.name}() inside AuthProvider.tsx. \n${error}`);
+            const messages = { error: [`An error occurred.`] };
+            return messages;
         }
     };
 
-    const requestResetPassword = async (formData: FormData): Promise<void> => {
+    const requestResetPassword = async (formData: FormData): Promise<FormMessageStateType> => {
         try {
             const response: Response = await apiFns.post("user/request-password-reset", formData);
-            if (response.ok) {
-                const successMessage: FormMessageStateType = await response.json();
-                setFormMessages(successMessage);
-            } else {
-                const errorMessage: FormMessageStateType = await response.json();
-                setFormMessages(errorMessage);
-            }
+            const messages = await response.json();
+            return messages;
         } catch (error) {
-            catchError(error, requestResetPassword.name);
+            console.log(
+                `An error occurred at function ${requestResetPassword.name}() inside AuthProvider.tsx. \n${error}`
+            );
+            const messages = { error: [`An error occurred.`] };
+            return messages;
         }
     };
 
-    const resetPassword = async (formData: FormData, resetToken: string): Promise<void> => {
+    const resetPassword = async (formData: FormData, resetToken: string): Promise<FormMessageStateType> => {
         try {
             const response: Response = await apiFns.post(`user/password-reset/${resetToken}`, formData);
-            if (response.ok) {
-                const successMessage: FormMessageStateType = await response.json();
-                setFormMessages(successMessage);
-                navigate("/login");
-            } else {
-                const errorMessage: FormMessageStateType = await response.json();
-                setFormMessages(errorMessage);
-            }
+            const messages = await response.json();
+            return messages;
         } catch (error) {
-            catchError(error, requestResetPassword.name);
+            console.log(`An error occurred at function ${resetPassword.name}() inside AuthProvider.tsx. \n${error}`);
+            const messages = { error: [`An error occurred.`] };
+            return messages;
         }
     };
 
@@ -191,12 +186,12 @@ export type AuthContextType = {
     setUser: React.Dispatch<React.SetStateAction<UserStateType>>;
     setFormMessages: React.Dispatch<React.SetStateAction<FormMessageStateType>>;
     fetchAuthUser: () => Promise<UserStateType>;
-    login: (formData: FormData) => Promise<void>;
+    login: (formData: FormData) => Promise<FormMessageStateType>;
     register: (formData: FormData) => Promise<FormMessageStateType>;
     completeRegistration: (formData: FormData) => Promise<FormMessageStateType>;
-    logout: (formData: FormData) => Promise<void>;
-    requestResetPassword: (formData: FormData) => Promise<void>;
-    resetPassword: (formData: FormData, resetToken: string) => Promise<void>;
+    logout: (formData: FormData) => Promise<FormMessageStateType>;
+    requestResetPassword: (formData: FormData) => Promise<FormMessageStateType>;
+    resetPassword: (formData: FormData, resetToken: string) => Promise<FormMessageStateType>;
 };
 
 // Initial state of the AuthContext
@@ -206,12 +201,12 @@ const initAuthContextState: AuthContextType = {
     setUser: () => {},
     setFormMessages: () => {},
     fetchAuthUser: () => Promise.resolve(null),
-    login: () => Promise.resolve(),
+    login: () => Promise.resolve({}),
     register: () => Promise.resolve({}),
     completeRegistration: () => Promise.resolve({}),
-    logout: () => Promise.resolve(),
-    requestResetPassword: () => Promise.resolve(),
-    resetPassword: () => Promise.resolve(),
+    logout: () => Promise.resolve({}),
+    requestResetPassword: () => Promise.resolve({}),
+    resetPassword: () => Promise.resolve({}),
 };
 
 const AuthContext = createContext<AuthContextType>(initAuthContextState);
