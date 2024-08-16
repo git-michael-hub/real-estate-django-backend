@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Link, useNavigate, NavigateFunction } from "react-router-dom";
+import { useNavigate, NavigateFunction } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import ResetPasswordForm from "../../../features/auth/components/ResetPasswordForm";
+import "./index.css";
 
 export default function ResetPassword() {
     const navigate: NavigateFunction = useNavigate();
@@ -13,8 +14,8 @@ export default function ResetPassword() {
 
     return (
         <main id="reset-password-page">
+            <h1>Reset Password Page</h1>
             <ResetPasswordForm></ResetPasswordForm>
-            <Link to={"/login"}>Back to Sign In</Link>
         </main>
     );
 }

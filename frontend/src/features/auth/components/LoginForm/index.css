@@ -1,3 +1,23 @@
 #login-form {
-    max-width: 300px;
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+
+#login-form > div {
+    margin: 15px;
+}
+
+#login-form .register-link,
+#login-form .forgot-password-link {
+    display: flex;
+    justify-content: center;
+    font-size: 0.7rem;
+}
+
+.register-link a,
+.forgot-password-link a {
+    color: #065fd4;
+    text-decoration: none;
 }

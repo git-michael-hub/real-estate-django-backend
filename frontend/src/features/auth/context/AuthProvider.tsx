@@ -24,13 +24,13 @@ export type FormMessageStateType = {
     non_field_errors?: string[];
     new_password?: string[];
     confirm_password?: string[];
+    pin?: string[];
 };
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => {
     const [user, setUser] = useState<UserStateType>(null);
-    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
     const [isReady, setIsReady] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
@@ -41,12 +41,6 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
             .then((user: UserStateType) => setUser(user))
             .then(() => setIsReady(true)); // makes sure user state is mounted first
     }, []);
-
-    const catchError = (error: unknown, funcName: string) => {
-        console.log(`Error encountered in UserProvider: ${funcName}() \n${error}`);
-        const errorMessage: FormMessageStateType = { error: ["An error occurred."] };
-        setFormMessages(errorMessage);
-    };
 
     // Fetch authenticated user from backend.
     // Returns null if there is currently no authenticated user.
@@ -61,7 +55,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
             const user: UserStateType = await response.json();
             return user;
         } catch (error: unknown) {
-            catchError(error, fetchAuthUser.name);
+            console.log(`An error occurred at function ${fetchAuthUser.name}() inside AuthProvider.tsx. \n${error}`);
             return null;
         }
     };
@@ -163,9 +157,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         <AuthContext.Provider
             value={{
                 user,
-                formMessages,
                 setUser,
-                setFormMessages,
                 fetchAuthUser,
                 login,
                 register,
@@ -182,9 +174,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
 export type AuthContextType = {
     user: UserStateType;
-    formMessages: FormMessageStateType;
     setUser: React.Dispatch<React.SetStateAction<UserStateType>>;
-    setFormMessages: React.Dispatch<React.SetStateAction<FormMessageStateType>>;
     fetchAuthUser: () => Promise<UserStateType>;
     login: (formData: FormData) => Promise<FormMessageStateType>;
     register: (formData: FormData) => Promise<FormMessageStateType>;
@@ -197,9 +187,7 @@ export type AuthContextType = {
 // Initial state of the AuthContext
 const initAuthContextState: AuthContextType = {
     user: null,
-    formMessages: {},
     setUser: () => {},
-    setFormMessages: () => {},
     fetchAuthUser: () => Promise.resolve(null),
     login: () => Promise.resolve({}),
     register: () => Promise.resolve({}),

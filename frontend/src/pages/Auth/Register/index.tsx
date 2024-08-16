@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { NavigateFunction, useNavigate, Link } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import RegisterForm from "../../../features/auth/components/RegisterForm";
+import "./index.css";
 
 export default function Register() {
     const navigate: NavigateFunction = useNavigate();
@@ -13,8 +14,8 @@ export default function Register() {
 
     return (
         <main id="register-page">
+            <h1>Register Page</h1>
             <RegisterForm></RegisterForm>
-            <Link to={"/login"}>Login</Link>
         </main>
     );
 }

@@ -4,7 +4,9 @@ import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import { FormMessageStateType } from "../../context/AuthProvider";
 import helperFn from "../../../../ts/helper";
+import { Link } from "react-router-dom";
 import "./index.css";
+import BtnBasic from "../../../../components/Buttons/BtnBasic";
 
 type TwoPages = 1 | 2 | 3;
 
@@ -48,73 +50,91 @@ export default function RegisterForm() {
     return (
         <form onSubmit={onSubmitForm} id="register-form" ref={formRef}>
             {page === 1 ? (
-                <div>
-                    <h1>Register Page</h1>
+                <>
+                    <div>
+                        {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
-                    {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
+                        {formMessages.non_field_errors ? (
+                            <Message type="error">{formMessages.non_field_errors[0]}</Message>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+                    <div>
+                        <InputWithLabel name="username" id="username">
+                            Username
+                        </InputWithLabel>
 
-                    {formMessages.non_field_errors ? (
-                        <Message type="error">{formMessages.non_field_errors[0]}</Message>
-                    ) : (
-                        <></>
-                    )}
+                        {formMessages.username ? <Message type="error">{formMessages.username[0]}</Message> : <></>}
+                    </div>
+                    <div>
+                        <InputWithLabel name="email" id="email" type="email">
+                            Email
+                        </InputWithLabel>
 
-                    <InputWithLabel name="username" id="username">
-                        Username
-                    </InputWithLabel>
+                        {formMessages.email ? <Message type="error">{formMessages.email[0]}</Message> : <></>}
+                    </div>
+                    <div>
+                        <InputWithLabel name="first_name" id="first_name">
+                            First Name
+                        </InputWithLabel>
 
-                    {formMessages.username ? <Message type="error">{formMessages.username[0]}</Message> : <></>}
-
-                    <InputWithLabel name="email" id="email" type="email">
-                        Email
-                    </InputWithLabel>
-
-                    {formMessages.email ? <Message type="error">{formMessages.email[0]}</Message> : <></>}
-
-                    <InputWithLabel name="first_name" id="first_name">
-                        First Name
-                    </InputWithLabel>
-
-                    {formMessages.first_name ? <Message type="error">{formMessages.first_name[0]}</Message> : <></>}
-
-                    <InputWithLabel name="last_name" id="last_name">
-                        Last Name
-                    </InputWithLabel>
-
-                    {formMessages.last_name ? <Message type="error">{formMessages.last_name[0]}</Message> : <></>}
-
-                    <InputWithLabel name="password" id="password" type="password">
-                        Password
-                    </InputWithLabel>
-
-                    {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
-
-                    <InputWithLabel name="confirm_password" id="confirm_password" type="password">
-                        Confirm Password
-                    </InputWithLabel>
+                        {formMessages.first_name ? <Message type="error">{formMessages.first_name[0]}</Message> : <></>}
+                    </div>
+                    <div>
+                        <InputWithLabel name="last_name" id="last_name">
+                            Last Name
+                        </InputWithLabel>
+                        {formMessages.last_name ? <Message type="error">{formMessages.last_name[0]}</Message> : <></>}
+                    </div>
+                    <div>
+                        <InputWithLabel name="password" id="password" type="password">
+                            Password
+                        </InputWithLabel>
+                        {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
+                    </div>
+                    <div>
+                        <InputWithLabel name="confirm_password" id="confirm_password" type="password">
+                            Confirm Password
+                        </InputWithLabel>
+                    </div>
 
                     <div>
-                        <button onClick={onClickNext}>Next</button>
+                        <BtnBasic onClick={onClickNext}>
+                            <span>Next</span>
+                        </BtnBasic>
                     </div>
-                </div>
+                    <div className="login-link">
+                        <Link to={"/login"}>Back to login</Link>
+                    </div>
+                </>
             ) : page === 2 ? (
-                <div>
-                    <h1>Enter One-Time-PIN</h1>
-
-                    {formMessages.error ? <Message type="error">{formMessages.error}</Message> : <></>}
-
+                <>
                     {formMessages.success ? <Message type="success">{formMessages.success}</Message> : <></>}
 
-                    <InputWithLabel type="number" name="pin" id="pin">
-                        PIN
-                    </InputWithLabel>
-
                     <div>
-                        <button type="submit">Complete Registration</button>
+                        <InputWithLabel type="number" name="pin" id="pin">
+                            Enter One-Time-PIN
+                        </InputWithLabel>
+                        {formMessages.non_field_errors ? <Message type="error">Invalid PIN.</Message> : <></>}
+
+                        {formMessages.error ? <Message type="error">{formMessages.error}</Message> : <></>}
+
+                        {formMessages.pin ? <Message type="error">{formMessages.pin}</Message> : <></>}
                     </div>
-                </div>
+                    <div>
+                        <BtnBasic type="submit">
+                            <span>Complete Registration</span>
+                        </BtnBasic>
+                    </div>
+                </>
             ) : (
-                <div>{formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}</div>
+                <>
+                    {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
+                    <div className="login-link">
+                        <Link to={"/login"}>Back to login</Link>
+                    </div>
+                </>
             )}
         </form>
     );

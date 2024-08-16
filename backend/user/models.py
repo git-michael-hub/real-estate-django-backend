@@ -20,5 +20,5 @@ class PasswordResetRequest(models.Model):
 class EmailVerificationRequest(models.Model):
     email = models.EmailField()
     pin = models.IntegerField(
-        validators=[MinValueValidator(100000), MaxValueValidator(999999)])
+        validators=[MinValueValidator(100000), MaxValueValidator(999999)], error_messages={"error": "Invalid PIN"})
     created_at = models.DateField(auto_now_add=True)

@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { NavigateFunction, useNavigate, Link } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import LoginForm from "../../../features/auth/components/LoginForm";
+import "./index.css";
 
 export default function Login() {
     const navigate: NavigateFunction = useNavigate();
@@ -15,12 +16,6 @@ export default function Login() {
         <main id="login-page">
             <h1>Login Page</h1>
             <LoginForm></LoginForm>
-            <div>
-                <Link to={"/register"}>Register</Link>
-            </div>
-            <div>
-                <Link to={"/forgot-password"}>Forgot Password?</Link>
-            </div>
         </main>
     );
 }

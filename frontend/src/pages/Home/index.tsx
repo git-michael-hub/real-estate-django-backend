@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./index.css";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
+import BtnBasic from "../../components/Buttons/BtnBasic";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -28,7 +29,9 @@ export default function Home() {
                         <Link to={"/agent"}>Go to Agent Page</Link>
                     </div>
                     <form onClick={onSubmitLogout}>
-                        <button>Logout</button>
+                        <BtnBasic>
+                            <span>Logout</span>
+                        </BtnBasic>
                     </form>
                 </>
             ) : (

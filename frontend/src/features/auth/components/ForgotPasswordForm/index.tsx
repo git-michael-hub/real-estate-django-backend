@@ -4,6 +4,8 @@ import Message from "../../../../components/Message";
 import "./index.css";
 import { FormMessageStateType } from "../../context/AuthProvider";
 import { useState } from "react";
+import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import { Link } from "react-router-dom";
 
 export default function ForgotPasswordForm() {
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
@@ -24,13 +26,23 @@ export default function ForgotPasswordForm() {
 
             {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
-            <InputWithLabel name="email" type="email" id="email">
-                Email
-            </InputWithLabel>
+            <div>
+                <InputWithLabel name="email" type="email" id="email">
+                    Email
+                </InputWithLabel>
 
-            {formMessages.email ? <Message type="error">{formMessages.email[0]}</Message> : <></>}
+                {formMessages.email ? <Message type="error">{formMessages.email[0]}</Message> : <></>}
+            </div>
 
-            <button type="submit">Submit Request</button>
+            <div>
+                <BtnBasic>
+                    <span>Submit Request</span>
+                </BtnBasic>
+            </div>
+
+            <div className="login-link">
+                <Link to={"/login"}>Back to Sign In</Link>
+            </div>
         </form>
     );
 }

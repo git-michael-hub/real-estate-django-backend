@@ -4,7 +4,8 @@ import Message from "../../../../components/Message";
 import "./index.css";
 import { useState } from "react";
 import { FormMessageStateType } from "../../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import BtnBasic from "../../../../components/Buttons/BtnBasic";
 
 export default function LoginForm() {
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
@@ -23,26 +24,47 @@ export default function LoginForm() {
 
     return (
         <form onSubmit={onSubmitForm} id="login-form">
-            {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
+            <div>
+                {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
 
-            {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
+                {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
-            {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
-
-            <InputWithLabel name="username" id="username">
-                Username:
-            </InputWithLabel>
-
-            {formMessages.username ? <Message type="error">{formMessages.username[0]}</Message> : <></>}
-
-            <InputWithLabel name="password" id="password" type="password">
-                Password:
-            </InputWithLabel>
-
-            {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
+                {formMessages.non_field_errors ? (
+                    <Message type="error">{formMessages.non_field_errors[0]}</Message>
+                ) : (
+                    <></>
+                )}
+            </div>
 
             <div>
-                <button type="submit">Login</button>
+                <InputWithLabel name="username" id="username">
+                    Username
+                </InputWithLabel>
+
+                {formMessages.username ? <Message type="error">{formMessages.username[0]}</Message> : <></>}
+            </div>
+
+            <div>
+                <InputWithLabel name="password" id="password" type="password">
+                    Password
+                </InputWithLabel>
+
+                {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
+            </div>
+
+            <div className="forgot-password-link">
+                <Link to={"/forgot-password"}>Forgot Password?</Link>
+            </div>
+
+            <div>
+                <BtnBasic>
+                    <span>Login</span>
+                </BtnBasic>
+            </div>
+            <div className="register-link">
+                <span>
+                    Don't have an account yet? <Link to={"/register"}>Sign up</Link>
+                </span>
             </div>
         </form>
     );

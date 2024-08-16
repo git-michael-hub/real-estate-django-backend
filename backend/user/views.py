@@ -4,15 +4,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 
-from rest_framework import generics, authentication, status, permissions
+from rest_framework import generics, authentication, status, permissions, serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
+
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
 from .models import EmailVerificationRequest, PasswordResetRequest, Roles
-from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer, UserDetailSerializer
+from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer, UserDetailSerializer, EmailVerificationRequestSerializer
 
 
 class UserLoginView(ObtainAuthToken):
@@ -42,11 +43,15 @@ class UserCreateView(generics.GenericAPIView):
         user_serializer = self.serializer_class(
             data=request.data, context={'request': request})
         user_serializer.is_valid(raise_exception=True)
+        email = request.data['email']
+        pin = request.data['pin']
+        verification_serializer = EmailVerificationRequestSerializer(
+            data={'email': email, 'pin':  pin})
+        verification_serializer.is_valid(raise_exception=True)
 
         # CHECK IF EMAIL AND PIN MATCH AN EXISTING REQUEST
         # IF EXISTING: SAVE USER AND ADD USER ROLE THEN DELETE THE COMPLETED REQUEST
-        email = request.data['email']
-        pin = request.data['pin']
+
         existing_email_verification_request = EmailVerificationRequest.objects.filter(
             email=email, pin=pin).first()
         if existing_email_verification_request:

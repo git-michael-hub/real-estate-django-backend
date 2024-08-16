@@ -1,3 +1,21 @@
 #register-form {
-    max-width: 300px;
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+
+#register-form > div {
+    margin: 15px;
+}
+
+#register-form .login-link {
+    display: flex;
+    justify-content: center;
+    font-size: 0.7rem;
+}
+
+.login-link a {
+    color: #065fd4;
+    text-decoration: none;
 }

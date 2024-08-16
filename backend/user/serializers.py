@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import Roles
+from .models import Roles, EmailVerificationRequest
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -73,3 +73,9 @@ class ResetPasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError('Password does not match')
         return data
+
+
+class EmailVerificationRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailVerificationRequest
+        fields = ['email', 'pin']

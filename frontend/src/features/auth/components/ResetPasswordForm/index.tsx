@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
 import { useState } from "react";
 import { FormMessageStateType } from "../../context/AuthProvider";
+import BtnBasic from "../../../../components/Buttons/BtnBasic";
 
 export default function ResetPasswordForm() {
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
@@ -38,7 +39,15 @@ export default function ResetPasswordForm() {
 
             {formMessages.confirm_password ? <Message type="error">{formMessages.confirm_password[0]}</Message> : <></>}
 
-            <button type="submit">Change Password</button>
+            <div>
+                <BtnBasic type="submit">
+                    <span>Change Password</span>
+                </BtnBasic>
+            </div>
+
+            <div className="login-link">
+                <Link to={"/login"}>Back to Sign In</Link>
+            </div>
         </form>
     );
 }
