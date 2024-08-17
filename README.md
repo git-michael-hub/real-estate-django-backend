@@ -8,6 +8,8 @@ git clone --single-branch --branch authentication https://github.com/git-michael
 
 python -m venv venv
 
+source venv/Scripts/activate
+
 // INSTALL DEPENDENCIES FOR BACKEND
 
 pip install -r requirements.txt
