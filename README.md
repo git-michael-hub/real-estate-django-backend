@@ -1,32 +1,48 @@
-Clone the repository:
+# Version Info
 
-```bash
-git clone --single-branch --branch authentication https://github.com/git-michael-hub/real-estate-django-backend.git
-```
+| Name   | Version         |
+| ------ | --------------- |
+| python | `Python 3.10.7` |
+| pip    | `pip 24.2`      |
+| node   | `v18.16.1`      |
+| npm    | `9.5.1`         |
 
-CD to root folder of the project Then create virtual environment for packages
+# Set-up and Configuration
+
+`cd` to root folder of the project then create virtual environment for the packages.
 
 ```bash
 python -m venv venv
+```
+
+Activate virtual environment with either:
+
+```bash
 source venv/Scripts/activate
 ```
 
-Install dependencies for backend
+or
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies for backend,
 
 ```bash
 pip install -r requirements.txt
 ```
 
-CD to backend and create .env file
+`cd` to backend and create `.env` file.
 
 ```bash
 cd backend
 touch .env
 ```
 
-Configure the following attributes inside .env
+Configure the following attributes inside the `.env` file.
 
-```bash
+```
 DEBUG=
 
 SECRET_KEY=
@@ -46,13 +62,13 @@ EMAIL_HOST_PASSWORD=
 EMAIL_USE_TLS=
 ```
 
-Run the backend server
+Run the backend server.
 
 ```bash
 python manage.py runserver
 ```
 
-In another terminal, Install the dependencies for frontend and run the frontend server
+In another terminal, install the dependencies for frontend and run the frontend server.
 
 ```bash
 cd frontend
