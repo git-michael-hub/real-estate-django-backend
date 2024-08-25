@@ -1,5 +1,5 @@
 from django.db import models
-from .models import User
+from django.contrib.auth.models import User
 
 
 def get_listing_types():
@@ -13,8 +13,8 @@ def get_property_types():
 class Listing(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    listing_type = models.CharField(choices=get_listing_types)
-    property_type = models.CharField(choices=get_property_types)
+    listing_type = models.CharField(choices=get_listing_types, max_length=20)
+    property_type = models.CharField(choices=get_property_types, max_length=20)
     price = models.PositiveIntegerField()
     image = models.ImageField(blank=True, null=True)
     property_size = models.PositiveIntegerField(blank=True, null=True)

@@ -10,6 +10,12 @@ class ListingCreateView(generics.CreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
 
+listing_create_view = ListingCreateView.as_view()
+
+
 class ListingListView(generics.ListAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingCreateSerializer
+
+
+listing_list_view = ListingListView.as_view()
