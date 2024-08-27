@@ -1,0 +1,34 @@
+#listing-search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 360px;
+}
+
+#listing-search-form #search-options-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#listing-search-form #more-options-container > p {
+    font-size: 0.8rem;
+}
+
+#listing-search-form #more-options-container > div {
+    display: grid;
+    grid-template-columns: 4.5fr 1fr 4.5fr;
+    align-items: center;
+    justify-content: center;
+}
+
+#listing-search-form #more-options-container > div > span {
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+}
+
+#listing-search-form #more-options-btn-container {
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,17 @@
+.select-basic-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.select-basic {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #606060;
+    outline: none;
+}
+
+.select-basic-label {
+    font-size: 0.8rem;
+    color: #606060;
+    padding-bottom: 5px;
+}

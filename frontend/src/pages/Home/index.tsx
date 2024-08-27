@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-
-import "./index.css";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
 import BtnBasic from "../../components/Buttons/BtnBasic";
+import ListingSearchForm from "../../features/listings/components/ListingSearchForm";
+import "./index.css";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -23,6 +23,7 @@ export default function Home() {
             {!!user ? (
                 <>
                     <h1>Welcome @{user.username}</h1>
+                    <ListingSearchForm></ListingSearchForm>
                     <div>
                         <Link to={"/buyer"}>Go to Buyer Page</Link>
                         <Link to={"/seller"}>Go to Seller Page</Link>
@@ -37,6 +38,8 @@ export default function Home() {
             ) : (
                 <>
                     <h1>Home Page</h1>
+                    <ListingSearchForm></ListingSearchForm>
+
                     <Link to={"/login"}>Login</Link>
                 </>
             )}
