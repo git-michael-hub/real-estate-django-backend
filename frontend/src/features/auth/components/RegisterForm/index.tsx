@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 import "./index.css";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
 
-type TwoPages = 1 | 2 | 3;
+type RegisterPages = 1 | 2 | 3;
 
 export default function RegisterForm() {
-    const [page, setPage] = useState<TwoPages>(1);
+    const [page, setPage] = useState<RegisterPages>(1);
     const [partialFormData, setPartialFormData] = useState<FormData | null>(null);
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
     const formRef = useRef<HTMLFormElement | null>(null);
@@ -53,48 +53,40 @@ export default function RegisterForm() {
                 <>
                     <div>
                         {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
-
                         {formMessages.non_field_errors ? (
                             <Message type="error">{formMessages.non_field_errors[0]}</Message>
                         ) : (
                             <></>
                         )}
                     </div>
-                    <div>
-                        <InputWithLabel name="username" id="username">
-                            Username
-                        </InputWithLabel>
 
+                    <div>
+                        <InputWithLabel inputProps={{ name: "username" }}>Username</InputWithLabel>
                         {formMessages.username ? <Message type="error">{formMessages.username[0]}</Message> : <></>}
                     </div>
-                    <div>
-                        <InputWithLabel name="email" id="email" type="email">
-                            Email
-                        </InputWithLabel>
 
+                    <div>
+                        <InputWithLabel inputProps={{ name: "email", type: "email" }}>Email</InputWithLabel>
                         {formMessages.email ? <Message type="error">{formMessages.email[0]}</Message> : <></>}
                     </div>
-                    <div>
-                        <InputWithLabel name="first_name" id="first_name">
-                            First Name
-                        </InputWithLabel>
 
+                    <div>
+                        <InputWithLabel inputProps={{ name: "first_name" }}>First Name</InputWithLabel>
                         {formMessages.first_name ? <Message type="error">{formMessages.first_name[0]}</Message> : <></>}
                     </div>
+
                     <div>
-                        <InputWithLabel name="last_name" id="last_name">
-                            Last Name
-                        </InputWithLabel>
+                        <InputWithLabel inputProps={{ name: "last_name" }}>Last Name</InputWithLabel>
                         {formMessages.last_name ? <Message type="error">{formMessages.last_name[0]}</Message> : <></>}
                     </div>
+
                     <div>
-                        <InputWithLabel name="password" id="password" type="password">
-                            Password
-                        </InputWithLabel>
+                        <InputWithLabel inputProps={{ name: "password", type: "password" }}>Password</InputWithLabel>
                         {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
                     </div>
+
                     <div>
-                        <InputWithLabel name="confirm_password" id="confirm_password" type="password">
+                        <InputWithLabel inputProps={{ name: "confirm_password", type: "password" }}>
                             Confirm Password
                         </InputWithLabel>
                     </div>
@@ -104,6 +96,7 @@ export default function RegisterForm() {
                             <span>Next</span>
                         </BtnBasic>
                     </div>
+
                     <div className="login-link">
                         <Link to={"/login"}>Back to login</Link>
                     </div>
@@ -113,15 +106,14 @@ export default function RegisterForm() {
                     {formMessages.success ? <Message type="success">{formMessages.success}</Message> : <></>}
 
                     <div>
-                        <InputWithLabel type="number" name="pin" id="pin">
+                        <InputWithLabel inputProps={{ type: "number", name: "pin", id: "pin" }}>
                             Enter One-Time-PIN
                         </InputWithLabel>
                         {formMessages.non_field_errors ? <Message type="error">Invalid PIN.</Message> : <></>}
-
                         {formMessages.error ? <Message type="error">{formMessages.error}</Message> : <></>}
-
                         {formMessages.pin ? <Message type="error">{formMessages.pin}</Message> : <></>}
                     </div>
+
                     <div>
                         <BtnBasic type="submit">
                             <span>Complete Registration</span>

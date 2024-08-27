@@ -14,8 +14,6 @@ listing_create_view = ListingCreateView.as_view()
 
 
 class ListingListView(generics.GenericAPIView):
-    queryset = Listing.objects.all()
-    serializer_class = ListingSerializer
 
     def get(self, request):
         query_serializer = ListingQuerySerializer(data=request.GET)

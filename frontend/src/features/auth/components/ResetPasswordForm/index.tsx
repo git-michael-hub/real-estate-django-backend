@@ -27,13 +27,11 @@ export default function ResetPasswordForm() {
 
             {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
 
-            <InputWithLabel name="new_password" type="password" id="new_password">
-                Password
-            </InputWithLabel>
+            <InputWithLabel inputProps={{ name: "new_password", type: "password" }}>Password</InputWithLabel>
 
             {formMessages.new_password ? <Message type="error">{formMessages.new_password[0]}</Message> : <></>}
 
-            <InputWithLabel name="confirm_password" type="password" id="confirm_password">
+            <InputWithLabel inputProps={{ name: "confirm_password", type: "password" }}>
                 Confirm Password
             </InputWithLabel>
 

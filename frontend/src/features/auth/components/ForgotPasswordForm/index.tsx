@@ -27,9 +27,7 @@ export default function ForgotPasswordForm() {
             {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
             <div>
-                <InputWithLabel name="email" type="email" id="email">
-                    Email
-                </InputWithLabel>
+                <InputWithLabel inputProps={{ name: "email", type: "email" }}>Email</InputWithLabel>
 
                 {formMessages.email ? <Message type="error">{formMessages.email[0]}</Message> : <></>}
             </div>
