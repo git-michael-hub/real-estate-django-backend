@@ -35,9 +35,9 @@ class ListingListView(generics.GenericAPIView):
         listings = Listing.objects.all()
 
         if property_type == 'HL' or property_type == 'CL' or property_type == 'RL' or property_type == 'CO':
-            listings.filter(property_type=property_type)
+            listings = listings.filter(property_type=property_type)
         if listing_type == 'FS' or listing_type == 'FR' or listing_type == 'FC':
-            listings.filter(listing_type=listing_type)
+            listings = listings.filter(listing_type=listing_type)
         if province:
             listings = listings.filter(province__icontains=province)
         if city:

@@ -2,18 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-listing_types = [("FS", "For Sale"), ("FR", "For Rent"), ("FC", "Foreclosure")]
-
-
-property_types = [("HL", "House and Lot"), ("CL", "Commercial Lot"),
-                  ("RL", "Residential Lot"), ("CO", "Condominium")]
-
-
 class Listing(models.Model):
+    LISTING_TYPES = [("FS", "For Sale"), ("FR", "For Rent"),
+                     ("FC", "Foreclosure")]
+
+    PROPERTY_TYPES = [("HL", "House and Lot"), ("CL", "Commercial Lot"),
+                      ("RL", "Residential Lot"), ("CO", "Condominium")]
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    listing_type = models.CharField(choices=listing_types, max_length=20)
-    property_type = models.CharField(choices=property_types, max_length=20)
+    listing_type = models.CharField(choices=LISTING_TYPES, max_length=20)
+    property_type = models.CharField(choices=PROPERTY_TYPES, max_length=20)
     price = models.PositiveIntegerField()
     image = models.ImageField(blank=True, null=True,
                               upload_to='images/listings')

@@ -22,9 +22,9 @@ class Migration(migrations.Migration):
                  primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=100)),
                 ('listing_type', models.CharField(
-                    choices=listings.models.listing_types, max_length=20)),
+                    choices=listings.models.Listing.LISTING_TYPES, max_length=20)),
                 ('property_type', models.CharField(
-                    choices=listings.models.property_types, max_length=20)),
+                    choices=listings.models.Listing.PROPERTY_TYPES, max_length=20)),
                 ('price', models.PositiveIntegerField()),
                 ('image', models.ImageField(blank=True, null=True, upload_to='')),
                 ('property_size', models.PositiveIntegerField(blank=True, null=True)),

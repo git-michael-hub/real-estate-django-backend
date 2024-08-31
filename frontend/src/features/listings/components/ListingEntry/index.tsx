@@ -6,7 +6,9 @@ export type ListingType = {
     owner: number;
     title: string;
     listing_type: string;
+    listing_type_display: string;
     property_type: string;
+    property_type_display: string;
     price: number;
     image?: string;
     property_size: number;
@@ -55,9 +57,9 @@ export default function ListingEntry({ listing }: ListingEntryProp) {
                         )}
 
                         <br />
-                        <b>{listing.property_type}</b>
+                        <b>{listing.property_type_display}</b>
                         <br />
-                        <em>({listing.listing_type})</em>
+                        <em>({listing.listing_type_display})</em>
                         <address>{`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}</address>
                         <span>Php {listing.price.toString()}</span>
                         <br />

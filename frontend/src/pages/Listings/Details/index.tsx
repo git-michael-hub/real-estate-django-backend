@@ -29,9 +29,9 @@ export default function Details() {
             {listing ? (
                 <div>
                     <h2>{listing.title}</h2>
-                    <b>{listing.property_type}</b>
+                    <b>{listing.property_type_display}</b>
                     <br />
-                    <em>({listing.listing_type})</em>
+                    <em>({listing.listing_type_display})</em>
                     <br />
                     <address>
                         Location: {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
