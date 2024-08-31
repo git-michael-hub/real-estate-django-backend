@@ -11,27 +11,18 @@ class ListingSerializer(serializers.ModelSerializer):
         model = Listing
         fields = '__all__'
 
-    # FIND WAY TO MAKE THIS DRY
-    def validate_bathrooms(self, value):
-        property_type = self.context['request'].POST.get('property_type')
-        if (property_type == 'CO' or property_type == 'HL'):
-            return value
-        else:
-            if (value != None):
+    def validate(self, data):
+        property_type = data.get('property_type')
+        bedrooms = data.get('bedrooms')
+        bathrooms = data.get('bathrooms')
+        if (property_type != 'CO' and property_type != 'HL'):
+            if (bedrooms != None):
                 raise serializers.ValidationError(
-                    'Only House and Lot and Condominuim property type can have a "bathrooms" property.')
-            return value
-
-    # FIND WAY TO MAKE THIS DRY
-    def validate_bedrooms(self, value):
-        property_type = self.context['request'].POST.get('property_type')
-        if (property_type == 'CO' or property_type == 'HL'):
-            return value
-        else:
-            if (value != None):
+                    "Only property_type 'House and Lot' and 'Condominuim' can contain value in 'bedrooms' field.")
+            if (bathrooms != None):
                 raise serializers.ValidationError(
-                    'Only House and Lot and Condominuim property type can have a "bedrooms" property.')
-            return value
+                    "Only property_type 'House and Lot' and 'Condominuim' can contain value in 'bathrooms' field.")
+        return data
 
     def get_listing_type_display(self, obj):
         return obj.get_listing_type_display()
