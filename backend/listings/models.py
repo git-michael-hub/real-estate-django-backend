@@ -15,7 +15,8 @@ class Listing(models.Model):
     listing_type = models.CharField(choices=listing_types, max_length=20)
     property_type = models.CharField(choices=property_types, max_length=20)
     price = models.PositiveIntegerField()
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True,
+                              upload_to='images/listings')
     property_size = models.PositiveIntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
     is_available = models.BooleanField(default=False)

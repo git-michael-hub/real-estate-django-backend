@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiFns } from "../../../../ts/api-service";
+import { useNavigate } from "react-router-dom";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
 import SelectBasic from "../../../../components/Forms/SelectBasic";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
@@ -8,6 +8,7 @@ import "./index.css";
 
 export default function ListingSearchForm() {
     const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     function showMoreOptions(e: React.MouseEvent<HTMLButtonElement>): void {
         e.preventDefault();
@@ -19,19 +20,11 @@ export default function ListingSearchForm() {
         setIsMoreOptionsVisible(false);
     }
 
-    async function submitSearchForm(e: React.FormEvent<HTMLFormElement>) {
+    function submitSearchForm(e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
         const params: URLSearchParams = new URLSearchParams(formData as any); // NO WORK AROUND FOR THIS YET
-        try {
-            const response: Response = await apiFns.get(`listings/?${params.toString()}`);
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.log(
-                `An error occurred at function ${submitSearchForm.name}() inside features/listings/components/index.tsx. \n${error}`
-            );
-        }
+        navigate(`/listings/?${params.toString()}`);
     }
 
     return (
