@@ -1,13 +1,14 @@
+import { Link } from "react-router-dom";
 import "./index.css";
 
 export type ListingType = {
-    pk: number;
+    id: number;
     owner: number;
     title: string;
     listing_type: string;
     property_type: string;
     price: number;
-    image: string;
+    image?: string;
     property_size: number;
     description: string;
     is_available: boolean;
@@ -28,18 +29,25 @@ export default function ListingEntry({ listing }: ListingEntryProp) {
         <>
             {listing.is_available ? (
                 <>
-                    <li key={listing.pk} className="listing-entry">
-                        <h2>{listing.title}</h2>
+                    <li key={listing.id} className="listing-entry">
+                        <h2>
+                            <Link to={`/listings/${listing.id}`}>{listing.title}</Link>
+                        </h2>
                         {listing.image ? (
                             <img src={listing.image} alt="" className="listing-image" />
                         ) : (
                             <figure>
-                                <img src={"/images/default_house_for_sale.jpg"} alt="" className="listing-image" />
-
+                                <Link to="">
+                                    <img src={"/images/default_house_for_sale.jpg"} alt="" className="listing-image" />
+                                </Link>
                                 {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
                                 <figcaption className="listing-image-figcaption">
                                     Image by{" "}
-                                    <a href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b">
+                                    <a
+                                        target="_blank"
+                                        rel="noopener"
+                                        href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
+                                    >
                                         Freepik
                                     </a>
                                 </figcaption>
@@ -48,6 +56,8 @@ export default function ListingEntry({ listing }: ListingEntryProp) {
 
                         <br />
                         <b>{listing.property_type}</b>
+                        <br />
+                        <em>({listing.listing_type})</em>
                         <address>{`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}</address>
                         <span>Php {listing.price.toString()}</span>
                         <br />

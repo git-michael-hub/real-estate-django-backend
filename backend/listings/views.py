@@ -1,6 +1,6 @@
 from rest_framework import generics, authentication
 from rest_framework.response import Response
-from .serializers import ListingSerializer, ListingQuerySerializer
+from .serializers import ListingSerializer, ListingQuerySerializer, ListingDetailSerializer
 from .models import Listing
 
 
@@ -32,9 +32,12 @@ class ListingListView(generics.GenericAPIView):
             min_area = 0
         max_area = request.GET.get('max_area')
 
-        listings = Listing.objects.filter(
-            property_type=property_type, listing_type=listing_type)
+        listings = Listing.objects.all()
 
+        if property_type == 'HL' or property_type == 'CL' or property_type == 'RL' or property_type == 'CO':
+            listings.filter(property_type=property_type)
+        if listing_type == 'FS' or listing_type == 'FR' or listing_type == 'FC':
+            listings.filter(listing_type=listing_type)
         if province:
             listings = listings.filter(province__icontains=province)
         if city:
@@ -57,6 +60,15 @@ class ListingListView(generics.GenericAPIView):
 
 
 listing_list_view = ListingListView.as_view()
+
+
+class ListingDetailView(generics.RetrieveAPIView):
+    queryset = Listing.objects.all()
+    serializer_class = ListingDetailSerializer
+    lookup_field = 'pk'
+
+
+listing_detail_view = ListingDetailView.as_view()
 
 
 ############ DEVELOPMENT ONLY ####################

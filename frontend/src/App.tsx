@@ -12,7 +12,8 @@ function App() {
             <Route path="/forgot-password" element={<Pages.Auth.ForgotPassword />} />
             <Route path="/password-reset/:token" element={<Pages.Auth.ResetPassword />} />
             <Route path="/unauthorized" element={<Pages.Auth.Unauthorized />} />
-            <Route path="/listings" element={<Pages.Listings />} />
+            <Route path="/listings" element={<Pages.Listings.List />} />
+            <Route path="/listings/:id" element={<Pages.Listings.Details />} />
 
             <Route element={<RequireAuth is_buyer={true} />}>
                 <Route path="/buyer" element={<Pages.Roles.Buyer />} />

@@ -20,6 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name'
         ]
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def validate_password(self, value):
         confirm_password = self.context['request'].POST.get('confirm_password')

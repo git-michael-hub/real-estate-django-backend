@@ -1,32 +1,28 @@
 from rest_framework import serializers
 from .models import Listing, property_types, listing_types
+from user.serializers import UserSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
+    listing_type = serializers.SerializerMethodField()
+    property_type = serializers.SerializerMethodField()
+
     class Meta:
         model = Listing
-        fields = [
-            'pk',
-            'owner',
-            'title',
-            'listing_type',
-            'property_type',
-            'price',
-            'image',
-            'property_size',
-            'description',
-            'is_available',
+        fields = '__all__'
 
-            # Only for House and Lot and Condominuim property types
-            'bedrooms',
-            'bathrooms',
+    def get_listing_type(self, obj):
+        return obj.get_listing_type_display()
 
-            # For listing location
-            'province',
-            'city',
-            'baranggay',
-            'street',
-        ]
+    def get_property_type(self, obj):
+        return obj.get_property_type_display()
+
+
+class ListingDetailSerializer(ListingSerializer):
+
+    class Meta(ListingSerializer.Meta):
+        fields = ListingSerializer.Meta.fields
+        depth = 1
 
 
 class ListingQuerySerializer(serializers.Serializer):
