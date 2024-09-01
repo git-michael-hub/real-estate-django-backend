@@ -2,3 +2,7 @@
     width: 720px;
     height: 480px;
 }
+
+#details-page .listing-description {
+    white-space: pre-wrap;
+}

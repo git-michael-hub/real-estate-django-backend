@@ -13,9 +13,9 @@ class ListingCreateView(generics.CreateAPIView):
 listing_create_view = ListingCreateView.as_view()
 
 
-class ListingListView(generics.GenericAPIView):
+class ListingListView(generics.ListAPIView):
 
-    def get(self, request):
+    def list(self, request):
         query_serializer = ListingQuerySerializer(data=request.GET)
         query_serializer.is_valid(raise_exception=True)
 
@@ -55,7 +55,8 @@ class ListingListView(generics.GenericAPIView):
             listings = listings.filter(
                 property_size__gte=min_area)
 
-        listings_serializer = ListingSerializer(listings, many=True)
+        listings_serializer = ListingSerializer(
+            listings, many=True, context={'request': request})
         return Response(listings_serializer.data)
 
 

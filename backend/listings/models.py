@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import validate_image_file_extension
 
 
 class Listing(models.Model):
@@ -15,7 +16,7 @@ class Listing(models.Model):
     property_type = models.CharField(choices=PROPERTY_TYPES, max_length=20)
     price = models.PositiveIntegerField()
     image = models.ImageField(blank=True, null=True,
-                              upload_to='images/listings')
+                              upload_to='images/listings', validators=[validate_image_file_extension])
     property_size = models.PositiveIntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
     is_available = models.BooleanField(default=False)

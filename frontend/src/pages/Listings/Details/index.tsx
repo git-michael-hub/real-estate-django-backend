@@ -59,13 +59,25 @@ export default function Details() {
                     )}
 
                     <br />
-                    <span>{listing.property_size.toString()} sqm</span>
+                    <span>Area: {listing.property_size.toString()} sqm</span>
                     <br />
-                    {listing.bedrooms ? <span>Bedrooms: {listing.bedrooms.toString()}</span> : <></>}
-                    <br />
-                    {listing.bathrooms ? <span>Bathrooms: {listing.bathrooms.toString()}</span> : <></>}
-                    <br />
-                    {listing.description ? <p>{listing.description}</p> : <></>}
+                    {listing.bedrooms ? (
+                        <>
+                            <span>Bedrooms: {listing.bedrooms.toString()}</span> <br />
+                        </>
+                    ) : (
+                        <></>
+                    )}
+
+                    {listing.bathrooms ? (
+                        <>
+                            <span>Bathrooms: {listing.bathrooms.toString()}</span>
+                            <br />
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    {listing.description ? <p className="listing-description">{listing.description}</p> : <></>}
                 </div>
             ) : (
                 <div>Listing does not exist.</div>
