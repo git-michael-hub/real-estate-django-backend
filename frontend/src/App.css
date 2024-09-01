@@ -2,6 +2,11 @@ html {
     font-family: "Roboto", "Arial", sans-serif;
 }
 
+ul {
+    margin: 0;
+    padding: 0;
+}
+
 li {
     list-style: none;
 }

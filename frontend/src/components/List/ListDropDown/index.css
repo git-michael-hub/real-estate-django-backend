@@ -1,0 +1,21 @@
+.list-drop-down {
+    position: absolute;
+    right: 10px;
+    margin-top: 5px;
+    min-width: 100px;
+    box-shadow: -3px 3px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.list-drop-down > li {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.list-drop-down > li:hover {
+    cursor: pointer;
+}
+
+.list-drop-down > li > *:hover {
+    cursor: pointer;
+    color: blue;
+}

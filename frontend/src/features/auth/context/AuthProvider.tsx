@@ -106,7 +106,8 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
-    const logout = async (formData: FormData): Promise<FormMessageStateType> => {
+    const logout = async (): Promise<FormMessageStateType> => {
+        const formData: FormData = new FormData();
         const token: Token = cookieHandler.get("token");
         if (!token) throw Error("Not authorized.");
 
@@ -179,7 +180,7 @@ export type AuthContextType = {
     login: (formData: FormData) => Promise<FormMessageStateType>;
     register: (formData: FormData) => Promise<FormMessageStateType>;
     completeRegistration: (formData: FormData) => Promise<FormMessageStateType>;
-    logout: (formData: FormData) => Promise<FormMessageStateType>;
+    logout: () => Promise<FormMessageStateType>;
     requestResetPassword: (formData: FormData) => Promise<FormMessageStateType>;
     resetPassword: (formData: FormData, resetToken: string) => Promise<FormMessageStateType>;
 };

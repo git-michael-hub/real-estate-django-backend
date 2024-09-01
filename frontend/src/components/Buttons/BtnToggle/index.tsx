@@ -1,8 +1,8 @@
 import "./index.css";
 
-type BtnToggle = React.ComponentProps<"button">;
+type BtnToggleProps = React.ComponentProps<"button">;
 
-export default function BtnToggle({ children, ...rest }: BtnToggle) {
+export default function BtnToggle({ children, ...rest }: BtnToggleProps) {
     return (
         <button className="btn-toggle" {...rest}>
             {children}
