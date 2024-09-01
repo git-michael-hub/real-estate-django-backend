@@ -1,24 +1,19 @@
-from rest_framework import generics, authentication
+from rest_framework import generics, authentication, permissions
 from rest_framework.response import Response
 from .serializers import ListingSerializer, ListingQuerySerializer, ListingDetailSerializer
 from .models import Listing
 
 
-class ListingCreateView(generics.CreateAPIView):
+class ListingListCreateView(generics.ListCreateAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
-    authentication_classes = [authentication.TokenAuthentication]
-
-
-listing_create_view = ListingCreateView.as_view()
-
-
-class ListingListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def list(self, request):
         query_serializer = ListingQuerySerializer(data=request.GET)
         query_serializer.is_valid(raise_exception=True)
 
+        username = request.GET.get('username')
         property_type = request.GET.get('property_type')
         listing_type = request.GET.get('listing_type')
         province = request.GET.get('province')
@@ -32,8 +27,10 @@ class ListingListView(generics.ListAPIView):
             min_area = 0
         max_area = request.GET.get('max_area')
 
-        listings = Listing.objects.all()
+        listings = self.get_queryset()
 
+        if username:
+            listings = listings.filter(owner__username=username)
         if property_type == 'HL' or property_type == 'CL' or property_type == 'RL' or property_type == 'CO':
             listings = listings.filter(property_type=property_type)
         if listing_type == 'FS' or listing_type == 'FR' or listing_type == 'FC':
@@ -60,7 +57,7 @@ class ListingListView(generics.ListAPIView):
         return Response(listings_serializer.data)
 
 
-listing_list_view = ListingListView.as_view()
+listing_list_create_view = ListingListCreateView.as_view()
 
 
 class ListingDetailView(generics.RetrieveAPIView):
@@ -70,11 +67,3 @@ class ListingDetailView(generics.RetrieveAPIView):
 
 
 listing_detail_view = ListingDetailView.as_view()
-
-
-############ DEVELOPMENT ONLY ####################
-
-
-class ListingTestListView(generics.ListAPIView):
-    queryset = Listing.objects.all()
-    serializer_class = ListingSerializer

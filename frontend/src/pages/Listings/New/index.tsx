@@ -16,7 +16,7 @@ export default function New() {
             const headers: HeaderType = { Authorization: `Token ${token}` };
             const formData: FormData = new FormData(e.currentTarget);
             formData.append("owner", (user?.id as number).toString());
-            const response: Response = await apiFns.post("listings/new", formData, headers);
+            const response: Response = await apiFns.post("listings/", formData, headers);
             const data = await response.json();
             console.log(data);
         }

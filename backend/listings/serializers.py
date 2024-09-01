@@ -45,8 +45,11 @@ class ListingDetailSerializer(ListingSerializer):
 
 
 class ListingQuerySerializer(serializers.Serializer):
-    listing_type = serializers.ChoiceField(choices=Listing.LISTING_TYPES)
-    property_type = serializers.ChoiceField(choices=Listing.PROPERTY_TYPES)
+    username = serializers.CharField(max_length=100, required=False)
+    listing_type = serializers.ChoiceField(
+        choices=Listing.LISTING_TYPES, required=False)
+    property_type = serializers.ChoiceField(
+        choices=Listing.PROPERTY_TYPES, required=False)
     province = serializers.CharField(max_length=100, required=False)
     city = serializers.CharField(max_length=100, required=False)
     min_price = serializers.IntegerField(required=False)

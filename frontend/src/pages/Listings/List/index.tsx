@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiFns } from "../../../ts/api-service";
-import "./index.css";
 import ListingEntry, { ListingType } from "../../../features/listings/components/ListingEntry";
+import "./index.css";
 
 type ListListingStateType = ListingType[];
 
@@ -11,7 +11,7 @@ export default function List() {
     useEffect(() => {
         const fetchListings = async (): Promise<void> => {
             try {
-                const response: Response = await apiFns.get(window.location.pathname + window.location.search);
+                const response: Response = await apiFns.get(`listings/${window.location.search}`);
                 const listings: ListListingStateType = await response.json();
                 console.log(listings);
                 setListings(listings);
