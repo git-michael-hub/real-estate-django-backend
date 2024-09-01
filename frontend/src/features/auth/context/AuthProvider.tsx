@@ -39,9 +39,11 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
     // Runs everytime the page refreshes then runs fetchAuthUser.
     // use and isReady state is then updated using setUser.
     useEffect(() => {
-        fetchAuthUser()
-            .then((user: UserStateType) => setUser(user))
-            .then(() => setIsReady(true)); // makes sure user state is mounted first
+        if (!user) {
+            fetchAuthUser()
+                .then((user: UserStateType) => setUser(user))
+                .then(() => setIsReady(true)); // makes sure user state is mounted first
+        }
     }, []);
 
     // Fetch authenticated user from backend.
@@ -82,27 +84,27 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
+    const requestEmailVerification = async (formData: FormData): Promise<FormMessageStateType> => {
+        try {
+            const response: Response = await apiFns.post("user/request-email-verification", formData);
+            const message = await response.json();
+            return message;
+        } catch (error: unknown) {
+            console.log(
+                `An error occurred at function ${requestEmailVerification.name}() inside AuthProvider.tsx. \n${error}`
+            );
+            const message = { error: [`An error occurred.`] };
+            return message;
+        }
+    };
+
     const register = async (formData: FormData): Promise<FormMessageStateType> => {
         try {
             const response: Response = await apiFns.post("user/register", formData);
             const message = await response.json();
             return message;
         } catch (error: unknown) {
-            console.log(`An error occurred at function ${register.name}() inside AuthProvider.tsx. \n${error}`);
-            const message = { error: [`An error occurred.`] };
-            return message;
-        }
-    };
-
-    const completeRegistration = async (formData: FormData): Promise<FormMessageStateType> => {
-        try {
-            const response: Response = await apiFns.post("user/complete-registration", formData);
-            const message = await response.json();
-            return message;
-        } catch (error: unknown) {
-            console.log(
-                `An error occurred at function ${completeRegistration.name}() inside AuthProvider.tsx: \n${error}`
-            );
+            console.log(`An error occurred at function ${register.name}() inside AuthProvider.tsx: \n${error}`);
             const message = { error: [`An error occurred.`] };
             return message;
         }
@@ -163,8 +165,8 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 setUser,
                 fetchAuthUser,
                 login,
+                requestEmailVerification,
                 register,
-                completeRegistration,
                 logout,
                 requestResetPassword,
                 resetPassword,
@@ -180,8 +182,8 @@ export type AuthContextType = {
     setUser: React.Dispatch<React.SetStateAction<UserStateType>>;
     fetchAuthUser: () => Promise<UserStateType>;
     login: (formData: FormData) => Promise<FormMessageStateType>;
+    requestEmailVerification: (formData: FormData) => Promise<FormMessageStateType>;
     register: (formData: FormData) => Promise<FormMessageStateType>;
-    completeRegistration: (formData: FormData) => Promise<FormMessageStateType>;
     logout: () => Promise<FormMessageStateType>;
     requestResetPassword: (formData: FormData) => Promise<FormMessageStateType>;
     resetPassword: (formData: FormData, resetToken: string) => Promise<FormMessageStateType>;
@@ -193,8 +195,8 @@ const initAuthContextState: AuthContextType = {
     setUser: () => {},
     fetchAuthUser: () => Promise.resolve(null),
     login: () => Promise.resolve({}),
+    requestEmailVerification: () => Promise.resolve({}),
     register: () => Promise.resolve({}),
-    completeRegistration: () => Promise.resolve({}),
     logout: () => Promise.resolve({}),
     requestResetPassword: () => Promise.resolve({}),
     resetPassword: () => Promise.resolve({}),

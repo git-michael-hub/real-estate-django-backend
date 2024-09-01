@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import InputWithLabel from "../../../../components/Forms/InputWithLabel";
-import Message from "../../../../components/Message";
 import { FormMessageStateType } from "../../context/AuthProvider";
 import helperFn from "../../../../ts/helper";
-import { Link } from "react-router-dom";
-import "./index.css";
+import InputWithLabel from "../../../../components/Forms/InputWithLabel";
+import Message from "../../../../components/Message";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import "./index.css";
 
 type RegisterPages = 1 | 2 | 3;
 
@@ -15,13 +15,13 @@ export default function RegisterForm() {
     const [partialFormData, setPartialFormData] = useState<FormData | null>(null);
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
     const formRef = useRef<HTMLFormElement | null>(null);
-    const { register, completeRegistration } = useAuth();
+    const { register, requestEmailVerification } = useAuth();
 
     async function onClickNext(): Promise<void> {
         const form: HTMLFormElement | null = formRef.current;
         if (form) {
             const formData: FormData = new FormData(form);
-            const message: FormMessageStateType = await register(formData);
+            const message: FormMessageStateType = await requestEmailVerification(formData);
             setFormMessages(message);
             console.log(message);
 
@@ -37,7 +37,7 @@ export default function RegisterForm() {
         const partialFormData2: FormData = new FormData(e.currentTarget);
         if (partialFormData) {
             const completeFormData = helperFn.combineFormData(partialFormData, partialFormData2);
-            const message: FormMessageStateType = await completeRegistration(completeFormData);
+            const message: FormMessageStateType = await register(completeFormData);
             setFormMessages(message);
             console.log(message);
 
@@ -116,7 +116,7 @@ export default function RegisterForm() {
 
                     <div>
                         <BtnBasic type="submit">
-                            <span>Complete Registration</span>
+                            <span>Register</span>
                         </BtnBasic>
                     </div>
                 </>
