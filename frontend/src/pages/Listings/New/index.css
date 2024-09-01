@@ -1,0 +1,20 @@
+#new-listing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#new-listing-page form {
+    max-width: 480px;
+}
+
+#new-listing-page form h2 {
+    margin: 0;
+}
+
+#new-listing-page form section {
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

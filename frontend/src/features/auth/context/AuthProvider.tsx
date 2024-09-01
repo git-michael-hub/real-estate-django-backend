@@ -5,7 +5,7 @@ import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { RolesType } from "../components/RequireAuth/RequireAuth";
 
 export type UserType = {
-    user_id: number;
+    id: number;
     username: string;
     email: string;
     first_name: string;

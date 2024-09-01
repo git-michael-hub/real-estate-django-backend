@@ -1,11 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./index.css";
-import useAuth from "../../features/auth/hooks/useAuth";
-import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
 import { useState } from "react";
+import useAuth from "../../features/auth/hooks/useAuth";
 import BtnLink from "../Buttons/BtnLink";
 import ListDropDown from "../List/ListDropDown";
-import BtnListItem from "../Buttons/BtnListItem";
+import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
+import "./index.css";
 
 export default function Navbar() {
     const [isLogoutFormVisible, setIsLogoutFormVisible] = useState<boolean>(false);
@@ -32,7 +31,12 @@ export default function Navbar() {
                     {isLogoutFormVisible ? (
                         <ListDropDown>
                             <li>
-                                <BtnListItem onClick={onClickLogout}>Logout</BtnListItem>
+                                <Link to={"/listings/new"}>Create Listing</Link>
+                            </li>
+                            <li>
+                                <button type="button" onClick={onClickLogout}>
+                                    Logout
+                                </button>
                             </li>
                         </ListDropDown>
                     ) : (
