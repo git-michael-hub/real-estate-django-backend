@@ -3,19 +3,19 @@ import { apiFns } from "../../../ts/api-service";
 import "./index.css";
 import ListingEntry, { ListingType } from "../../../features/listings/components/ListingEntry";
 
-type ListingsType = ListingType[];
+type ListListingStateType = ListingType[];
 
 export default function List() {
-    const [listings, setListings] = useState<ListingsType>([]);
+    const [listings, setListings] = useState<ListListingStateType>([]);
 
     useEffect(() => {
-        const fetchListings = async () => {
+        const fetchListings = async (): Promise<void> => {
             try {
                 const response: Response = await apiFns.get(window.location.pathname + window.location.search);
-                const listings = await response.json();
+                const listings: ListListingStateType = await response.json();
                 console.log(listings);
                 setListings(listings);
-            } catch (error) {
+            } catch (error: unknown) {
                 console.log(
                     `An error occurred at function ${fetchListings.name}() inside pages/Listings/index.tsx. \n${error}`
                 );

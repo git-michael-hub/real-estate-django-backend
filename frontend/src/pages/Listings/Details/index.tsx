@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { apiFns } from "../../../ts/api-service";
 import { ListingType } from "../../../features/listings/components/ListingEntry";
-import { UserStateType } from "../../../features/auth/context/AuthProvider";
+import { UserType } from "../../../features/auth/context/AuthProvider";
 import "./index.css";
 
-type DetailsListingType = (Omit<ListingType, "owner"> & { owner: UserStateType }) | null;
+type DetailsListingStateType = (Omit<ListingType, "owner"> & { owner: UserType }) | null;
 
 export default function Details() {
-    const [listing, setListing] = useState<DetailsListingType>(null);
+    const [listing, setListing] = useState<DetailsListingStateType>(null);
 
     useEffect(() => {
         const fetchListing = async () => {
-            const response = await apiFns.get(`${window.location.pathname}`);
-            const listing = await response.json();
+            const response: Response = await apiFns.get(`${window.location.pathname}`);
+            const listing: DetailsListingStateType = await response.json();
             if (response.ok) {
                 setListing(listing);
             } else {

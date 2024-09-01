@@ -39,19 +39,19 @@ export default function ListingEntry({ listing }: ListingEntryProp) {
                             <img src={listing.image} alt="" className="listing-image" />
                         ) : (
                             <figure>
-                                <Link to="">
+                                <Link to={`/listings/${listing.id}`}>
                                     <img src={"/images/default_house_for_sale.jpg"} alt="" className="listing-image" />
                                 </Link>
                                 {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
                                 <figcaption className="listing-image-figcaption">
                                     Image by{" "}
-                                    <a
+                                    <Link
                                         target="_blank"
                                         rel="noopener"
-                                        href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
+                                        to="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
                                     >
                                         Freepik
-                                    </a>
+                                    </Link>
                                 </figcaption>
                             </figure>
                         )}

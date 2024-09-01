@@ -4,14 +4,16 @@ import { apiFns, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { RolesType } from "../components/RequireAuth/RequireAuth";
 
-export type UserStateType = {
+export type UserType = {
     user_id: number;
     username: string;
     email: string;
     first_name: string;
     last_name: string;
     roles?: RolesType;
-} | null;
+};
+
+export type UserStateType = UserType | null;
 
 export type FormMessageStateType = {
     success?: string[];
