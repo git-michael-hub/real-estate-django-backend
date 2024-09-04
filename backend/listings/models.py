@@ -20,6 +20,7 @@ class Listing(models.Model):
     property_size = models.PositiveIntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
     is_available = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # Only for House and Lot and Condominuim property types
     bedrooms = models.PositiveIntegerField(blank=True, null=True)

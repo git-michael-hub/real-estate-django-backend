@@ -2,6 +2,7 @@ from rest_framework import generics, authentication, permissions
 from rest_framework.response import Response
 from .serializers import ListingSerializer, ListingQuerySerializer, ListingDetailSerializer
 from .models import Listing
+from .permissions import IsOwner
 
 
 class ListingListCreateView(generics.ListCreateAPIView):
@@ -60,10 +61,25 @@ class ListingListCreateView(generics.ListCreateAPIView):
 listing_list_create_view = ListingListCreateView.as_view()
 
 
-class ListingDetailView(generics.RetrieveAPIView):
+class ListingDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingDetailSerializer
+    permission_classes = [IsOwner]
     lookup_field = 'pk'
 
 
-listing_detail_view = ListingDetailView.as_view()
+listing_detail_update_delete_view = ListingDetailUpdateDeleteView.as_view()
+
+
+class ListingUserListView(generics.ListAPIView):
+    queryset = Listing.objects.all()
+    serializer_class = ListingSerializer
+
+    def list(self, request, username):
+        listings = self.get_queryset().filter(owner__username=username)
+        serializer = self.serializer_class(
+            listings, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
+listing_user_list_view = ListingUserListView.as_view()
