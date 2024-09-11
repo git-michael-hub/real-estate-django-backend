@@ -1,14 +1,14 @@
-from rest_framework import generics, authentication, permissions
+from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import ListingSerializer, ListingQuerySerializer, ListingDetailSerializer
 from .models import Listing
-from .permissions import IsOwner
+from .permissions import IsOwnerOrReadOnly, IsSellerOrReadOnly
 
 
 class ListingListCreateView(generics.ListCreateAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsSellerOrReadOnly]
 
     def list(self, request):
         query_serializer = ListingQuerySerializer(data=request.GET)
@@ -64,7 +64,7 @@ listing_list_create_view = ListingListCreateView.as_view()
 class ListingDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingDetailSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsOwnerOrReadOnly]
     lookup_field = 'pk'
 
 
