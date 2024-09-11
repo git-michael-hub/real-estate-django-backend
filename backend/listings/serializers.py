@@ -1,5 +1,8 @@
 from rest_framework import serializers
+
 from .models import Listing
+
+from user.serializers import UserDetailSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -38,10 +41,10 @@ class ListingSerializer(serializers.ModelSerializer):
 
 
 class ListingDetailSerializer(ListingSerializer):
+    owner = UserDetailSerializer()
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields
-        depth = 1
 
 
 class ListingQuerySerializer(serializers.Serializer):

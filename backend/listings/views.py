@@ -69,17 +69,3 @@ class ListingDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 
 listing_detail_update_delete_view = ListingDetailUpdateDeleteView.as_view()
-
-
-class ListingUserListView(generics.ListAPIView):
-    queryset = Listing.objects.all()
-    serializer_class = ListingSerializer
-
-    def list(self, request, username):
-        listings = self.get_queryset().filter(owner__username=username)
-        serializer = self.serializer_class(
-            listings, many=True, context={'request': request})
-        return Response(serializer.data)
-
-
-listing_user_list_view = ListingUserListView.as_view()
