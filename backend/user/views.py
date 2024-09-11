@@ -56,9 +56,9 @@ class UserCreateView(generics.GenericAPIView):
             email=email, pin=pin).first()
         if existing_email_verification_request:
             user = user_serializer.save()
-            user_role = Roles(user=user, is_buyer=True,
-                              is_seller=False, is_agent=False)
-            user_role.save()
+            roles = Roles(user=user, is_buyer=True,
+                          is_seller=False, is_agent=False)
+            roles.save()
             existing_email_verification_request.delete()
 
             return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)

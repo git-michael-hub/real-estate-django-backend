@@ -46,7 +46,7 @@ class RolesSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    roles = RolesSerializer(read_only=True, source='user_roles')
+    roles = RolesSerializer(read_only=True, source='roles')
 
     class Meta:
         model = User
