@@ -17,7 +17,7 @@ class FavoritesSerializer(serializers.ModelSerializer):
 
 
 class FavoritesEditSerializer(serializers.ModelSerializer):
-    add = serializers.IntegerField(
+    add_to_favorites = serializers.IntegerField(
         validators=[listing_id_is_valid], required=False)
-    remove = serializers.IntegerField(
+    remove_from_favorites = serializers.IntegerField(
         validators=[listing_id_is_valid], required=False)
