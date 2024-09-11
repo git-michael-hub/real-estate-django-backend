@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import "./index.css";
+import useAuth from "../../../auth/hooks/useAuth";
+import { apiFns, HeaderType } from "../../../../ts/api-service";
+import cookieHandler, { Token } from "../../../../ts/cookie-handler";
 
 export type ListingType = {
     id: number;
@@ -24,9 +27,23 @@ export type ListingType = {
 
 type ListingEntryProp = {
     listing: ListingType;
+    favoriteListings: any[]; // MUST CREATE TYPE FOR FAVORITELISTINGS!
+    setFavoriteListings: React.Dispatch<React.SetStateAction<never[]>>;
 };
 
-export default function ListingEntry({ listing }: ListingEntryProp) {
+export default function ListingEntry({ listing, favoriteListings, setFavoriteListings }: ListingEntryProp) {
+    const token: Token = cookieHandler.get("token");
+    const { user } = useAuth();
+
+    const submitEditFavorites = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const headers: HeaderType = { Authorization: `Token ${token}` };
+        const body: FormData = new FormData(e.currentTarget);
+        const response = await apiFns.patch(`favorites/${user?.username}`, body, headers);
+        const favorites: any = await response.json();
+        setFavoriteListings(favorites.listings);
+    };
+
     return (
         <>
             {listing.is_available ? (
@@ -68,6 +85,20 @@ export default function ListingEntry({ listing }: ListingEntryProp) {
                         {listing.bedrooms ? <span>Bedrooms: {listing.bedrooms.toString()}</span> : <></>}
                         <br />
                         {listing.bathrooms ? <span>Bathrooms: {listing.bathrooms.toString()}</span> : <></>}
+
+                        {!user ? (
+                            <></>
+                        ) : favoriteListings.includes(listing.id) ? (
+                            <form onSubmit={submitEditFavorites}>
+                                <input type="hidden" name="remove_from_favorites" value={listing.id} />
+                                <button>Remove from favorites</button>
+                            </form>
+                        ) : (
+                            <form onSubmit={submitEditFavorites}>
+                                <input type="hidden" name="add_to_favorites" value={listing.id} />
+                                <button>Add to favorites</button>
+                            </form>
+                        )}
                     </li>
                 </>
             ) : (

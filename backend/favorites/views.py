@@ -31,13 +31,15 @@ class FavoriteListingDetailView(generics.RetrieveUpdateAPIView):
         favorites_edit_serializer = FavoritesEditSerializer(data=request.data)
         favorites_edit_serializer.is_valid(raise_exception=True)
 
-        add_listing = favorites_edit_serializer.data['add_to_favorites']
+        add_listing = favorites_edit_serializer.validated_data.get(
+            'add_to_favorites')
         if add_listing is not None:
-            favorites.add(add_listing)
+            favorites.listings.add(add_listing)
 
-        remove_listing = favorites_edit_serializer.data['remove_from_favorites']
-        if add_listing is not None:
-            favorites.remove(remove_listing)
+        remove_listing = favorites_edit_serializer.validated_data.get(
+            'remove_from_favorites')
+        if remove_listing is not None:
+            favorites.listings.remove(remove_listing)
 
         serializer = self.get_serializer(favorites)
         return Response(serializer.data)
