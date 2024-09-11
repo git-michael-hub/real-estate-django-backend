@@ -18,7 +18,7 @@ class IsOwnerOrReadOnly(IsOwner):
 class IsSeller(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_authenticated:
-            return bool(request.user.user_roles.is_seller)
+            return bool(request.user.roles.is_seller)
         return False
 
 
