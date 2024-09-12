@@ -9,7 +9,7 @@ from .serializers import FavoritesSerializer, FavoritesEditSerializer
 from .permissions import IsOwner
 
 
-class FavoriteListingDetailView(generics.RetrieveUpdateAPIView):
+class FavoriteListingDetailUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Favorites
     serializer_class = FavoritesSerializer
     permission_classes = [IsOwner]
@@ -45,4 +45,4 @@ class FavoriteListingDetailView(generics.RetrieveUpdateAPIView):
         return Response(serializer.data)
 
 
-favorite_listing_detail_view = FavoriteListingDetailView.as_view()
+favorite_listing_detail_update_view = FavoriteListingDetailUpdateView.as_view()

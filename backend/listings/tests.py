@@ -12,6 +12,7 @@ from user.tests import TestUserSetUp
 class TestListingsSetUp(TestUserSetUp):
 
     def setUp(self):
+        super().setUp()
 
         self.test_buyer = {
             'username': 'buyer',
@@ -66,8 +67,6 @@ class TestListingsSetUp(TestUserSetUp):
             'listing_detail_update_delete_view', kwargs={'id': self.listing.id})
         self.listing_delete_url = reverse(
             'listing_detail_update_delete_view', kwargs={'id': self.listing.id})
-
-        super().setUp()
 
     def create_buyer(self, user_data):
         user = self.create_registered_user(user_data)
