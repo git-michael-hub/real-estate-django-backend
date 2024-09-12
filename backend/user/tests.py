@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework.test import APITestCase
 
-from .models import EmailVerificationRequest, PasswordResetRequest
+from .models import EmailVerificationRequest, PasswordResetRequest, Roles
 
 
 class TestUserSetUp(APITestCase):
@@ -36,9 +36,10 @@ class TestUserSetUp(APITestCase):
 
         return super().setUp()
 
-    def create_registered_user(self):
+    def create_registered_user(self, user_data):
         user = User.objects.create(
-            email=self.user_data['email'], username=self.user_data['username'], password=make_password(self.user_data['password']))
+            email=user_data['email'], username=user_data['username'], password=make_password(user_data['password']))
+        Roles.objects.create(user=user)
         return user
 
     def login(self, login_data):
@@ -98,7 +99,7 @@ class TestUserView(TestUserSetUp):
         self.assertEqual(res.status_code, 400)
 
     def test_user_can_login(self):
-        self.create_registered_user()
+        self.create_registered_user(self.user_data)
         res = self.login(self.login_data)
         self.assertEqual(res.status_code, 200)
 
@@ -108,13 +109,13 @@ class TestUserView(TestUserSetUp):
         self.assertEqual(res1.status_code, 400)
 
         # TEST LOGIN WHILE BEING REGISTERED BUT ENTERS WRONG PASSWORD
-        self.create_registered_user()
+        self.create_registered_user(self.user_data)
         self.login_data['password'] = 'wrong_password'
         res2 = self.login(self.login_data)
         self.assertEqual(res2.status_code, 400)
 
     def test_auth_user_can_get_user_data(self):
-        self.create_registered_user()
+        self.create_registered_user(self.user_data)
         token = self.login_and_get_token(self.login_data)
         res = self.client.get(self.auth_user_url, self.user_data, headers={
                               'Authorization': f'Token {token}'})
@@ -128,7 +129,7 @@ class TestUserView(TestUserSetUp):
         self.assertEqual(res.status_code, 401)
 
     def test_registered_user_can_request_reset_password(self):
-        self.create_registered_user()
+        self.create_registered_user(self.user_data)
         data = {
             'email': self.user_data['email']
         }
@@ -144,7 +145,7 @@ class TestUserView(TestUserSetUp):
         self.assertEqual(res.status_code, 404)
 
     def test_user_can_reset_password(self):
-        self.create_registered_user()
+        self.create_registered_user(self.user_data)
         data = {
             'email': self.user_data['email']
         }
@@ -156,7 +157,7 @@ class TestUserView(TestUserSetUp):
         self.assertEqual(res2.status_code, 200)
 
     def test_user_cannot_reset_password_with_wrong_data(self):
-        self.create_registered_user()
+        self.create_registered_user(self.user_data)
         data = {
             'email': self.user_data['email']
         }

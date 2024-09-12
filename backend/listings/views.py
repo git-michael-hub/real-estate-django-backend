@@ -65,7 +65,7 @@ class ListingDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingDetailSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    lookup_field = 'pk'
+    lookup_field = 'id'
 
 
 listing_detail_update_delete_view = ListingDetailUpdateDeleteView.as_view()
