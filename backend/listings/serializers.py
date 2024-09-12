@@ -45,6 +45,7 @@ class ListingDetailSerializer(ListingSerializer):
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields
+        read_only_fields = ['owner']
 
 
 class ListingQuerySerializer(serializers.Serializer):

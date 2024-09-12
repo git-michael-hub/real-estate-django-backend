@@ -18,6 +18,7 @@ export default function List() {
                 const response: Response = await apiFns.get(`listings/${window.location.search}`);
                 const listings: ListListingStateType = await response.json();
                 setListings(listings);
+                console.log(listings);
             } catch (error: unknown) {
                 console.log(
                     `An error occurred at function ${fetchListings.name}() inside pages/Listings/index.tsx. \n${error}`

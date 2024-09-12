@@ -1,5 +1,4 @@
 test_listings = [{
-    'owner': 1,
     'title': 'test title 1',
     'description': 'test description 1',
     'listing_type': 'FS',
@@ -13,7 +12,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 2',
     'description': 'test description 2',
     'listing_type': 'FS',
@@ -27,7 +25,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 3',
     'description': 'test description 3',
     'listing_type': 'FS',
@@ -41,7 +38,6 @@ test_listings = [{
             'baranggay': 'Baranggay 2',
             'street': 'Street 2'
 }, {
-    'owner': 1,
     'title': 'test title 4',
     'description': 'test description 4',
     'listing_type': 'FR',
@@ -55,7 +51,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 5',
     'description': 'test description 5',
     'listing_type': 'FR',
@@ -69,7 +64,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 4'
 }, {
-    'owner': 1,
     'title': 'test title 6',
     'description': 'test description 6',
     'listing_type': 'FS',
@@ -81,7 +75,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 7',
     'description': 'test description 7',
     'listing_type': 'FS',
@@ -93,7 +86,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 8',
     'description': 'test description 8',
     'listing_type': 'FS',
@@ -105,7 +97,6 @@ test_listings = [{
             'baranggay': 'Baranggay 3',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 9',
     'description': 'test description 9',
     'listing_type': 'FS',
@@ -119,7 +110,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 10',
     'description': 'test description 10',
     'listing_type': 'FR',
@@ -131,7 +121,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 2'
 }, {
-    'owner': 1,
     'title': 'test title 11',
     'description': 'test description 11',
     'listing_type': 'FC',
@@ -145,7 +134,6 @@ test_listings = [{
             'baranggay': 'Baranggay 7',
             'street': 'Street 5'
 }, {
-    'owner': 1,
     'title': 'test title 12',
     'description': 'test description 12',
     'listing_type': 'FC',
@@ -157,7 +145,6 @@ test_listings = [{
             'baranggay': 'Baranggay 3',
             'street': 'Street 3'
 }, {
-    'owner': 1,
     'title': 'test title 12',
     'description': 'test description 12',
     'listing_type': 'FR',
@@ -171,7 +158,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 13',
     'description': 'test description 13',
     'listing_type': 'FR',
@@ -185,7 +171,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 14',
     'description': 'test description 14',
     'listing_type': 'FS',
@@ -199,7 +184,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 15',
     'description': 'test description 15',
     'listing_type': 'FR',
@@ -213,7 +197,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 16',
     'description': 'test description 16',
     'listing_type': 'FS',
@@ -227,7 +210,6 @@ test_listings = [{
             'baranggay': 'Baranggay 2',
             'street': 'Street 1'
 }, {
-    'owner': 1,
     'title': 'test title 17',
     'description': 'test description 17',
     'listing_type': 'FS',
@@ -239,7 +221,6 @@ test_listings = [{
             'baranggay': 'Baranggay 1',
             'street': 'Street 2'
 }, {
-    'owner': 1,
     'title': 'test title 1',
     'description': 'test description 18',
     'listing_type': 'FR',
@@ -251,7 +232,6 @@ test_listings = [{
             'baranggay': 'Baranggay 3',
             'street': 'Street 3'
 }, {
-    'owner': 1,
     'title': 'test title 1',
     'description': 'test description 19',
     'listing_type': 'FR',
@@ -263,7 +243,6 @@ test_listings = [{
             'baranggay': 'Baranggay 4',
             'street': 'Street 5'
 }, {
-    'owner': 1,
     'title': 'test title 20',
     'description': 'test description 20',
     'listing_type': 'FC',

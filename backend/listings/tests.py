@@ -51,10 +51,14 @@ class TestListingsSetUp(TestUserSetUp):
             'street': 'Street 1'
         }
 
+        self.test_listings = test_listings
+
         self.buyer = self.create_buyer(self.test_buyer)
         self.seller = self.create_seller(self.test_seller)
         self.listing = self.create_listing(self.seller, self.test_listing)
+        self.listings = self.create_listings(self.seller, self.test_listings)
 
+        self.listing_list_url = reverse('listing_list_create_view')
         self.listing_create_url = reverse('listing_list_create_view')
         self.listing_update_url = reverse(
             'listing_detail_update_delete_view', kwargs={'id': self.listing.id})
@@ -87,17 +91,17 @@ class TestListingsSetUp(TestUserSetUp):
                                          city=listing_data['city'],
                                          baranggay=listing_data['baranggay'],
                                          street=listing_data['street'])
-        if listing_data['bedrooms']:
+        if listing_data.get('bedrooms'):
             listing.bedrooms = listing_data['bedrooms']
-        if listing_data['bathrooms']:
+        if listing_data.get('bathrooms'):
             listing.bathrooms = listing_data['bathrooms']
         listing.save()
 
         return listing
 
-    def create_listing_list_url(**kwargs):
-        return reverse('listing_detail_update_delete_view',
-                       kwargs=kwargs)
+    def create_listings(self, seller, test_listings):
+        for test_listing in test_listings:
+            self.create_listing(seller, test_listing)
 
     def tearDown(self):
         return super().tearDown()
@@ -135,12 +139,13 @@ class TestListingsView(TestListingsSetUp):
         self.assertNotEqual(res.data['title'], self.test_listing['title'])
         self.assertEqual(res.data['title'], data['title'])
 
-    # def test_user_cannot_edit_listing_is_available(self):
-    #     token = self.login_and_get_token(self.seller_login_data)
-    #     data = {'is_available': True}
-    #     res = self.client.patch(self.listing_update_url, data, headers={
-    #                             'Authorization': f'Token {token}'})
-    #     self.assertEqual(res.status_code, 403)
+    def test_user_cannot_edit_listing_is_read_only(self):
+        token = self.login_and_get_token(self.seller_login_data)
+        data = {'owner': self.buyer.id}
+        res = self.client.patch(self.listing_update_url, data, headers={
+                                'Authorization': f'Token {token}'})
+
+        self.assertEqual(res.data['owner']['id'], self.seller.id)
 
     def test_not_owner_cannot_edit_listing(self):
         token = self.login_and_get_token(self.buyer_login_data)
@@ -163,3 +168,17 @@ class TestListingsView(TestListingsSetUp):
 
         res = self.client.delete(self.listing_delete_url)
         self.assertEqual(res.status_code, 401)
+
+    def test_user_can_get_listing_list(self):
+        res = self.client.get(
+            f'{self.listing_list_url}?property_type=HL')
+        self.assertEqual(res.status_code, 200)
+
+        property_types = []
+        for data in res.data:
+            property_types.append(data['property_type'])
+
+        self.assertIn('HL', property_types)
+        self.assertNotIn('CO', property_types)
+        self.assertNotIn('RL', property_types)
+        self.assertNotIn('CL', property_types)
