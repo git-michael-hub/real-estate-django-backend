@@ -39,7 +39,7 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
         e.preventDefault();
         const headers: HeaderType = { Authorization: `Token ${token}` };
         const body: FormData = new FormData(e.currentTarget);
-        const response = await apiFns.patch(`favorites/${user?.username}`, body, headers);
+        const response = await apiFns.patch(`favorites/listings/${user?.username}`, body, headers);
         const favorites: any = await response.json();
         setFavoriteListings(favorites.listings);
     };

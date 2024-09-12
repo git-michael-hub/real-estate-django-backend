@@ -32,7 +32,7 @@ export default function List() {
 
             try {
                 const headers: HeaderType = { Authorization: `Token ${token}` };
-                const response: Response = await apiFns.get(`favorites/${user.username}`, headers);
+                const response: Response = await apiFns.get(`favorites/listings/${user.username}`, headers);
                 const favorites: any = await response.json(); // MUST CREATE TYPE FOR FAVORITES
                 setFavoriteListings(favorites.listings);
             } catch (error: unknown) {
