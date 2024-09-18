@@ -1,15 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 
-from .models import EmailVerificationRequest, PasswordResetRequest, Roles
 from favorites.models import Favorites
+
+from .models import EmailVerificationRequest, PasswordResetRequest, SellerProfile
 
 
 admin.site.unregister(User)
-
-
-class RolesInline(admin.StackedInline):
-    model = Roles
 
 
 class FavoritesInline(admin.TabularInline):
@@ -22,9 +19,14 @@ class UserAdmin(admin.ModelAdmin):
     list = [field.name for field in User._meta.get_fields()]
 
     inlines = [
-        RolesInline,
         FavoritesInline
     ]
+
+
+@admin.register(SellerProfile)
+class SellerProfileAdmin(admin.ModelAdmin):
+    list_display = ['user']
+    list = [field.name for field in SellerProfile._meta.get_fields()]
 
 
 @admin.register(PasswordResetRequest)

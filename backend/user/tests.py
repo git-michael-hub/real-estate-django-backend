@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework.test import APITestCase
 
-from .models import EmailVerificationRequest, PasswordResetRequest, Roles
+from .models import EmailVerificationRequest, PasswordResetRequest
 
 
 class TestUserSetUp(APITestCase):
@@ -24,9 +24,22 @@ class TestUserSetUp(APITestCase):
             'confirm_password': 'testpassword123'
         }
 
+        self.unregistered_user_data = {
+            'email': 'unregisteredbuyer@gmail.com',
+            'username': 'unregisteredbuyer',
+            'password': 'testpassword123',
+            'first_name': 'jesmar',
+            'last_name': 'marmar'
+        }
+
         self.login_data = {
             'username': self.user_data['username'],
             'password': self.user_data['password']
+        }
+
+        self.unregistered_user_login_data = {
+            'username': self.unregistered_user_data['username'],
+            'password': self.unregistered_user_data['password']
         }
 
         self.reset_password_data = {
@@ -39,7 +52,6 @@ class TestUserSetUp(APITestCase):
     def create_registered_user(self, user_data):
         user = User.objects.create(
             email=user_data['email'], username=user_data['username'], password=make_password(user_data['password']))
-        Roles.objects.create(user=user)
         return user
 
     def login(self, login_data):
@@ -50,6 +62,9 @@ class TestUserSetUp(APITestCase):
         res = self.login(login_data)
         token = res.data['token']
         return token
+
+    def create_auth_header(self, token):
+        return {'Authorization': f'Token {token}'}
 
     def tearDown(self):
         return super().tearDown()

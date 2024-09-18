@@ -12,95 +12,14 @@ from rest_framework.response import Response
 
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
-from .models import EmailVerificationRequest, PasswordResetRequest, Roles
-from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer, UserDetailSerializer, EmailVerificationRequestSerializer
-
-from favorites.models import Favorites
-
-
-class UserLoginView(ObtainAuthToken):
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data,
-                                         context={'request': request})
-
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        user_data = UserDetailSerializer(user)
-        return Response({
-            'token': token.key,
-            'user': user_data.data
-
-        })
-
-
-user_login_view = UserLoginView.as_view()
-
-
-class UserCreateView(generics.GenericAPIView):
-    serializer_class = UserSerializer
-
-    def post(self, request):
-        # VALIDATE DATA
-        user_serializer = self.get_serializer(
-            data=request.data, context={'request': request})
-        user_serializer.is_valid(raise_exception=True)
-        email = request.data['email']
-        pin = request.data['pin']
-        verification_serializer = EmailVerificationRequestSerializer(
-            data={'email': email, 'pin':  pin})
-        verification_serializer.is_valid(raise_exception=True)
-
-        # CHECK IF EMAIL AND PIN MATCH AN EXISTING REQUEST
-        # IF EXISTING: SAVE USER AND ADD USER ROLE THEN DELETE THE COMPLETED REQUEST
-
-        existing_email_verification_request = EmailVerificationRequest.objects.filter(
-            email=email, pin=pin).first()
-        if existing_email_verification_request:
-            user = user_serializer.save()
-            roles = Roles(user=user, is_buyer=True,
-                          is_seller=False, is_agent=False)
-            roles.save()
-            favorites = Favorites(user=user)
-            favorites.save()
-            existing_email_verification_request.delete()
-
-            return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({'error': ['Invalid PIN.']}, status=status.HTTP_400_BAD_REQUEST)
-
-
-user_create_view = UserCreateView.as_view()
-
-
-class UserDetailView(generics.GenericAPIView):
-    serializer_class = UserDetailSerializer
-    authentication_classes = [authentication.TokenAuthentication]
-
-    def get(self, request):
-        user = Token.objects.get(key=request.auth).user
-        serializer = self.get_serializer(user)
-        return Response(serializer.data)
-
-
-user_detail_view = UserDetailView.as_view()
-
-
-class UserLogoutView(generics.GenericAPIView):
-    authentication_classes = [authentication.TokenAuthentication]
-
-    def post(self, request):
-        request.user.auth_token.delete()
-        return Response({'success': ['Logout successful.']})
-
-
-user_logout_view = UserLogoutView.as_view()
+from .models import EmailVerificationRequest, PasswordResetRequest
+from .serializers import EmailSerializer, ResetPasswordSerializer, UserCreateSerializer, UserEmailLoginSerializer, UserDetailSerializer, EmailVerificationRequestSerializer
 
 
 class EmailVerificationRequestView(generics.GenericAPIView):
     def post(self, request):
         # VALIDATE DATA
-        serializer = UserSerializer(
+        serializer = UserCreateSerializer(
             data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
 
@@ -130,6 +49,84 @@ class EmailVerificationRequestView(generics.GenericAPIView):
 
 
 email_verification_request_view = EmailVerificationRequestView.as_view()
+
+
+class UserCreateView(generics.GenericAPIView):
+    serializer_class = UserCreateSerializer
+
+    def post(self, request):
+        # VALIDATE DATA
+        user_serializer = self.get_serializer(
+            data=request.data, context={'request': request})
+        user_serializer.is_valid(raise_exception=True)
+        email = request.data['email']
+        pin = request.data['pin']
+        verification_serializer = EmailVerificationRequestSerializer(
+            data={'email': email, 'pin':  pin})
+        verification_serializer.is_valid(raise_exception=True)
+
+        # CHECK IF EMAIL AND PIN MATCH AN EXISTING REQUEST
+        # IF EXISTING: SAVE USER AND ADD PROFILE THEN DELETE THE COMPLETED REQUEST
+
+        existing_email_verification_request = EmailVerificationRequest.objects.filter(
+            email=email, pin=pin).first()
+        if existing_email_verification_request:
+            user = user_serializer.save()
+            existing_email_verification_request.delete()
+
+            return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': ['Invalid PIN.']}, status=status.HTTP_400_BAD_REQUEST)
+
+
+user_create_view = UserCreateView.as_view()
+
+
+class UserLoginView(ObtainAuthToken):
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data,
+                                         context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+
+user_login_view = UserLoginView.as_view()
+
+
+class UserEmailLoginView(ObtainAuthToken):
+    def post(self, request):
+        serializer = UserEmailLoginSerializer(
+            data=request.data, context={'request', request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+
+class UserDetailView(generics.GenericAPIView):
+    serializer_class = UserDetailSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get(self, request):
+        user = Token.objects.get(key=request.auth).user
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
+
+user_detail_view = UserDetailView.as_view()
+
+
+class UserLogoutView(generics.GenericAPIView):
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response({'success': ['Logout successful.']})
+
+
+user_logout_view = UserLogoutView.as_view()
 
 
 class PasswordResetRequestView(generics.GenericAPIView):
@@ -206,10 +203,10 @@ password_reset = ResetPasswordView.as_view()
 ############ DEVELOPMENT ONLY ####################
 
 
-class UserListView(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    authentication_classes = [authentication.TokenAuthentication]
+# class UserListView(generics.ListAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserDetailSerializer
+#     authentication_classes = [authentication.TokenAuthentication]
 
 
-user_list_view = UserListView.as_view()
+# user_list_view = UserListView.as_view()

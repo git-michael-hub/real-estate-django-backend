@@ -1,11 +1,16 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import Roles, EmailVerificationRequest
 
 
-class UserSerializer(serializers.ModelSerializer):
+from .models import User, EmailVerificationRequest
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[UniqueValidator(
             queryset=User.objects.all(), message='Email already exists.')]
@@ -13,51 +18,63 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            'username',
-            'password',
-            'email',
-            'first_name',
-            'last_name'
-        ]
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['email', 'username', 'password']
 
-    def validate_password(self, value):
+    def validate_password(self, password):
         confirm_password = self.context['request'].POST.get('confirm_password')
-        if (value != confirm_password):
+        if (password != confirm_password):
             raise serializers.ValidationError("Password does not match.")
-        return value
+        return password
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
-        return super(UserSerializer, self).create(validated_data)
+        return super(UserCreateSerializer, self).create(validated_data)
 
 
-class RolesSerializer(serializers.ModelSerializer):
+class EmailVerificationRequestCreateSerializer(UserCreateSerializer):
     class Meta:
-        model = Roles
-        fields = [
-            'is_buyer',
-            'is_seller',
-            'is_agent'
-        ]
+        model = EmailVerificationRequest
+
+
+class UserEmailLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        user = User.objects.get(email=email)
+
+        if user is not None:
+            username = user.username
+        else:
+            msg = _('Unable to log in with provided credentials.')
+            raise serializers.ValidationError(msg, code='authorization')
+
+        if username and password:
+            user = authenticate(request=self.context.get('request'),
+                                username=username, password=password)
+
+            # The authenticate call simply returns None for is_active=False
+            # users. (Assuming the default ModelBackend authentication
+            # backend.)
+            if not user:
+                msg = _('Unable to log in with provided credentials.')
+                raise serializers.ValidationError(msg, code='authorization')
+        else:
+            msg = _('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code='authorization')
+
+        attrs['user'] = user
+        return attrs
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    roles = RolesSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = [
-            'id',
-            'username',
-            'email',
-            'first_name',
-            'last_name',
-            'roles'
-        ]
+        fields = ['id', 'username', 'email']
+        read_only_fields = ['username', 'email', 'id']
 
 
 class EmailSerializer(serializers.Serializer):
