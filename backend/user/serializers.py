@@ -20,6 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name'
         ]
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def validate_password(self, value):
         confirm_password = self.context['request'].POST.get('confirm_password')
@@ -43,11 +46,12 @@ class RolesSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    roles = RolesSerializer(read_only=True, source='user_roles')
+    roles = RolesSerializer(read_only=True)
 
     class Meta:
         model = User
         fields = [
+            'id',
             'username',
             'email',
             'first_name',

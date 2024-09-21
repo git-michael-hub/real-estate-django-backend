@@ -1,8 +1,8 @@
-import "./index..css";
+import "./index.css";
 
-type BtnBasicType = React.ComponentProps<"button">;
+type BtnBasicProps = React.ComponentProps<"button">;
 
-export default function BtnBasic({ children, ...rest }: BtnBasicType) {
+export default function BtnBasic({ children, ...rest }: BtnBasicProps) {
     return (
         <button className="basic-btn" {...rest}>
             {children}

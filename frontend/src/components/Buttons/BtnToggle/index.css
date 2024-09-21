@@ -1,0 +1,20 @@
+.btn-toggle {
+    color: rgb(0, 0, 255);
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-toggle:hover {
+    cursor: pointer;
+    color: rgb(0, 0, 255, 0.7);
+}
+
+.btn-toggle > span,
+.btn-toggle > i {
+    font-weight: 600;
+}

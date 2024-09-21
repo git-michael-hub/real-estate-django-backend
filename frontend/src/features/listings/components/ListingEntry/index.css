@@ -1,0 +1,32 @@
+.listing-entry .listing-image {
+    width: 300px;
+    height: 180px;
+}
+
+.listing-entry figure {
+    margin: 0;
+    width: 300px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+}
+
+.listing-entry figcaption {
+    font-size: 0.6rem;
+    align-self: flex-end;
+}
+
+.listing-entry figcaption a {
+    color: blue;
+    text-decoration: none;
+}
+
+.listing-entry h2 a {
+    color: black;
+    text-decoration: none;
+}
+
+.listing-entry h2 a:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.7);
+}

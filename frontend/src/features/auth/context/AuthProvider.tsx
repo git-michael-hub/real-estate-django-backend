@@ -4,14 +4,16 @@ import { apiFns, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { RolesType } from "../components/RequireAuth/RequireAuth";
 
-export type UserStateType = {
-    user_id: number;
+export type UserType = {
+    id: number;
     username: string;
     email: string;
     first_name: string;
     last_name: string;
     roles?: RolesType;
-} | null;
+};
+
+export type UserStateType = UserType | null;
 
 export type FormMessageStateType = {
     success?: string[];
@@ -37,9 +39,11 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
     // Runs everytime the page refreshes then runs fetchAuthUser.
     // use and isReady state is then updated using setUser.
     useEffect(() => {
-        fetchAuthUser()
-            .then((user: UserStateType) => setUser(user))
-            .then(() => setIsReady(true)); // makes sure user state is mounted first
+        if (!user) {
+            fetchAuthUser()
+                .then((user: UserStateType) => setUser(user))
+                .then(() => setIsReady(true)); // makes sure user state is mounted first
+        }
     }, []);
 
     // Fetch authenticated user from backend.
@@ -80,33 +84,34 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         }
     };
 
-    const register = async (formData: FormData): Promise<FormMessageStateType> => {
+    const requestEmailVerification = async (formData: FormData): Promise<FormMessageStateType> => {
         try {
-            const response: Response = await apiFns.post("user/register", formData);
-            const message = await response.json();
-            return message;
-        } catch (error: unknown) {
-            console.log(`An error occurred at function ${register.name}() inside AuthProvider.tsx. \n${error}`);
-            const message = { error: [`An error occurred.`] };
-            return message;
-        }
-    };
-
-    const completeRegistration = async (formData: FormData): Promise<FormMessageStateType> => {
-        try {
-            const response: Response = await apiFns.post("user/complete-registration", formData);
+            const response: Response = await apiFns.post("user/request-email-verification", formData);
             const message = await response.json();
             return message;
         } catch (error: unknown) {
             console.log(
-                `An error occurred at function ${completeRegistration.name}() inside AuthProvider.tsx: \n${error}`
+                `An error occurred at function ${requestEmailVerification.name}() inside AuthProvider.tsx. \n${error}`
             );
             const message = { error: [`An error occurred.`] };
             return message;
         }
     };
 
-    const logout = async (formData: FormData): Promise<FormMessageStateType> => {
+    const register = async (formData: FormData): Promise<FormMessageStateType> => {
+        try {
+            const response: Response = await apiFns.post("user/register", formData);
+            const message = await response.json();
+            return message;
+        } catch (error: unknown) {
+            console.log(`An error occurred at function ${register.name}() inside AuthProvider.tsx: \n${error}`);
+            const message = { error: [`An error occurred.`] };
+            return message;
+        }
+    };
+
+    const logout = async (): Promise<FormMessageStateType> => {
+        const formData: FormData = new FormData();
         const token: Token = cookieHandler.get("token");
         if (!token) throw Error("Not authorized.");
 
@@ -160,8 +165,8 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 setUser,
                 fetchAuthUser,
                 login,
+                requestEmailVerification,
                 register,
-                completeRegistration,
                 logout,
                 requestResetPassword,
                 resetPassword,
@@ -177,9 +182,9 @@ export type AuthContextType = {
     setUser: React.Dispatch<React.SetStateAction<UserStateType>>;
     fetchAuthUser: () => Promise<UserStateType>;
     login: (formData: FormData) => Promise<FormMessageStateType>;
+    requestEmailVerification: (formData: FormData) => Promise<FormMessageStateType>;
     register: (formData: FormData) => Promise<FormMessageStateType>;
-    completeRegistration: (formData: FormData) => Promise<FormMessageStateType>;
-    logout: (formData: FormData) => Promise<FormMessageStateType>;
+    logout: () => Promise<FormMessageStateType>;
     requestResetPassword: (formData: FormData) => Promise<FormMessageStateType>;
     resetPassword: (formData: FormData, resetToken: string) => Promise<FormMessageStateType>;
 };
@@ -190,8 +195,8 @@ const initAuthContextState: AuthContextType = {
     setUser: () => {},
     fetchAuthUser: () => Promise.resolve(null),
     login: () => Promise.resolve({}),
+    requestEmailVerification: () => Promise.resolve({}),
     register: () => Promise.resolve({}),
-    completeRegistration: () => Promise.resolve({}),
     logout: () => Promise.resolve({}),
     requestResetPassword: () => Promise.resolve({}),
     resetPassword: () => Promise.resolve({}),

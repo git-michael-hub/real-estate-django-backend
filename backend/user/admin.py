@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 
 from .models import EmailVerificationRequest, PasswordResetRequest, Roles
+from favorites.models import Favorites
 
 
 admin.site.unregister(User)
@@ -11,6 +12,10 @@ class RolesInline(admin.StackedInline):
     model = Roles
 
 
+class FavoritesInline(admin.TabularInline):
+    model = Favorites
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username', 'email']
@@ -18,6 +23,7 @@ class UserAdmin(admin.ModelAdmin):
 
     inlines = [
         RolesInline,
+        FavoritesInline
     ]
 
 

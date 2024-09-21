@@ -1,17 +1,16 @@
 import "./index.css";
 
 type InputWithLabelProps = {
-    type?: string;
     children: React.ReactNode;
-    name: string;
-    id?: string;
+    labelProps?: React.ComponentProps<"label">;
+    inputProps?: React.ComponentProps<"input">;
 };
 
-export default function InputWithLabel({ children, name, type = "text", id }: InputWithLabelProps) {
+export default function InputWithLabel({ children, labelProps, inputProps }: InputWithLabelProps) {
     return (
         <div className="input-with-label">
-            <label htmlFor={name}>{children}</label>
-            <input type={type} name={name} id={id} />
+            <label {...labelProps}>{children}</label>
+            <input {...inputProps} />
         </div>
     );
 }

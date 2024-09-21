@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 
-from rest_framework import generics, authentication, status, permissions, serializers
+from rest_framework import generics, authentication, status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
@@ -15,11 +15,13 @@ from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 from .models import EmailVerificationRequest, PasswordResetRequest, Roles
 from .serializers import EmailSerializer, ResetPasswordSerializer, UserSerializer, UserDetailSerializer, EmailVerificationRequestSerializer
 
+from favorites.models import Favorites
+
 
 class UserLoginView(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data,
+                                         context={'request': request})
 
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -40,7 +42,7 @@ class UserCreateView(generics.GenericAPIView):
 
     def post(self, request):
         # VALIDATE DATA
-        user_serializer = self.serializer_class(
+        user_serializer = self.get_serializer(
             data=request.data, context={'request': request})
         user_serializer.is_valid(raise_exception=True)
         email = request.data['email']
@@ -56,9 +58,11 @@ class UserCreateView(generics.GenericAPIView):
             email=email, pin=pin).first()
         if existing_email_verification_request:
             user = user_serializer.save()
-            user_role = Roles(user=user, is_buyer=True,
-                              is_seller=False, is_agent=False)
-            user_role.save()
+            roles = Roles(user=user, is_buyer=True,
+                          is_seller=False, is_agent=False)
+            roles.save()
+            favorites = Favorites(user=user)
+            favorites.save()
             existing_email_verification_request.delete()
 
             return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
@@ -75,8 +79,7 @@ class UserDetailView(generics.GenericAPIView):
 
     def get(self, request):
         user = Token.objects.get(key=request.auth).user
-        serializer = self.serializer_class(user)
-        print(serializer.data)
+        serializer = self.get_serializer(user)
         return Response(serializer.data)
 
 

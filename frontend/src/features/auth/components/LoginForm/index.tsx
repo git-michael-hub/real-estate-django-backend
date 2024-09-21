@@ -37,17 +37,13 @@ export default function LoginForm() {
             </div>
 
             <div>
-                <InputWithLabel name="username" id="username">
-                    Username
-                </InputWithLabel>
+                <InputWithLabel inputProps={{ name: "username" }}>Username</InputWithLabel>
 
                 {formMessages.username ? <Message type="error">{formMessages.username[0]}</Message> : <></>}
             </div>
 
             <div>
-                <InputWithLabel name="password" id="password" type="password">
-                    Password
-                </InputWithLabel>
+                <InputWithLabel inputProps={{ name: "password", type: "password" }}>Password</InputWithLabel>
 
                 {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
             </div>
