@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'user',
     'listings',
-    'favorites'
+    'favorites',
+    'inquiries'
 ]
 
 REST_FRAMEWORK = {
