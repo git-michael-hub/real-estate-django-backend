@@ -1,51 +1,30 @@
-from django.contrib.auth.hashers import make_password
-
 from rest_framework import serializers
 
-from user.serializers import UserDetailSerializer
+from users.serializers import UserDetailSerializer
+from users.mixins import CreateEmailValidationRequestSerializerMixin, ValidatePinCodeSerializerMixin
 
-from .models import BuyerAccount, BuyerVerificationRequest
+from listings.serializers import ListingDetailSerializer
+from listings.validators import listing_id_is_valid
+
+from .models import BuyerAccount, BuyerEmailValidationRequest
 
 
-class BuyerCreateSerializer(serializers.ModelSerializer):
+class BuyerEmailValidationRequestSerializer(CreateEmailValidationRequestSerializerMixin, serializers.ModelSerializer):
     class Meta:
-        model = BuyerAccount
-        fields = ['first_name', 'last_name']
-
-
-class BuyerVerificationRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BuyerVerificationRequest
+        model = BuyerEmailValidationRequest
         fields = '__all__'
         extra_kwargs = {
             'password': {'write_only': True},
             'pin_code': {'write_only': True}
         }
 
-    def create(self, validated_data):
-        email = validated_data['email']
-        existing_buyer_verification_request = BuyerVerificationRequest.objects.filter(
-            email=email).first()
-        if existing_buyer_verification_request:
-            existing_buyer_verification_request.delete()
 
-        password = validated_data['password']
-        validated_data['password'] = make_password(password)
-        return super(BuyerVerificationRequestSerializer, self).create(validated_data)
-
-
-class BuyerVerificationSerializer(serializers.Serializer):
+class BuyerEmailValidationSerializer(ValidatePinCodeSerializerMixin, serializers.Serializer):
     email = serializers.EmailField()
     pin_code = serializers.IntegerField()
 
-    def validate(self, attrs):
-        email = attrs.get('email')
-        pin_code = attrs.get('pin_code')
-        existing_buyer_verification_request = BuyerVerificationRequest.objects.filter(
-            email=email, pin_code=pin_code).first()
-        if existing_buyer_verification_request:
-            return attrs
-        raise serializers.ValidationError('Invalid PIN code.')
+    class Meta:
+        model = BuyerEmailValidationRequest
 
 
 class BuyerAccountDetailSerializer(serializers.ModelSerializer):
@@ -59,3 +38,15 @@ class BuyerDetailSerializer(BuyerAccountDetailSerializer):
 
     class Meta(BuyerAccountDetailSerializer.Meta):
         fields = BuyerAccountDetailSerializer.Meta.fields
+
+
+class BuyerListingFavoritesRetrieveSerializer(serializers.Serializer):
+    user = UserDetailSerializer()
+    favorite_listings = ListingDetailSerializer(many=True)
+
+
+class BuyerListingFavoritesAddRemoveSerializer(serializers.Serializer):
+    add_to_favorites = serializers.IntegerField(
+        validators=[listing_id_is_valid], required=False)
+    remove_from_favorites = serializers.IntegerField(
+        validators=[listing_id_is_valid], required=False)

@@ -4,16 +4,12 @@ from django.db import models
 
 from listings.models import Listing
 
+from users.models import EmailValidationRequest
 
-class BuyerVerificationRequest(models.Model):
-    username = models.CharField(max_length=100)
-    email = models.EmailField()
-    password = models.CharField(max_length=100)
+
+class BuyerEmailValidationRequest(EmailValidationRequest):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    pin_code = models.IntegerField(
-        validators=[MinValueValidator(100000), MaxValueValidator(999999)], error_messages={"error": "Invalid PIN"})
-    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class BuyerAccount(models.Model):
@@ -24,5 +20,5 @@ class BuyerAccount(models.Model):
     bio = models.CharField(max_length=500, blank=True)
     contact_number_1 = models.PositiveIntegerField(blank=True, null=True)
     contact_number_2 = models.PositiveIntegerField(blank=True, null=True)
-    listing_favorites = models.ManyToManyField(Listing)
+    favorite_listings = models.ManyToManyField(Listing)
     date_joined = models.DateTimeField(auto_now_add=True)

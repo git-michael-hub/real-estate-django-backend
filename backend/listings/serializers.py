@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import Listing
 
-from user.serializers import UserDetailSerializer
+from users.serializers import UserDetailSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -41,11 +41,11 @@ class ListingSerializer(serializers.ModelSerializer):
 
 
 class ListingDetailSerializer(ListingSerializer):
-    owner = UserDetailSerializer()
+    seller = UserDetailSerializer()
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields
-        read_only_fields = ['owner']
+        read_only_fields = ['seller']
 
 
 class ListingQuerySerializer(serializers.Serializer):

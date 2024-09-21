@@ -7,9 +7,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 
-from .models import User, EmailVerificationRequest
-
-
 class UserCreateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[UniqueValidator(
@@ -31,11 +28,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return super(UserCreateSerializer, self).create(validated_data)
 
 
-class EmailVerificationRequestCreateSerializer(UserCreateSerializer):
-    class Meta:
-        model = EmailVerificationRequest
-
-
+# CREATE TEST FOR THIS
 class UserEmailLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -94,9 +87,3 @@ class ResetPasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError('Password does not match')
         return data
-
-
-class EmailVerificationRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmailVerificationRequest
-        fields = ['email', 'pin']

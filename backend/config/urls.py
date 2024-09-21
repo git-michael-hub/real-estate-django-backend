@@ -23,9 +23,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('user/', include('user.urls')),
+    path('users/', include('users.urls')),
     path('listings/', include('listings.urls')),
-    path('favorites/', include('favorites.urls')),
     path('inquiries/', include('inquiries.urls')),
     path('buyers/', include('buyers.urls')),
     path('sellers/', include('sellers.urls'))
@@ -36,3 +35,8 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+
+admin.site.index_title = "Real Estate Management System"
+admin.site.site_header = "Real Estate Admin"
+admin.site.site_title = "Admin"

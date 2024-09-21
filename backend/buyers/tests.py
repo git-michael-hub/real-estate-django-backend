@@ -1,71 +1,46 @@
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
 
-from user.tests import TestUserSetUp
+from listings.tests import TestListingsSetUp
 
-from .models import BuyerAccount, BuyerVerificationRequest
+from .models import BuyerEmailValidationRequest
 
 
-class TestBuyerSetUp(TestUserSetUp):
+class TestBuyerSetUp(TestListingsSetUp):
     def setUp(self):
         super().setUp()
 
-        self.registered_buyer_data = {
-            'email': 'registeredbuyer@gmail.com',
-            'username': 'registeredbuyer',
-            'password': 'testpassword123',
-            'first_name': 'maxi',
-            'last_name': 'macmac'
-        }
-
-        self.registered_buyer_login_data = {
-            'username': self.registered_buyer_data['username'],
-            'password': self.registered_buyer_data['password']
-        }
-
-        self.buyer_account = self.create_buyer(self.registered_buyer_data)
-
-        self.buyer_verification_url = reverse('buyer-verification')
+        self.buyer_validation_url = reverse('buyer-validation')
         self.buyer_create_url = reverse('buyer-create')
         self.buyer_detail_url = reverse(
             'buyer-detail-update', kwargs={'username': self.buyer_account.user.username})
         self.buyer_update_url = reverse(
             'buyer-detail-update', kwargs={'username': self.buyer_account.user.username})
+        self.buyer_favorite_listings_detail_url = reverse(
+            'buyer-favorite-listings', kwargs={'username': self.buyer_account.user.username})
+        self.buyer_favorite_listings_add_remove_url = reverse(
+            'buyer-favorite-listings', kwargs={'username': self.buyer_account.user.username})
 
     def tearDown(self):
         return super().tearDown()
 
-    def create_buyer(self, buyer_data):
-        hashed_password = make_password(password=buyer_data['password'])
-        user = User(email=buyer_data['email'],
-                    username=buyer_data['username'],
-                    password=hashed_password)
-        user.save()
-        buyer_account = BuyerAccount(user=user,
-                                     first_name=buyer_data['first_name'],
-                                     last_name=buyer_data['last_name'])
-        buyer_account.save()
-        return buyer_account
-
 
 class TestBuyer(TestBuyerSetUp):
-    def test_user_can_make_buyer_verification_request(self):
+    def test_user_can_make_buyer_validation_request(self):
         self.unregistered_user_data['confirm_password'] = self.unregistered_user_data['password']
-        res = self.client.post(self.buyer_verification_url,
+        res = self.client.post(self.buyer_validation_url,
                                self.unregistered_user_data)
         self.assertEqual(res.status_code, 201)
 
     def test_user_can_register_as_buyer(self):
         self.unregistered_user_data['confirm_password'] = self.unregistered_user_data['password']
         res1 = self.client.post(
-            self.buyer_verification_url, self.unregistered_user_data)
+            self.buyer_validation_url, self.unregistered_user_data)
 
-        verification_request = BuyerVerificationRequest.objects.get(
+        validation_request = BuyerEmailValidationRequest.objects.get(
             email=res1.data['email'])
-        buyer_verification_data = {
-            'email': res1.data['email'], 'pin_code': verification_request.pin_code}
-        res2 = self.client.post(self.buyer_create_url, buyer_verification_data)
+        buyer_validation_data = {
+            'email': res1.data['email'], 'pin_code': validation_request.pin_code}
+        res2 = self.client.post(self.buyer_create_url, buyer_validation_data)
         self.assertEqual(res2.status_code, 201)
 
     def test_user_can_get_buyer_details(self):
@@ -135,3 +110,63 @@ class TestBuyer(TestBuyerSetUp):
                             data['contact_number_1'])
         self.assertNotEqual(self.buyer_account.contact_number_2,
                             data['contact_number_2'])
+
+    def test_owner_can_get_favorites(self):
+        token = self.login_and_get_token(
+            self.registered_buyer_login_data)
+        res = self.client.get(self.buyer_favorite_listings_detail_url,
+                              headers={'Authorization': f'Token {token}'})
+        self.assertEqual(res.status_code, 200)
+
+    def test_not_owner_cannot_get_favorites(self):
+        token = self.login_and_get_token(
+            self.registered_seller_login_data)
+        res = self.client.get(self.buyer_favorite_listings_detail_url,
+                              headers={'Authorization': f'Token {token}'})
+        self.assertEqual(res.status_code, 403)
+
+    def test_owner_can_add_and_remove_favorites(self):
+        token = self.login_and_get_token(
+            self.registered_buyer_login_data)
+
+        add_to_favorites = {
+            'add_to_favorites': self.listing.id
+        }
+        res1 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+                                 add_to_favorites, headers={'Authorization': f'Token {token}'})
+        self.assertEqual(res1.status_code, 200)
+        self.assertIn(self.listing.id, get_ids(res1.data['favorite_listings']))
+
+        remove_from_favorites = {
+            'remove_from_favorites': self.listing.id
+        }
+        res2 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+                                 remove_from_favorites, headers={'Authorization': f'Token {token}'})
+        self.assertEqual(res2.status_code, 200)
+        self.assertNotIn(self.listing.id,
+                         get_ids(res2.data['favorite_listings']))
+
+    def test_not_owner_cannot_edit_favorites(self):
+        token = self.login_and_get_token(
+            self.registered_seller_login_data)
+
+        add_to_favorites = {
+            'add_to_favorites': self.listing.id
+        }
+        res1 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+                                 add_to_favorites, headers={'Authorization': f'Token {token}'})
+        self.assertEqual(res1.status_code, 403)
+
+        remove_from_favorites = {
+            'remove_from_favorites': self.listing.id
+        }
+        res2 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+                                 remove_from_favorites, headers={'Authorization': f'Token {token}'})
+        self.assertEqual(res2.status_code, 403)
+
+
+def get_ids(list):
+    ids = []
+    for item in list:
+        ids.append(item['id'])
+    return ids

@@ -2,6 +2,9 @@ venv
 .env
 __pycache__
 db.sqlite3
+sqldiff.exe
+sqlite3_analyzer.exe
+sqlite3.exe
 __misc
 media
 

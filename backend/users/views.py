@@ -1,5 +1,3 @@
-import random
-
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
@@ -12,74 +10,8 @@ from rest_framework.response import Response
 
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
-from .models import EmailVerificationRequest, PasswordResetRequest
-from .serializers import EmailSerializer, ResetPasswordSerializer, UserCreateSerializer, UserEmailLoginSerializer, UserDetailSerializer, EmailVerificationRequestSerializer
-
-
-class EmailVerificationRequestView(generics.GenericAPIView):
-    def post(self, request):
-        # VALIDATE DATA
-        serializer = UserCreateSerializer(
-            data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-
-        # CHECK IF THERE IS ALREADY AN EXISTING REQUEST FROM USER
-        # IF REQUEST ALREADY EXIST, DELETE REQUEST
-        data = serializer.validated_data
-        email = data['email']
-        existing_email_verification_request = EmailVerificationRequest.objects.filter(
-            email=email).first()
-        if existing_email_verification_request:
-            existing_email_verification_request.delete()
-
-        # CREATE PIN >> CREATE NEW REQUEST >> SEND REQUEST TO USER'S EMAIL
-        pin = random.randint(100000, 999999)
-        email_verification_request = EmailVerificationRequest(
-            email=email, pin=pin)
-        email_verification_request.save()
-        send_mail(
-            "Real Estate System: Email Verification.",
-            f"Your 6-digit One-Time-PIN is: {pin}",
-            EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
-
-        return Response({'success': 'Sent a 6-digit One-Time-PIN to your email address.'})
-
-
-email_verification_request_view = EmailVerificationRequestView.as_view()
-
-
-class UserCreateView(generics.GenericAPIView):
-    serializer_class = UserCreateSerializer
-
-    def post(self, request):
-        # VALIDATE DATA
-        user_serializer = self.get_serializer(
-            data=request.data, context={'request': request})
-        user_serializer.is_valid(raise_exception=True)
-        email = request.data['email']
-        pin = request.data['pin']
-        verification_serializer = EmailVerificationRequestSerializer(
-            data={'email': email, 'pin':  pin})
-        verification_serializer.is_valid(raise_exception=True)
-
-        # CHECK IF EMAIL AND PIN MATCH AN EXISTING REQUEST
-        # IF EXISTING: SAVE USER AND ADD PROFILE THEN DELETE THE COMPLETED REQUEST
-
-        existing_email_verification_request = EmailVerificationRequest.objects.filter(
-            email=email, pin=pin).first()
-        if existing_email_verification_request:
-            user = user_serializer.save()
-            existing_email_verification_request.delete()
-
-            return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({'error': ['Invalid PIN.']}, status=status.HTTP_400_BAD_REQUEST)
-
-
-user_create_view = UserCreateView.as_view()
+from .models import PasswordResetRequest
+from .serializers import EmailSerializer, ResetPasswordSerializer,  UserEmailLoginSerializer, UserDetailSerializer
 
 
 class UserLoginView(ObtainAuthToken):

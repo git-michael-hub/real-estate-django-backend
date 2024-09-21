@@ -3,9 +3,10 @@ from rest_framework import permissions
 
 class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.user.is_authenticated:
-            return bool(request.user.id == obj.owner.id)
-        return False
+        try:
+            return bool(request.user.seller_account.id == obj.seller.id)
+        except:
+            return False
 
 
 class IsOwnerOrReadOnly(IsOwner):
@@ -17,9 +18,10 @@ class IsOwnerOrReadOnly(IsOwner):
 
 class IsSeller(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return bool(request.user.roles.is_seller)
-        return False
+        try:
+            return bool(request.user.seller_account)
+        except:
+            return False
 
 
 class IsSellerOrReadOnly(IsSeller):
