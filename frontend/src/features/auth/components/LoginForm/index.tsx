@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FormMessageStateType } from "../../context/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import FormBasic from "../../../../components/Forms/FormBasic";
 
 export default function LoginForm() {
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
@@ -23,7 +24,11 @@ export default function LoginForm() {
     }
 
     return (
-        <form onSubmit={onSubmitForm} id="login-form">
+        <FormBasic onSubmit={onSubmitForm} id="login-form">
+            <div>
+                <h2>Login</h2>
+            </div>
+
             <div>
                 {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
 
@@ -62,6 +67,6 @@ export default function LoginForm() {
                     Don't have an account yet? <Link to={"/register"}>Sign up</Link>
                 </span>
             </div>
-        </form>
+        </FormBasic>
     );
 }

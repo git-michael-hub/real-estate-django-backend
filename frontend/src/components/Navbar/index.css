@@ -1,5 +1,90 @@
 #navbar {
     display: flex;
-    margin: 0px 20px;
+    justify-content: center;
+    background-color: var(--color-secondary);
+    box-shadow: 0 5px 10px 0 rgb(87 101 128 / 12%);
+    z-index: 999;
+    top: 0;
+    position: sticky;
+    width: 100%;
+}
+
+#navbar > div {
+    max-width: 720px;
+    width: 100%;
+    display: flex;
     justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+#navbar nav {
+    display: flex;
+    gap: 40px;
+    font-size: 1.15rem;
+    height: inherit;
+}
+
+#navbar .navbar-item {
+    color: var(--link-color-1);
+    font-family: var(--font-family-secondary);
+    border-bottom: 2.5px solid var(--color-secondary);
+    padding: 20px 0;
+    transition: border-bottom 0.3s;
+}
+
+#navbar .navbar-item:hover {
+    border-bottom: 2.5px solid var(--color-accent-2);
+    cursor: pointer;
+    transition: border-bottom 0.3s;
+}
+
+#navbar span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#navbar .navbar-button {
+    color: var(--link-color-1);
+    background-color: var(--color-secondary);
+    font-family: var(--font-family-secondary);
+    font-size: 1.15rem;
+    border: 1px solid var(--link-color-1);
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+#navbar .navbar-button:hover {
+    cursor: pointer;
+    color: var(--color-secondary);
+    background-color: var(--link-color-1);
+    transition: color 0.3s, background-color 0.3s;
+}
+
+@keyframes nav-dropdown-appear {
+    from {
+        top: 65px;
+        opacity: 0;
+    }
+    to {
+        top: 75px;
+        opacity: 1;
+    }
+}
+
+#navbar .list-drop-down {
+    top: 75px;
+    animation: nav-dropdown-appear;
+    animation-duration: 0.3s;
+}
+
+.brand span {
+    color: var(--color-accent-2);
 }

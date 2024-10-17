@@ -7,6 +7,7 @@ import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
 import "./index.css";
+import FormWithRef from "../../../../components/Forms/FormWithRef";
 
 type RegisterPages = 1 | 2 | 3;
 
@@ -14,21 +15,21 @@ export default function RegisterForm() {
     const [page, setPage] = useState<RegisterPages>(1);
     const [partialFormData, setPartialFormData] = useState<FormData | null>(null);
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
-    const formRef = useRef<HTMLFormElement | null>(null);
-    const { register, requestEmailVerification } = useAuth();
+    const formRef = useRef<HTMLFormElement>(null);
+    const { register, requestEmailValidation } = useAuth();
 
     async function onClickNext(): Promise<void> {
         const form: HTMLFormElement | null = formRef.current;
         if (form) {
             const formData: FormData = new FormData(form);
-            const message: FormMessageStateType = await requestEmailVerification(formData);
+            const message: FormMessageStateType = await requestEmailValidation("buyers/email-validation", formData);
+            if (message.success) {
+                setPartialFormData(formData);
+                setFormMessages({});
+                setPage(2);
+                return;
+            }
             setFormMessages(message);
-            console.log(message);
-
-            if (!message.success) return;
-            setPartialFormData(formData);
-            setFormMessages({});
-            setPage(2);
         }
     }
 
@@ -37,18 +38,23 @@ export default function RegisterForm() {
         const partialFormData2: FormData = new FormData(e.currentTarget);
         if (partialFormData) {
             const completeFormData = helperFn.combineFormData(partialFormData, partialFormData2);
-            const message: FormMessageStateType = await register(completeFormData);
+            const message: FormMessageStateType = await register("buyers/register", completeFormData);
             setFormMessages(message);
+            if (message.success) {
+                setPartialFormData(null);
+                setPage(3);
+                return;
+            }
             console.log(message);
-
-            if (!message.success) return;
-            setPartialFormData(null);
-            setPage(3);
         }
     }
 
     return (
-        <form onSubmit={onSubmitForm} id="register-form" ref={formRef}>
+        <FormWithRef onSubmit={onSubmitForm} id="register-form" ref={formRef}>
+            <div>
+                <h2>Register</h2>
+            </div>
+
             {page === 1 ? (
                 <>
                     <div>
@@ -98,20 +104,25 @@ export default function RegisterForm() {
                     </div>
 
                     <div className="login-link">
-                        <Link to={"/login"}>Back to login</Link>
+                        <span>
+                            Already have an account? <Link to={"/login"}>Back to login</Link>
+                        </span>
                     </div>
                 </>
             ) : page === 2 ? (
                 <>
+                    <div>
+                        <p>We have sent a One-Time-PIN to your Email Address.</p>
+                    </div>
                     {formMessages.success ? <Message type="success">{formMessages.success}</Message> : <></>}
 
                     <div>
-                        <InputWithLabel inputProps={{ type: "number", name: "pin", id: "pin" }}>
+                        <InputWithLabel inputProps={{ type: "number", name: "pin_code", id: "pin" }}>
                             Enter One-Time-PIN
                         </InputWithLabel>
                         {formMessages.non_field_errors ? <Message type="error">Invalid PIN.</Message> : <></>}
+                        {formMessages.pin_code ? <Message type="error">{formMessages.pin_code}</Message> : <></>}
                         {formMessages.error ? <Message type="error">{formMessages.error}</Message> : <></>}
-                        {formMessages.pin ? <Message type="error">{formMessages.pin}</Message> : <></>}
                     </div>
 
                     <div>
@@ -122,12 +133,15 @@ export default function RegisterForm() {
                 </>
             ) : (
                 <>
-                    {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
+                    <div>
+                        <p>Registration Complete!</p>
+                    </div>
+
                     <div className="login-link">
                         <Link to={"/login"}>Back to login</Link>
                     </div>
                 </>
             )}
-        </form>
+        </FormWithRef>
     );
 }

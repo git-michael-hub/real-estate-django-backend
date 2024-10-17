@@ -1,21 +1,21 @@
-.input-with-label {
+.select-basic-container {
     display: flex;
     flex-direction: column;
 }
 
-.input-with-label label {
-    color: var(--color-accent-1);
-    font-weight: 400;
-}
-
-.input-with-label input {
+.select-basic {
     padding: 8px 10px;
     border-radius: 6px;
     border: 1px solid var(--border-color-1);
     outline: none;
-    line-height: 30px;
 }
 
-.input-with-label input:focus {
+.select-basic:focus {
     border: 1px solid var(--border-color-focus);
+}
+
+.select-basic-label {
+    color: var(--color-accent-1);
+    margin-bottom: 12px;
+    font-weight: 400;
 }

@@ -1,31 +1,50 @@
+@keyframes appear {
+    from {
+        top: -10px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
 .list-drop-down {
     position: absolute;
-    right: 10px;
-    margin-top: 5px;
     min-width: 100px;
     box-shadow: -3px 3px 8px 0 rgba(0, 0, 0, 0.2);
+    background-color: var(--color-secondary);
+
+    animation-name: appear;
+    animation-duration: 0.3s;
 }
 
 .list-drop-down > li {
     display: flex;
     justify-content: flex-start;
+    height: 40px;
 }
 
 .list-drop-down > li > * {
     width: 100%;
-    height: 100%;
     display: flex;
     justify-content: flex-start;
+    align-items: center;
     padding: 0.4rem 0.6rem;
     font-size: 0.8rem;
-    color: black;
+    font-weight: 400;
+    color: var(--link-color-1);
     text-decoration: none;
     background: none;
     outline: none;
     border: none;
+    font-family: var(--font-family-primary);
+    transition: color 0.3s, background-color 0.3s;
 }
 
 .list-drop-down > li > *:hover {
     cursor: pointer;
-    color: blue;
+    color: var(--color-secondary);
+    background-color: var(--link-color-1);
+    transition: color 0.3s, background-color 0.3s;
 }

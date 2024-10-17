@@ -17,18 +17,8 @@ function App() {
                 <Route path="/listings" element={<Pages.Listings.List />} />
                 <Route path="/listings/:id" element={<Pages.Listings.Details />} />
 
-                <Route element={<RequireAuth is_buyer={true} is_seller={true} is_agent={true} />}>
+                <Route element={<RequireAuth roles={["seller"]} />}>
                     <Route path="/listings/new" element={<Pages.Listings.New />} />
-                </Route>
-
-                <Route element={<RequireAuth is_buyer={true} />}>
-                    <Route path="/buyer" element={<Pages.Roles.Buyer />} />
-                </Route>
-                <Route element={<RequireAuth is_seller={true} />}>
-                    <Route path="/seller" element={<Pages.Roles.Seller />} />
-                </Route>
-                <Route element={<RequireAuth is_agent={true} />}>
-                    <Route path="/agent" element={<Pages.Roles.Agent />} />
                 </Route>
             </Route>
         </Routes>

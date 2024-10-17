@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
-import SelectBasic from "../../../../components/Forms/SelectBasic";
+import SelectWithLabel from "../../../../components/Forms/SelectWithLabel";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import BtnToggle from "../../../../components/Buttons/BtnToggle";
 import "./index.css";
@@ -30,7 +30,7 @@ export default function ListingSearchForm() {
     return (
         <form id="listing-search-form" onSubmit={submitSearchForm}>
             <div id="search-options-container">
-                <SelectBasic
+                <SelectWithLabel
                     label="Listing Type"
                     selectProps={{ name: "listing_type" }}
                     labelProps={{ htmlFor: "listing_type" }}
@@ -38,9 +38,9 @@ export default function ListingSearchForm() {
                     <option value="FS">For Sale</option>
                     <option value="FR">For Rent</option>
                     <option value="FC">Foreclosure</option>
-                </SelectBasic>
+                </SelectWithLabel>
 
-                <SelectBasic
+                <SelectWithLabel
                     label="Property Type"
                     selectProps={{ name: "property_type" }}
                     labelProps={{ htmlFor: "property_type" }}
@@ -49,7 +49,7 @@ export default function ListingSearchForm() {
                     <option value="RL">Residential Lot</option>
                     <option value="CL">Commercial Lot</option>
                     <option value="CO">Condominium</option>
-                </SelectBasic>
+                </SelectWithLabel>
 
                 <InputWithLabel inputProps={{ name: "province" }}>Province</InputWithLabel>
 

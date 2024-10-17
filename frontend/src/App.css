@@ -1,5 +1,42 @@
+:root {
+    --color-primary: #eaf7f4;
+    --color-secondary: #ffffff;
+    --color-tertiary: #fdfcf2;
+
+    --color-accent-1: #212121;
+    --color-accent-2: #00c194;
+    --color-accent-2-hov: #00a376;
+
+    --border-color-focus: var(--color-accent-1);
+    --border-color-1: #e4e4e4;
+
+    --link-color-1: var(--color-accent-2);
+
+    --font-family-primary: "Roboto", "Arial", sans-serif;
+    --font-family-secondary: "Ubuntu", sans-serif;
+
+    --default-content-padding: 40px 220px;
+}
+
 html {
-    font-family: "Roboto", "Arial", sans-serif;
+    font-family: var(--font-family-primary);
+}
+
+body {
+    margin: 0;
+    line-height: 30px;
+    background-color: var(--color-primary);
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-family-secondary);
 }
 
 ul {
@@ -9,4 +46,9 @@ ul {
 
 li {
     list-style: none;
+}
+
+a {
+    color: var(--link-color-1);
+    text-decoration: none;
 }

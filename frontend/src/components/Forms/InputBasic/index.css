@@ -1,10 +1,11 @@
-.select-basic {
-    padding: 16px 10px;
+.input-basic {
+    padding: 8px 10px;
     border-radius: 6px;
     border: 1px solid var(--border-color-1);
     outline: none;
+    line-height: 30px;
 }
 
-.select-basic:focus {
+.input-basic:focus {
     border: 1px solid var(--border-color-focus);
 }

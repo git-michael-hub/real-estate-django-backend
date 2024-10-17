@@ -1,23 +1,26 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
-export type RolesType = {
-    is_buyer?: boolean;
-    is_seller?: boolean;
-    is_agent?: boolean;
+export type RolesType = string[];
+
+type RequireAuthProps = {
+    roles: RolesType;
 };
 
-export default function RequireAuth(props: RolesType) {
+export default function RequireAuth(props: RequireAuthProps) {
     const { user } = useAuth();
     const location = useLocation();
 
-    return user?.roles?.is_buyer === props.is_buyer ||
-        user?.roles?.is_seller === props.is_seller ||
-        user?.roles?.is_agent === props.is_agent ? (
-        <Outlet />
-    ) : user ? (
-        <Navigate to="/unauthorized" state={{ from: location }} replace />
-    ) : (
+    const isAllowed = (userRoles: RolesType, allowedRoles: RolesType) => {
+        if (!allowedRoles) return true;
+        userRoles.some((role: string) => allowedRoles.includes(role));
+    };
+
+    return !user ? (
         <Navigate to="/login" state={{ from: location }} replace />
+    ) : isAllowed(user.roles, props.roles) ? (
+        <Outlet />
+    ) : (
+        <Navigate to="/unauthorized" state={{ from: location }} replace />
     );
 }

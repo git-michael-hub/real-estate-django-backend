@@ -13,3 +13,11 @@ class Inquiries(models.Model):
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Notifications(models.Model):
+    user = models.ForeignKey(
+        User, related_name='notifications', on_delete=models.CASCADE)
+    text = models.CharField(max_length=500)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)

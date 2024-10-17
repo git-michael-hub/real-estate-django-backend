@@ -14,7 +14,6 @@ export default function Register() {
 
     return (
         <main id="register-page">
-            <h1>Register Page</h1>
             <RegisterForm></RegisterForm>
         </main>
     );

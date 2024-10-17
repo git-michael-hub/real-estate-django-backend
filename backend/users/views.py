@@ -21,7 +21,8 @@ class UserLoginView(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        user_data = UserDetailSerializer(user)
+        return Response({'token': token.key, 'user': user_data.data})
 
 
 user_login_view = UserLoginView.as_view()

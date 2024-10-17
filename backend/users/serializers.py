@@ -63,11 +63,23 @@ class UserEmailLoginSerializer(serializers.Serializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
-        read_only_fields = ['username', 'email', 'id']
+        fields = ['id', 'username', 'email', 'roles']
+        read_only_fields = ['username', 'email', 'id', 'roles']
+
+    def get_roles(self, obj):
+        roles = []
+        try:
+            if (obj.buyer_account):
+                roles.append('buyer')
+            if (obj.seller_account):
+                roles.append('seller')
+        except:
+            pass
+        return roles
 
 
 class EmailSerializer(serializers.Serializer):

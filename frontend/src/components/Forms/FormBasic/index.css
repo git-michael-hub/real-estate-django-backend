@@ -1,0 +1,5 @@
+.form-basic {
+    padding: 20px;
+    background-color: var(--color-secondary);
+    border-radius: 5px;
+}

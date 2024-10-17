@@ -12,10 +12,5 @@
 #reset-password-form .login-link {
     display: flex;
     justify-content: center;
-    font-size: 0.7rem;
-}
-
-.login-link a {
-    color: #065fd4;
-    text-decoration: none;
+    font-size: 0.8rem;
 }

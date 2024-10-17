@@ -1,19 +1,24 @@
 .basic-btn {
     outline: none;
     border: none;
-    border-radius: 50px;
+    border-radius: 5px;
     padding: 10px 15px;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--color-accent-2);
     width: 100%;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
 }
 
 .basic-btn,
 .basic-btn span {
     font-weight: 600;
-    color: #0f0f0f;
+    font-size: 1.1rem;
+    color: var(--color-secondary);
 }
 
 .basic-btn:hover {
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--color-accent-2-hov);
 }

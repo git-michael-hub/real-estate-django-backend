@@ -1,12 +1,43 @@
 #home-page {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#home-page #search-form-section {
+    height: 85svh;
+    padding: var(--default-content-padding);
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
-#home-page > div {
+#home-page #search-form-section h2 {
+    color: var(--color-secondary);
+    font-size: 3rem;
+    max-width: 720px;
+    text-align: center;
+    line-height: 60px;
+}
+
+#home-page-bg {
+    background-image: url("../../../public/images/homepage-bg.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: 50% 65%;
+    width: 130%;
+    min-height: 85svh;
+    border-bottom-left-radius: 200%;
+    border-bottom-right-radius: 200%;
+    z-index: -1;
+    filter: brightness(50%);
+
     display: flex;
-    flex-direction: column;
-    margin: 40px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: -15%;
 }

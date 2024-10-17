@@ -15,7 +15,6 @@ export default function ForgotPassword() {
     return (
         <>
             <main id="forgot-password-page">
-                <h1>Forgot Password Page</h1>
                 <ForgotPasswordForm></ForgotPasswordForm>
             </main>
         </>

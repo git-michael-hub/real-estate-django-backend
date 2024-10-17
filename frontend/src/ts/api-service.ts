@@ -7,31 +7,35 @@ export type PayloadType = {
     body?: FormData;
 };
 
-const get = async (endpoint: string, headers?: HeaderType): Promise<Response> => {
-    const payload: PayloadType = { method: "GET" };
-    if (headers) payload.headers = headers;
+export type APIResponseType = { success: boolean; data: any };
+
+const processResponse = async (endpoint: string, payload: PayloadType): Promise<APIResponseType> => {
     const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
-    return response;
+    const data: any = await response.json();
+    return { success: response.ok, data: data };
 };
 
-const post = async (endpoint: string, body?: FormData, headers?: HeaderType): Promise<Response> => {
+const get = async (endpoint: string, headers?: HeaderType): Promise<APIResponseType> => {
+    const payload: PayloadType = { method: "GET" };
+    if (headers) payload.headers = headers;
+    return await processResponse(endpoint, payload);
+};
+
+const post = async (endpoint: string, body: FormData, headers?: HeaderType): Promise<APIResponseType> => {
     const payload: PayloadType = { method: "POST" };
     if (headers) payload.headers = headers;
     if (body) payload.body = body;
-    const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
-    return response;
+    return await processResponse(endpoint, payload);
 };
 
-const patch = async (endpoint: string, body: FormData, headers: HeaderType): Promise<Response> => {
+const patch = async (endpoint: string, body: FormData, headers: HeaderType): Promise<APIResponseType> => {
     const payload: PayloadType = { method: "PATCH", body: body, headers: headers };
-    const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
-    return response;
+    return await processResponse(endpoint, payload);
 };
 
-const del = async (endpoint: string, headers: HeaderType): Promise<Response> => {
+const del = async (endpoint: string, headers: HeaderType): Promise<APIResponseType> => {
     const payload: PayloadType = { method: "DELETE", headers: headers };
-    const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
-    return response;
+    return await processResponse(endpoint, payload);
 };
 
 const apiFns = { get, post, patch, del };
