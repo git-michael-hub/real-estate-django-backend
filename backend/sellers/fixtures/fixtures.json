@@ -1,0 +1,93 @@
+[
+    {
+        "model": "sellers.sellerapplication",
+        "pk": 10,
+        "fields": {
+            "username": "testuser1",
+            "email": "testuser112345678910@gmail.com",
+            "password": "pbkdf2_sha256$720000$nuD0CWYGUQIBiVVVjfJ75E$qUOIPB9KjqSuEWtBNRShrSQD+cpYwDbA/OgWNXK4Eg0=",
+            "first_name": "testuser1",
+            "last_name": "user1",
+            "address": "Obrero, Davao City",
+            "birthdate": "1980-02-14",
+            "gender": "M",
+            "contact_number_1": 11111111111,
+            "contact_number_2": 222222222222,
+            "seller_image_url": "images/sellers/10/ali-morshedlou-WMD64tMfc4k-unsplash.jpg",
+            "valid_id_url": "images/sellers/10/valid-id-1.png",
+
+            "status": "A",
+            "application_date": "2023-10-20T15:30:00Z"
+        }
+    },
+
+    {
+        "model": "sellers.sellerapplication",
+        "pk": 11,
+        "fields": {
+            "username": "testuser2",
+            "email": "testuser212345678910@gmail.com",
+            "password": "pbkdf2_sha256$720000$nuD0CWYGUQIBiVVVjfJ75E$qUOIPB9KjqSuEWtBNRShrSQD+cpYwDbA/OgWNXK4Eg0=",
+            "first_name": "testuser2",
+            "last_name": "user2",
+            "address": "Buhangin, Davao City",
+            "birthdate": "1979-11-1",
+            "gender": "M",
+            "contact_number_1": 33333333333,
+            "contact_number_2": null,
+            "seller_image_url": "images/sellers/11/austin-distel-h1RW-NFtUyc-unsplash.jpg",
+            "valid_id_url": "images/sellers/11/valid-id-1.png",
+            "status": "A",
+            "application_date": "2023-10-20T15:30:00Z"
+        }
+    },
+
+    {
+        "model": "sellers.sellerapplication",
+        "pk": 12,
+        "fields": {
+            "username": "testuser3",
+            "email": "testuser312345678910@gmail.com",
+            "password": "pbkdf2_sha256$720000$nuD0CWYGUQIBiVVVjfJ75E$qUOIPB9KjqSuEWtBNRShrSQD+cpYwDbA/OgWNXK4Eg0=",
+            "first_name": "testuser3",
+            "last_name": "user3",
+            "address": "Maa, Davao City",
+            "birthdate": "1985-12-25",
+            "gender": "F",
+            "contact_number_1": 55555555555,
+            "contact_number_2": null,
+            "seller_image_url": "images/sellers/12/amy-hirschi-b3AYk8HKCl0-unsplash.jpg",
+            "valid_id_url": "images/sellers/12/valid-id-1.png",
+            "status": "A",
+            "application_date": "2023-10-20T15:30:00Z"
+        }
+    },
+
+    {
+        "model": "sellers.selleraccount",
+        "pk": 10,
+        "fields": {
+            "user": 10,
+            "sellerapplication_ptr": 10,
+            "date_joined": "2023-10-21T15:30:00Z"
+        }
+    },
+    {
+        "model": "sellers.selleraccount",
+        "pk": 11,
+        "fields": {
+            "user": 11,
+            "sellerapplication_ptr": 11,
+            "date_joined": "2023-10-21T15:30:00Z"
+        }
+    },
+    {
+        "model": "sellers.selleraccount",
+        "pk": 12,
+        "fields": {
+            "user": 12,
+            "sellerapplication_ptr": 12,
+            "date_joined": "2023-10-21T15:30:00Z"
+        }
+    }
+]

@@ -6,7 +6,7 @@ from users.models import EmailValidationRequest
 
 
 def upload_to(instance, filename):
-    return 'images/sellers/' % (instance.id, filename)
+    return 'images/sellers/%d/' % (instance.id, filename)
 
 
 class SellerRequirements(EmailValidationRequest):

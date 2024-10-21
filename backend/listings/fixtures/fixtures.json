@@ -1,0 +1,232 @@
+[
+    {
+        "model": "listings.listing",
+        "pk": 1,
+        "fields": {
+            "seller": 10,
+            "title": "House and Lot for Sale (Obrero Davao)",
+            "listing_type": "FS",
+            "property_type": "HL",
+            "price": 500000,
+            "image": "images/listings/test/houseandlot/dillon-kydd-3Ignkeds3w8-unsplash.jpg",
+            "property_size": 100,
+            "description": "Lot for Sale in Obreror Davao City. \n\n> Gated subdivision with Security Guard\n2 bedrooms and 2 bathrooms\n>Pets are allowed\n> Walking distance to Abreeza Mall\n5min ride to Redemptorist Church\n> 10 min ride to Ateneo, UIC, SPMC\n>30 min ride to Davao Airport\n\nFor inquiries, please contact 11111111111 or email me at testuser112345678910@gmail.com",
+            "is_available": true,
+            "created_at": "2023-10-22T15:30:00Z",
+            "bedrooms": 2,
+            "bathrooms": 2
+        }
+    },
+
+    {
+        "model": "listings.listing",
+        "pk": 2,
+        "fields": {
+            "seller": 11,
+            "title": "Raw Lot for Sale (Montevista, Davao de Oro)",
+            "listing_type": "FS",
+            "property_type": "RL",
+            "price": 100000,
+            "property_size": 50,
+            "image": "images/listings/test/rawlot/IMG_20181112_153709.jpg",
+            "description": "Raw lot for sale with clean title. Negotiable.",
+            "is_available": true,
+            "created_at": "2024-01-15T12:00:00Z",
+            "province": "Davao de Oro",
+            "city": "Montevista",
+            "baranggay": "San Jose",
+            "street": "Pine St."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 3,
+        "fields": {
+            "seller": 12,
+            "title": "Condo Unit for Rent (Cebu City)",
+            "listing_type": "FR",
+            "property_type": "CO",
+            "price": 20000,
+            "property_size": 75,
+            "image": "images/listings/test/condo/andrea-davis-0SSPeyokubs-unsplash.jpg",
+            "description": "2-bedroom condo unit for rent in Lahug, Cebu City.",
+            "is_available": true,
+            "created_at": "2024-02-01T09:30:00Z",
+            "bedrooms": 2,
+            "bathrooms": 2,
+            "province": "Cebu",
+            "city": "Cebu City",
+            "baranggay": "Lahug",
+            "street": "Gorordo Ave."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 4,
+        "fields": {
+            "seller": 10,
+            "title": "Raw Lot for Sale (Dipolog, Zamboanga del Norte)",
+            "listing_type": "FS",
+            "property_type": "RL",
+            "price": 120000,
+            "property_size": 80,
+            "image": "images/listings/test/rawlot/IMG_20181122_153936.jpg",
+            "description": "Raw lot for sale, ideal for residential or agricultural use.",
+            "is_available": true,
+            "created_at": "2024-03-12T10:00:00Z",
+            "province": "Zamboanga del Norte",
+            "city": "Dipolog",
+            "baranggay": "Magsaysay",
+            "street": "Quezon Ave."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 5,
+        "fields": {
+            "seller": 11,
+            "title": "House and Lot for Sale (Dumaguete, Negros Oriental)",
+            "listing_type": "FS",
+            "property_type": "HL",
+            "price": 850000,
+            "property_size": 120,
+            "image": "images/listings/test/houseandlot/ronnie-george-9gGvNWBeOq4-unsplash.jpg",
+            "description": "Beautiful house and lot with 3 bedrooms and 2 bathrooms.",
+            "is_available": true,
+            "created_at": "2024-04-25T08:00:00Z",
+            "bedrooms": 3,
+            "bathrooms": 2,
+            "province": "Negros Oriental",
+            "city": "Dumaguete",
+            "baranggay": "Batinguel",
+            "street": "Rizal St."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 6,
+        "fields": {
+            "seller": 12,
+            "title": "Commercial Lot for Sale (Tagum, Davao del Norte)",
+            "listing_type": "FS",
+            "property_type": "CL",
+            "price": 300000,
+            "property_size": 150,
+            "image": "images/listings/test/comlot/IMG_20181112_154245.jpg",
+            "description": "Prime commercial lot for sale near city center.",
+            "is_available": true,
+            "created_at": "2024-05-10T11:30:00Z",
+            "province": "Davao del Norte",
+            "city": "Tagum",
+            "baranggay": "Magugpo East",
+            "street": "Roxas Ave."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 7,
+        "fields": {
+            "seller": 10,
+            "title": "Condo Unit for Sale (Palawan)",
+            "listing_type": "FS",
+            "property_type": "CO",
+            "price": 350000,
+            "property_size": 60,
+            "image": "images/listings/test/condo/sanju-pandita-mOMk_bTLDwo-unsplash.jpg",
+            "description": "Newly constructed 2-bedroom condo unit in Puerto Princesa, Palawan.",
+            "is_available": true,
+            "created_at": "2024-06-02T13:45:00Z",
+            "bedrooms": 2,
+            "bathrooms": 2,
+            "province": "Palawan",
+            "city": "Puerto Princesa",
+            "baranggay": "San Pedro",
+            "street": "Fernandez St."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 8,
+        "fields": {
+            "seller": 11,
+            "title": "Raw Lot for Sale (Bayawan, Negros Oriental)",
+            "listing_type": "FS",
+            "property_type": "RL",
+            "price": 95000,
+            "property_size": 60,
+            "image": "images/listings/test/rawlot/IMG_20181122_164902.jpg",
+            "description": "Spacious raw lot for residential use, clean title.",
+            "is_available": true,
+            "created_at": "2024-07-18T14:20:00Z",
+            "province": "Negros Oriental",
+            "city": "Bayawan",
+            "baranggay": "Tinago",
+            "street": "Sarmiento St."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 9,
+        "fields": {
+            "seller": 12,
+            "title": "Condo Unit for Rent (Samar)",
+            "listing_type": "FR",
+            "property_type": "CO",
+            "price": 15000,
+            "property_size": 55,
+            "image": "images/listings/test/condo/lotus-design-n-print-cnXTU42C0sg-unsplash.jpg",
+            "description": "1-bedroom condo unit for rent, located in the heart of Catbalogan City.",
+            "is_available": true,
+            "created_at": "2024-08-05T12:30:00Z",
+            "bedrooms": 1,
+            "bathrooms": 1,
+            "province": "Samar",
+            "city": "Catbalogan",
+            "baranggay": "Balud",
+            "street": "Del Pilar St."
+        }
+    },
+    {
+        "model": "listings.listing",
+        "pk": 10,
+        "fields": {
+            "seller": 10,
+            "title": "Raw Lot for Sale (Iloilo City, Iloilo)",
+            "listing_type": "FS",
+            "property_type": "RL",
+            "price": 130000,
+            "property_size": 70,
+            "image": "images/listings/test/rawlot/IMG_20181112_153709.jpg",
+            "description": "Great investment opportunity for residential or commercial use.",
+            "is_available": true,
+            "created_at": "2024-09-01T11:15:00Z",
+            "province": "Iloilo",
+            "city": "Iloilo City",
+            "baranggay": "Lapuz",
+            "street": "Washington St."
+        }
+    },
+
+    {
+        "model": "listings.listing",
+        "pk": 11,
+        "fields": {
+            "seller": 10,
+            "title": "House and Lot for Sale (Buhangin, Davao)",
+            "listing_type": "FS",
+            "property_type": "HL",
+            "price": 400000,
+            "property_size": 100,
+            "image": "images/listings/test/houseandlot/dillon-kydd-2keCPb73aQY-unsplash.jpg",
+            "description": "RUSH SALE!!!\n- Near National Road.\n- Lots of access to public transport.\n- Spot cash only",
+            "is_available": true,
+            "created_at": "2024-01-10T15:30:00Z",
+            "bedrooms": 2,
+            "bathrooms": 2,
+            "province": "Davao del Sur",
+            "city": "Davao City",
+            "baranggay": "Buhangin",
+            "street": "Nazareth St."
+        }
+    }
+]
