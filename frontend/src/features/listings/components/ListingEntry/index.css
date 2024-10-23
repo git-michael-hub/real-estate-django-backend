@@ -19,6 +19,18 @@
     text-overflow: ellipsis;
 }
 
+.listing-details-container header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+}
+
+.listing-details-container header .icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+}
+
 .listing-entry .listing-title {
     margin: 0;
     overflow-x: hidden;
@@ -79,7 +91,7 @@
 
 .listing-entry .listing-image {
     width: 300px;
-    height: 200px;
+    aspect-ratio: 1.5/1;
     object-fit: cover;
 }
 
@@ -103,4 +115,15 @@
 .listing-entry figcaption a {
     color: var(--color-accent-2);
     text-decoration: none;
+}
+
+@media only screen and (max-width: 1080px) {
+    .listing-entry {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .listing-entry .listing-image {
+        width: 100%;
+    }
 }

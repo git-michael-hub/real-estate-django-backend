@@ -15,9 +15,23 @@
 
 #listing-grid-container hr {
     margin: 20px 0;
+    opacity: 0.3;
 }
 
 #listing-grid-container #listing-search-form {
     position: sticky;
     top: 90px;
+}
+
+@media only screen and (max-width: 900px) {
+    #listing-grid-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    #listing-grid-container #listing-search-form {
+        margin: 0;
+    }
 }

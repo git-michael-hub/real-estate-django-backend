@@ -4,6 +4,7 @@ import useAuth from "../../../auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../../ts/api-service";
 import cookieHandler, { Token } from "../../../../ts/cookie-handler";
 import helperFn from "../../../../ts/helper";
+import BtnIcon from "../../../../components/Buttons/BtnIcon";
 
 export type SellerListType = {
     first_name: string;
@@ -86,9 +87,28 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                             </figure>
                         )}
                         <div className="listing-details-container">
-                            <h3 className="listing-title">
-                                <Link to={`/listings/${listing.id}`}>{listing.title}</Link>
-                            </h3>
+                            <header>
+                                <h3 className="listing-title">
+                                    <Link to={`/listings/${listing.id}`}>{listing.title}</Link>
+                                </h3>
+                                {!user ? (
+                                    <></>
+                                ) : favoriteListings.includes(listing.id) ? (
+                                    <form onSubmit={submitEditFavorites}>
+                                        <input type="hidden" name="remove_from_favorites" value={listing.id} />
+                                        <BtnIcon>
+                                            <i className="fa-regular fa-star"></i>
+                                        </BtnIcon>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={submitEditFavorites}>
+                                        <input type="hidden" name="add_to_favorites" value={listing.id} />
+                                        <BtnIcon>
+                                            <i className="fa-regular fa-star"></i>
+                                        </BtnIcon>
+                                    </form>
+                                )}
+                            </header>
                             <div>
                                 <b className="listing-listing-type">{listing.listing_type_display}</b>
                             </div>
@@ -132,20 +152,6 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                                 )}
                             </div>
                         </div>
-
-                        {!user ? (
-                            <></>
-                        ) : favoriteListings.includes(listing.id) ? (
-                            <form onSubmit={submitEditFavorites}>
-                                <input type="hidden" name="remove_from_favorites" value={listing.id} />
-                                <button>Remove from favorites</button>
-                            </form>
-                        ) : (
-                            <form onSubmit={submitEditFavorites}>
-                                <input type="hidden" name="add_to_favorites" value={listing.id} />
-                                <button>Add to favorites</button>
-                            </form>
-                        )}
                     </li>
                 </>
             ) : (
