@@ -16,18 +16,7 @@
     gap: 10px;
 }
 
-@keyframes appear {
-    from {
-        top: -10px;
-        opacity: 0;
-    }
-    to {
-        top: 0;
-        opacity: 1;
-    }
-}
-
-#more-options-container {
+#listing-search-form-h #more-options-container {
     display: grid;
     grid-template-columns: 320px 320px;
     gap: 10px;
@@ -40,16 +29,16 @@
     animation-duration: 0.3s;
 }
 
-#more-options-container > div > p {
+#listing-search-form-h #more-options-container > div > p {
     font-size: 0.8rem;
     margin: 0;
 }
 
-#more-options-container > div > div {
+#listing-search-form-h #more-options-container > div > div {
     display: flex;
     gap: 10px;
 }
 
-#more-options-container input {
+#listing-search-form-h #more-options-container input {
     max-width: 100px;
 }

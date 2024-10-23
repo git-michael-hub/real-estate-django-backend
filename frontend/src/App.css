@@ -16,6 +16,8 @@
     --font-family-secondary: "Ubuntu", sans-serif;
 
     --default-content-padding: 40px 220px;
+
+    --default-box-shadow: 0 5px 10px 0 rgb(87 101 128 / 12%);
 }
 
 html {
@@ -51,4 +53,15 @@ li {
 a {
     color: var(--link-color-1);
     text-decoration: none;
+}
+
+@keyframes appear {
+    from {
+        top: -10px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
 }

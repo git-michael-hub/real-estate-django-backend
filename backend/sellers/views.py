@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from users.mixins import CreateEmailValidationRequestMixin, RetrieveByUsernameMixin
 
-from .serializers import SellerEmailValidationRequestSerializer, SellerEmailValidationSerializer, SellerAccountSerializer
+from .serializers import SellerEmailValidationRequestSerializer, SellerEmailValidationSerializer, SellerAccountDetailUpdateSerializer
 from .models import SellerEmailValidationRequest, SellerApplication, SellerAccount
 from .permissions import IsSellerAccountOwnerOrReadOnly
 
@@ -55,7 +55,7 @@ seller_application_view = SellerApplicationCreateView.as_view()
 
 class SellerDetailUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
     queryset = SellerAccount
-    serializer_class = SellerAccountSerializer
+    serializer_class = SellerAccountDetailUpdateSerializer
     permission_classes = [IsSellerAccountOwnerOrReadOnly]
     lookup_field = 'username'
 

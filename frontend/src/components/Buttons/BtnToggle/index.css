@@ -1,5 +1,5 @@
 .btn-toggle {
-    color: rgb(0, 0, 255);
+    color: var(--color-accent-2);
     background: none;
     border: none;
     padding: 0;
@@ -11,7 +11,7 @@
 
 .btn-toggle:hover {
     cursor: pointer;
-    color: rgb(0, 0, 255, 0.7);
+    color: var(--color-accent-2-hov);
 }
 
 .btn-toggle > span,

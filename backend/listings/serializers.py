@@ -3,12 +3,14 @@ from rest_framework import serializers
 from .models import Listing
 
 from users.serializers import UserDetailSerializer
+from sellers.serializers import SellerAccountListSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
 
     listing_type_display = serializers.SerializerMethodField()
     property_type_display = serializers.SerializerMethodField()
+    seller = SellerAccountListSerializer()
 
     class Meta:
         model = Listing

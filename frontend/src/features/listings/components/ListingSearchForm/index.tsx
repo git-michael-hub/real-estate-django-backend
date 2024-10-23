@@ -5,8 +5,13 @@ import SelectWithLabel from "../../../../components/Forms/SelectWithLabel";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import BtnToggle from "../../../../components/Buttons/BtnToggle";
 import "./index.css";
+import InputBasic from "../../../../components/Forms/InputBasic";
 
-export default function ListingSearchForm() {
+type ListingSearchFormType = {
+    setSearchForm: React.Dispatch<React.SetStateAction<FormData>>;
+};
+
+export default function ListingSearchForm({ setSearchForm }: ListingSearchFormType) {
     const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState<boolean>(false);
     const navigate = useNavigate();
 
@@ -24,11 +29,13 @@ export default function ListingSearchForm() {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
         const params: URLSearchParams = new URLSearchParams(formData as any); // NO WORK AROUND FOR THIS YET
+        setSearchForm(formData);
         navigate(`/listings/?${params.toString()}`);
     }
 
     return (
         <form id="listing-search-form" onSubmit={submitSearchForm}>
+            <h3>Search Listings</h3>
             <div id="search-options-container">
                 <SelectWithLabel
                     label="Listing Type"
@@ -51,9 +58,9 @@ export default function ListingSearchForm() {
                     <option value="CO">Condominium</option>
                 </SelectWithLabel>
 
-                <InputWithLabel inputProps={{ name: "province" }}>Province</InputWithLabel>
+                <InputWithLabel inputProps={{ name: "province", placeholder: "Province" }}>Province</InputWithLabel>
 
-                <InputWithLabel inputProps={{ name: "city" }}>City</InputWithLabel>
+                <InputWithLabel inputProps={{ name: "city", placeholder: "City" }}>City</InputWithLabel>
             </div>
 
             {isMoreOptionsVisible ? (
@@ -61,20 +68,22 @@ export default function ListingSearchForm() {
                     <div id="more-options-container">
                         <p>Price Range:</p>
                         <div>
-                            <InputWithLabel inputProps={{ name: "min_price", type: "number" }}>
+                            <InputBasic name="min_price" type="number" placeholder="Min Price">
                                 Min Price
-                            </InputWithLabel>
-                            <span>-</span>
-                            <InputWithLabel inputProps={{ name: "max_price", type: "number" }}>
+                            </InputBasic>
+                            <InputBasic name="max_price" type="number" placeholder="Max Price">
                                 Max Price
-                            </InputWithLabel>
+                            </InputBasic>
                         </div>
 
                         <p>Area Range:</p>
                         <div>
-                            <InputWithLabel inputProps={{ name: "min_area", type: "number" }}>Min Area</InputWithLabel>
-                            <span>-</span>
-                            <InputWithLabel inputProps={{ name: "max_area", type: "number" }}>Max Area</InputWithLabel>
+                            <InputBasic name="min_area" type="number" placeholder="Min Area">
+                                Min Area
+                            </InputBasic>
+                            <InputBasic name="max_area" type="number" placeholder="Max Area">
+                                Max Area
+                            </InputBasic>
                         </div>
                     </div>
 

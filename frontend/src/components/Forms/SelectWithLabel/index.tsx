@@ -9,11 +9,11 @@ type SelectBasicType = {
 
 export default function SelectBasic({ label, children, labelProps, selectProps }: SelectBasicType) {
     return (
-        <div className="select-basic-container">
-            <label {...labelProps} className="select-basic-label">
+        <div className="select-with-label-container">
+            <label {...labelProps} className="select-with-label-label">
                 {label}
             </label>
-            <select {...selectProps} className="select-basic">
+            <select {...selectProps} className="select-with-label">
                 {children}
             </select>
         </div>

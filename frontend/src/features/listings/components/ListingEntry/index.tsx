@@ -1,12 +1,22 @@
 import { Link } from "react-router-dom";
 import "./index.css";
 import useAuth from "../../../auth/hooks/useAuth";
-import { apiFns, HeaderType } from "../../../../ts/api-service";
+import { apiFns, APIResponseType, HeaderType } from "../../../../ts/api-service";
 import cookieHandler, { Token } from "../../../../ts/cookie-handler";
+
+export type SellerListType = {
+    first_name: string;
+    last_name: string;
+    username: string;
+    email: string;
+    contact_number_1: number;
+    contact_number_2?: number;
+    seller_image_url: string;
+};
 
 export type ListingType = {
     id: number;
-    owner: number;
+    seller: SellerListType;
     title: string;
     listing_type: string;
     listing_type_display: string;
@@ -39,9 +49,23 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
         e.preventDefault();
         const headers: HeaderType = { Authorization: `Token ${token}` };
         const body: FormData = new FormData(e.currentTarget);
-        const response = await apiFns.patch(`favorites/listings/${user?.username}`, body, headers);
-        const favorites: any = await response.json();
-        setFavoriteListings(favorites.listings);
+        const response: APIResponseType = await apiFns.patch(`favorites/listings/${user?.username}`, body, headers);
+        setFavoriteListings(response.data);
+    };
+
+    const insertComma = (num: number) => {
+        const numString: string = num.toString();
+        let numStringWithComma: string = "";
+        for (let i = 0; i <= numString.length; i += 1) {
+            if (i == 0) {
+                numStringWithComma = numString.slice(-1);
+            } else if (i % 3 === 0 && numString.length > i && i > 0) {
+                numStringWithComma = "," + numString.slice(-i, -i + 1) + numStringWithComma;
+            } else {
+                numStringWithComma = numString.slice(-i, -i + 1) + numStringWithComma;
+            }
+        }
+        return numStringWithComma;
     };
 
     return (
@@ -49,42 +73,79 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
             {listing.is_available ? (
                 <>
                     <li key={listing.id} className="listing-entry">
-                        <h2>
-                            <Link to={`/listings/${listing.id}`}>{listing.title}</Link>
-                        </h2>
                         {listing.image ? (
-                            <img src={listing.image} alt="" className="listing-image" />
-                        ) : (
-                            <figure>
+                            <div className="listing-image-container">
                                 <Link to={`/listings/${listing.id}`}>
-                                    <img src={"/images/default_house_for_sale.jpg"} alt="" className="listing-image" />
+                                    <img src={listing.image} alt="" className="listing-image" />
+                                </Link>
+                            </div>
+                        ) : (
+                            <figure className="listing-image-container">
+                                <Link to={`/listings/${listing.id}`}>
+                                    <img
+                                        src={"/images/256px-Image_not_available.jpg"}
+                                        alt=""
+                                        className="listing-image"
+                                    />
                                 </Link>
                                 {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
                                 <figcaption className="listing-image-figcaption">
-                                    Image by{" "}
-                                    <Link
-                                        target="_blank"
-                                        rel="noopener"
-                                        to="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
-                                    >
-                                        Freepik
-                                    </Link>
+                                    Image source:
+                                    <a href="https://commons.wikimedia.org/wiki/File:Image_not_available.png">
+                                        no-image-available.png
+                                    </a>
+                                    , <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via
+                                    Wikimedia Commons
                                 </figcaption>
                             </figure>
                         )}
-
-                        <br />
-                        <b>{listing.property_type_display}</b>
-                        <br />
-                        <em>({listing.listing_type_display})</em>
-                        <address>{`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}</address>
-                        <span>Php {listing.price.toString()}</span>
-                        <br />
-                        <span>{listing.property_size.toString()} sqm</span>
-                        <br />
-                        {listing.bedrooms ? <span>Bedrooms: {listing.bedrooms.toString()}</span> : <></>}
-                        <br />
-                        {listing.bathrooms ? <span>Bathrooms: {listing.bathrooms.toString()}</span> : <></>}
+                        <div className="listing-details-container">
+                            <h3 className="listing-title">
+                                <Link to={`/listings/${listing.id}`}>{listing.title}</Link>
+                            </h3>
+                            <div>
+                                <b className="listing-listing-type">{listing.listing_type_display}</b>
+                            </div>
+                            <div>
+                                <em className="listing-property-type">({listing.property_type_display})</em>
+                            </div>
+                            <address>
+                                <i className="fa-solid fa-location-dot"></i>{" "}
+                                {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
+                            </address>
+                            <div className="listing-info">
+                                {listing.bedrooms ? (
+                                    <span>
+                                        <i className="fa-solid fa-bed"></i> {listing.bedrooms.toString()}
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
+                                {listing.bathrooms ? (
+                                    <span>
+                                        <i className="fa-solid fa-shower"></i> {listing.bathrooms.toString()}
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
+                                <span>
+                                    <i className="fa-solid fa-expand"></i> {listing.property_size.toString()} sqm
+                                </span>
+                            </div>
+                            <div className="listing-seller-and-price">
+                                <div>
+                                    <img src={listing.seller.seller_image_url} alt="" />
+                                    <Link to={`/listings/${listing.id}`}>
+                                        {listing.seller.first_name} {listing.seller.last_name}
+                                    </Link>
+                                </div>
+                                {listing.listing_type === "FR" ? (
+                                    <b>Php {insertComma(listing.price)} / mo. </b>
+                                ) : (
+                                    <b>Php {insertComma(listing.price)} </b>
+                                )}
+                            </div>
+                        </div>
 
                         {!user ? (
                             <></>

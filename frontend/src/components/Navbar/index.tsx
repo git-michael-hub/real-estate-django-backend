@@ -34,7 +34,7 @@ export default function Navbar() {
                     <Link to={"/"} className="navbar-item">
                         About Us
                     </Link>
-                    <Link to={"/"} className="navbar-item">
+                    <Link to={"/listings"} className="navbar-item">
                         Listings
                     </Link>
                     <Link to={"/"} className="navbar-item">

@@ -1,21 +1,20 @@
-.select-basic-container {
+.select-with-label-container {
     display: flex;
     flex-direction: column;
 }
 
-.select-basic {
-    padding: 8px 10px;
+.select-with-label {
+    padding: 16px 10px;
     border-radius: 6px;
     border: 1px solid var(--border-color-1);
     outline: none;
 }
 
-.select-basic:focus {
+.select-with-label:focus {
     border: 1px solid var(--border-color-focus);
 }
 
-.select-basic-label {
+.select-with-label-label {
     color: var(--color-accent-1);
-    margin-bottom: 12px;
     font-weight: 400;
 }

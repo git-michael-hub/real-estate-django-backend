@@ -1,6 +1,90 @@
+.listing-entry {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    background-color: var(--color-tertiary);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: var(--default-box-shadow);
+    margin-bottom: 20px;
+}
+
+.listing-entry .listing-image-container {
+    display: flex;
+    align-items: center;
+}
+
+.listing-details-container {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.listing-entry .listing-title {
+    margin: 0;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-accent-2);
+}
+
+.listing-entry .listing-title a {
+    text-wrap: nowrap;
+}
+
+.listing-entry .listing-title a:hover,
+.listing-entry .listing-title:hover {
+    color: var(--color-accent-2-hov);
+}
+
+.listing-entry .listing-seller-and-price {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.listing-entry .listing-seller-and-price div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.listing-entry .listing-seller-and-price img {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.listing-entry .listing-seller-and-price a:hover {
+    color: var(--color-accent-2-hov);
+}
+
+.listing-entry address i {
+    color: var(--color-accent-1);
+}
+
+.listing-entry address {
+    text-wrap: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.listing-entry .listing-info {
+    display: flex;
+    gap: 20px;
+}
+
+.listing-entry .listing-info i {
+    color: var(--color-accent-2);
+}
+
 .listing-entry .listing-image {
     width: 300px;
-    height: 180px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.listing-entry .listing-image:hover {
+    opacity: 0.9;
 }
 
 .listing-entry figure {
@@ -17,16 +101,6 @@
 }
 
 .listing-entry figcaption a {
-    color: blue;
+    color: var(--color-accent-2);
     text-decoration: none;
-}
-
-.listing-entry h2 a {
-    color: black;
-    text-decoration: none;
-}
-
-.listing-entry h2 a:hover {
-    cursor: pointer;
-    color: rgba(0, 0, 0, 0.7);
 }

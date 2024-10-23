@@ -29,7 +29,7 @@ class SellerApplicationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SellerAccountSerializer(serializers.ModelSerializer):
+class SellerAccountDetailUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerAccount
         exclude = ['address', 'birthdate', 'gender',
@@ -37,3 +37,10 @@ class SellerAccountSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True}
         }
+
+
+class SellerAccountListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellerAccount
+        fields = ['first_name', 'last_name', 'username',
+                  'email', 'contact_number_1', 'contact_number_2', 'seller_image_url']
