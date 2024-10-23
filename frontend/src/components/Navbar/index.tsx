@@ -4,9 +4,11 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import ListDropDown from "../List/ListDropDown";
 import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
 import "./index.css";
+import BtnIconRound from "../Buttons/BtnIcon copy";
 
 export default function Navbar() {
     const [isListDropdownVisible, setIsListDropdownVisible] = useState<boolean>(false);
+    const [isNavDropdownVisible, setIsNavDropdownVisible] = useState<boolean>(false);
     const navigate = useNavigate();
     const { user, logout, isSeller } = useAuth();
 
@@ -19,6 +21,13 @@ export default function Navbar() {
     function onClickNavUsername(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         setIsListDropdownVisible(!isListDropdownVisible);
+        setIsNavDropdownVisible(false);
+    }
+
+    function onClickNavMenu(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault();
+        setIsNavDropdownVisible(!isNavDropdownVisible);
+        setIsListDropdownVisible(false);
     }
 
     return (
@@ -42,9 +51,9 @@ export default function Navbar() {
                     </Link>
                     {user ? (
                         <span>
-                            <button type="button" onClick={onClickNavUsername} className="navbar-button">
+                            <BtnIconRound onClick={onClickNavUsername}>
                                 <i className="fa-solid fa-user"></i>
-                            </button>
+                            </BtnIconRound>
                             {isListDropdownVisible ? (
                                 <ListDropDown>
                                     <li>
@@ -73,6 +82,64 @@ export default function Navbar() {
                             Login
                         </Link>
                     )}
+                </nav>
+                <nav className="nav-menu">
+                    {user ? (
+                        <span>
+                            <BtnIconRound onClick={onClickNavUsername}>
+                                <i className="fa-solid fa-user"></i>
+                            </BtnIconRound>
+                            {isListDropdownVisible ? (
+                                <ListDropDown>
+                                    <li>
+                                        <Link to={"/listings/new"}>@{user.username}</Link>
+                                    </li>
+                                    {isSeller() ? (
+                                        <li>
+                                            <Link to={"/listings/new"}>Create Listing</Link>
+                                        </li>
+                                    ) : (
+                                        <></>
+                                    )}
+
+                                    <li>
+                                        <button type="button" onClick={onClickLogout}>
+                                            Logout
+                                        </button>
+                                    </li>
+                                </ListDropDown>
+                            ) : (
+                                <></>
+                            )}
+                        </span>
+                    ) : (
+                        <Link to={"/login"} className="navbar-item">
+                            Login
+                        </Link>
+                    )}
+                    <span>
+                        <BtnIconRound onClick={onClickNavMenu}>
+                            <i className="fa-solid fa-bars"></i>
+                        </BtnIconRound>
+                        {isNavDropdownVisible ? (
+                            <ListDropDown>
+                                <li>
+                                    <Link to={"/"}>Home</Link>
+                                </li>
+                                <li>
+                                    <Link to={"/"}>About Us</Link>
+                                </li>
+                                <li>
+                                    <Link to={"/listings"}>Listings</Link>
+                                </li>
+                                <li>
+                                    <Link to={"/"}>Find Agent</Link>
+                                </li>
+                            </ListDropDown>
+                        ) : (
+                            <></>
+                        )}
+                    </span>
                 </nav>
             </div>
         </header>
