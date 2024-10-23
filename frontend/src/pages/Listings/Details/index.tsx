@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
-import { apiFns } from "../../../ts/api-service";
+import { apiFns, APIResponseType } from "../../../ts/api-service";
 import { ListingType } from "../../../features/listings/components/ListingEntry";
 import { UserType } from "../../../features/auth/context/AuthProvider";
+import ContactForm from "../../../features/listings/components/ContactForm";
 import "./index.css";
+import Tag from "../../../components/Tag";
+import helperFn from "../../../ts/helper";
+import BtnIcon from "../../../components/Buttons/BtnIcon";
+import BtnIconActive from "../../../components/Buttons/BtnIconActive";
 
 type DetailsListingStateType = (Omit<ListingType, "owner"> & { owner: UserType }) | null;
 
@@ -11,13 +16,9 @@ export default function Details() {
 
     useEffect(() => {
         const fetchListing = async () => {
-            const response: Response = await apiFns.get(`${window.location.pathname}`);
-            const listing: DetailsListingStateType = await response.json();
-            if (response.ok) {
-                setListing(listing);
-            } else {
-                setListing(null);
-            }
+            const response: APIResponseType = await apiFns.get(`${window.location.pathname}`);
+            const listing: DetailsListingStateType = response.data;
+            response.success ? setListing(listing) : setListing(null);
             console.log(listing);
         };
         fetchListing();
@@ -25,63 +26,106 @@ export default function Details() {
 
     return (
         <main id="details-page">
-            <h1>Details</h1>
-            {listing ? (
-                <div>
-                    <h2>{listing.title}</h2>
-                    <b>{listing.property_type_display}</b>
-                    <br />
-                    <em>({listing.listing_type_display})</em>
-                    <br />
-                    <address>
-                        Location: {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
-                    </address>
-                    <span>Price: Php {listing.price.toString()}</span>
+            <div id="details-grid-container">
+                {listing ? (
+                    <>
+                        <header>
+                            <h2>{listing.title}</h2>
+                            <div>
+                                <b>
+                                    Php {helperFn.insertComma(listing.price)}{" "}
+                                    {listing.listing_type === "FR" ? <>/ mo.</> : <></>}
+                                </b>{" "}
+                                <Tag className="tag-1">{listing.listing_type_display}</Tag>{" "}
+                                <Tag className="tag-2">{listing.property_type_display}</Tag>
+                            </div>
+                            <address>
+                                <i className="fa-solid fa-location-dot"></i>{" "}
+                                {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
+                            </address>
+                            {true ? (
+                                <BtnIcon title="Add to favorites">
+                                    <i className="fa-regular fa-star"></i>
+                                </BtnIcon>
+                            ) : (
+                                <BtnIconActive title="Add to favorites">
+                                    <i className="fa-regular fa-star"></i>
+                                </BtnIconActive>
+                            )}
+                        </header>
+                        <div className="listing-details">
+                            {listing.image ? (
+                                <img src={listing.image} alt="" className="listing-image" />
+                            ) : (
+                                <figure>
+                                    <img
+                                        src={"/images/256px-Image_not_available.png"}
+                                        alt=""
+                                        className="listing-image"
+                                    />
+                                    {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
+                                    <figcaption className="listing-image-figcaption">
+                                        Image by{" "}
+                                        <a
+                                            target="_blank"
+                                            rel="noopener"
+                                            href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
+                                        >
+                                            Freepik
+                                        </a>
+                                    </figcaption>
+                                </figure>
+                            )}
 
-                    <br />
-                    {listing.image ? (
-                        <img src={listing.image} alt="" className="listing-image" />
-                    ) : (
-                        <figure>
-                            <img src={"/images/default_house_for_sale.jpg"} alt="" className="listing-image" />
-                            {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
-                            <figcaption className="listing-image-figcaption">
-                                Image by{" "}
-                                <a
-                                    target="_blank"
-                                    rel="noopener"
-                                    href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
-                                >
-                                    Freepik
-                                </a>
-                            </figcaption>
-                        </figure>
-                    )}
+                            <div className="listing-image-list">
+                                <img src={listing.image} alt="" />
+                                <img src={listing.image} alt="" />
+                                <img src={listing.image} alt="" />
+                                <img src={listing.image} alt="" />
+                                <img src={listing.image} alt="" />
+                            </div>
 
-                    <br />
-                    <span>Area: {listing.property_size.toString()} sqm</span>
-                    <br />
-                    {listing.bedrooms ? (
-                        <>
-                            <span>Bedrooms: {listing.bedrooms.toString()}</span> <br />
-                        </>
-                    ) : (
-                        <></>
-                    )}
+                            <div>
+                                <h3>Overview</h3>
 
-                    {listing.bathrooms ? (
-                        <>
-                            <span>Bathrooms: {listing.bathrooms.toString()}</span>
-                            <br />
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                    {listing.description ? <p className="listing-description">{listing.description}</p> : <></>}
-                </div>
-            ) : (
-                <div>Listing does not exist.</div>
-            )}
+                                <div className="listing-info">
+                                    <span>
+                                        <i className="fa-solid fa-expand"></i> {listing.property_size.toString()} sqm
+                                    </span>
+                                    {listing.bedrooms ? (
+                                        <span>
+                                            <i className="fa-solid fa-bed"></i> {listing.bedrooms.toString()}
+                                        </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {listing.bathrooms ? (
+                                        <span>
+                                            <i className="fa-solid fa-shower"></i> {listing.bathrooms.toString()}
+                                        </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </div>
+                            </div>
+
+                            {listing.description ? (
+                                <div className="listing-description">
+                                    <h3>Description</h3>
+                                    <p>{listing.description}</p>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </div>
+                        <section>
+                            <ContactForm listing={listing}></ContactForm>
+                        </section>
+                    </>
+                ) : (
+                    <div>Listing does not exist.</div>
+                )}
+            </div>
         </main>
     );
 }

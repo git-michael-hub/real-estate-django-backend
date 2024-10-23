@@ -3,7 +3,6 @@
     grid-template-columns: auto 1fr;
     max-width: 1200px;
     margin: auto;
-    box-sizing: border-box;
 }
 
 #listing-grid-container > div {

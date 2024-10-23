@@ -3,6 +3,7 @@ import "./index.css";
 import useAuth from "../../../auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../../ts/api-service";
 import cookieHandler, { Token } from "../../../../ts/cookie-handler";
+import helperFn from "../../../../ts/helper";
 
 export type SellerListType = {
     first_name: string;
@@ -51,21 +52,6 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
         const body: FormData = new FormData(e.currentTarget);
         const response: APIResponseType = await apiFns.patch(`favorites/listings/${user?.username}`, body, headers);
         setFavoriteListings(response.data);
-    };
-
-    const insertComma = (num: number) => {
-        const numString: string = num.toString();
-        let numStringWithComma: string = "";
-        for (let i = 0; i <= numString.length; i += 1) {
-            if (i == 0) {
-                numStringWithComma = numString.slice(-1);
-            } else if (i % 3 === 0 && numString.length > i && i > 0) {
-                numStringWithComma = "," + numString.slice(-i, -i + 1) + numStringWithComma;
-            } else {
-                numStringWithComma = numString.slice(-i, -i + 1) + numStringWithComma;
-            }
-        }
-        return numStringWithComma;
     };
 
     return (
@@ -140,9 +126,9 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                                     </Link>
                                 </div>
                                 {listing.listing_type === "FR" ? (
-                                    <b>Php {insertComma(listing.price)} / mo. </b>
+                                    <b>Php {helperFn.insertComma(listing.price)} / mo. </b>
                                 ) : (
-                                    <b>Php {insertComma(listing.price)} </b>
+                                    <b>Php {helperFn.insertComma(listing.price)} </b>
                                 )}
                             </div>
                         </div>

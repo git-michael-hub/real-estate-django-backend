@@ -2,15 +2,14 @@ from rest_framework import serializers
 
 from .models import Listing
 
-from users.serializers import UserDetailSerializer
-from sellers.serializers import SellerAccountListSerializer
+from sellers.serializers import SellerAccountPartialDetailSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
 
     listing_type_display = serializers.SerializerMethodField()
     property_type_display = serializers.SerializerMethodField()
-    seller = SellerAccountListSerializer()
+    seller = SellerAccountPartialDetailSerializer()
 
     class Meta:
         model = Listing
@@ -43,7 +42,7 @@ class ListingSerializer(serializers.ModelSerializer):
 
 
 class ListingDetailSerializer(ListingSerializer):
-    seller = UserDetailSerializer()
+    seller = SellerAccountPartialDetailSerializer()
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields

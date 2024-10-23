@@ -1,0 +1,12 @@
+.textarea-basic {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color-1);
+    outline: none;
+    min-height: 100px;
+    line-height: 20px;
+}
+
+.textarea-basic:focus {
+    border: 1px solid var(--border-color-focus);
+}

@@ -9,6 +9,7 @@
     gap: 5px;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.3s;
 }
 
 .basic-btn,
@@ -21,4 +22,5 @@
 .basic-btn:hover {
     cursor: pointer;
     background-color: var(--color-accent-2-hov);
+    transition: background-color 0.3s;
 }

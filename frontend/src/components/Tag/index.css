@@ -1,0 +1,15 @@
+.tag-1 {
+    color: var(--color-secondary);
+    background-color: #17a2b8;
+    padding: 5px 10px;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.tag-2 {
+    color: var(--color-secondary);
+    background-color: #00c0ff;
+    padding: 5px 10px;
+    font-weight: 600;
+    border-radius: 5px;
+}

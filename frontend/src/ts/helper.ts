@@ -21,6 +21,21 @@ const appendDataToForm = (formData: FormData, data: [string, FormDataEntryValue]
     }
 };
 
-const helperFn = { combineFormData, extractDataFromForm, appendDataToForm };
+const insertComma = (num: number) => {
+    const numString: string = num.toString();
+    let numStringWithComma: string = "";
+    for (let i = 0; i <= numString.length; i += 1) {
+        if (i == 0) {
+            numStringWithComma = numString.slice(-1);
+        } else if (i % 3 === 0 && numString.length > i && i > 0) {
+            numStringWithComma = "," + numString.slice(-i, -i + 1) + numStringWithComma;
+        } else {
+            numStringWithComma = numString.slice(-i, -i + 1) + numStringWithComma;
+        }
+    }
+    return numStringWithComma;
+};
+
+const helperFn = { combineFormData, extractDataFromForm, appendDataToForm, insertComma };
 
 export default helperFn;

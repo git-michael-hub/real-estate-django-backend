@@ -10,6 +10,10 @@
     --border-color-focus: var(--color-accent-1);
     --border-color-1: #e4e4e4;
 
+    --text-color-1: var(--color-accent-1);
+    --text-color-2: var(var(--color-accent-2));
+    --text-color-3: #788593;
+
     --link-color-1: var(--color-accent-2);
 
     --font-family-primary: "Roboto", "Arial", sans-serif;

@@ -1,0 +1,21 @@
+.icon-btn-active {
+    color: var(--color-secondary);
+    background-color: var(--link-color-1);
+    font-family: var(--font-family-secondary);
+    font-size: 1.15rem;
+    border: 1px solid var(--link-color-1);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.icon-btn-active:hover {
+    cursor: pointer;
+
+    background-color: var(--color-accent-2-hov);
+
+    transition: color 0.3s, background-color 0.3s;
+}

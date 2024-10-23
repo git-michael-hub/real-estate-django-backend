@@ -39,7 +39,7 @@ class SellerAccountDetailUpdateSerializer(serializers.ModelSerializer):
         }
 
 
-class SellerAccountListSerializer(serializers.ModelSerializer):
+class SellerAccountPartialDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerAccount
         fields = ['first_name', 'last_name', 'username',
