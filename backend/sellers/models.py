@@ -51,5 +51,5 @@ class SellerAccount(SellerApplication):
 
     user = models.OneToOneField(
         User, related_name='seller_account', on_delete=models.CASCADE)
-
+    bio = models.CharField(max_length=500, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)

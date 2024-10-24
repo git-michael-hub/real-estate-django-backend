@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from users.mixins import CreateEmailValidationRequestMixin, RetrieveByUsernameMixin
 
-from .serializers import SellerEmailValidationRequestSerializer, SellerEmailValidationSerializer, SellerAccountDetailUpdateSerializer
+from .serializers import SellerEmailValidationRequestSerializer, SellerEmailValidationSerializer, SellerAccountDetailUpdateSerializer, SellerAccountPartialDetailSerializer
 from .models import SellerEmailValidationRequest, SellerApplication, SellerAccount
 from .permissions import IsSellerAccountOwnerOrReadOnly
 
@@ -51,6 +51,20 @@ class SellerApplicationCreateView(generics.CreateAPIView):
 
 
 seller_application_view = SellerApplicationCreateView.as_view()
+
+
+class SellerListView(generics.ListAPIView):
+    queryset = SellerAccount.objects.all()
+    serializer = SellerAccountPartialDetailSerializer
+
+    def list(self, request):
+        sellers = self.get_queryset()
+        serializer = SellerAccountPartialDetailSerializer(
+            sellers, many=True, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+seller_list_view = SellerListView.as_view()
 
 
 class SellerDetailUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):

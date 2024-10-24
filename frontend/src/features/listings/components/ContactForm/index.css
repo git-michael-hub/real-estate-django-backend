@@ -18,6 +18,19 @@
     margin-bottom: 20px;
 }
 
+.contact-form .seller-contact-info-container > a {
+    width: 90px;
+    height: 90px;
+}
+
+.contact-form .seller-contact-info-container > a:hover img {
+    border: 5px solid var(--color-accent-2-hov);
+}
+
+.contact-form .seller-contact-info-container i {
+    color: var(--color-accent-2);
+}
+
 .contact-form .seller-contact-info-container b {
     color: var(--color-accent-2);
 }

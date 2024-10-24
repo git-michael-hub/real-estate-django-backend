@@ -1,8 +1,8 @@
 import BtnBasic from "../../../components/Buttons/BtnBasic";
 import InputWithLabel from "../../../components/Forms/InputWithLabel";
-import SelectBasic from "../../../components/Forms/SelectBasic";
+// import SelectBasic from "../../../components/Forms/SelectBasic";
 import useAuth from "../../../features/auth/hooks/useAuth";
-import { apiFns, HeaderType } from "../../../ts/api-service";
+import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import "./index.css";
 
@@ -16,8 +16,8 @@ export default function New() {
             const headers: HeaderType = { Authorization: `Token ${token}` };
             const formData: FormData = new FormData(e.currentTarget);
             formData.append("owner", (user?.id as number).toString());
-            const response: Response = await apiFns.post("listings/", formData, headers);
-            const data = await response.json();
+            const response: APIResponseType = await apiFns.post("listings/", formData, headers);
+            const data = response.data;
             console.log(data);
         }
     }
@@ -39,7 +39,7 @@ export default function New() {
                 <section>
                     <h2>Listing Details</h2>
                     <InputWithLabel inputProps={{ name: "title" }}>Title</InputWithLabel>
-                    <SelectBasic
+                    {/* <SelectBasic
                         label="Listing Type"
                         selectProps={{ name: "listing_type" }}
                         labelProps={{ htmlFor: "listing_type" }}
@@ -58,7 +58,7 @@ export default function New() {
                         <option value="RL">Residential Lot</option>
                         <option value="CL">Commercial Lot</option>
                         <option value="CO">Condominium</option>
-                    </SelectBasic>
+                    </SelectBasic> */}
 
                     <InputWithLabel inputProps={{ name: "price", type: "number" }}>Price</InputWithLabel>
                 </section>

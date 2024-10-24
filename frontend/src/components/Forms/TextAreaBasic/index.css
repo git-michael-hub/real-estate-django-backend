@@ -5,6 +5,7 @@
     outline: none;
     min-height: 100px;
     line-height: 20px;
+    font-family: var(--default-font-family);
 }
 
 .textarea-basic:focus {

@@ -34,12 +34,6 @@ class ListingSerializer(serializers.ModelSerializer):
     def get_property_type_display(self, obj):
         return obj.get_property_type_display()
 
-    def get_image_url(self, obj):
-        request = self.context.get("request")
-        if obj.image:
-            return request.build_absolute_uri(obj.image.url)
-        return None
-
 
 class ListingDetailSerializer(ListingSerializer):
     seller = SellerAccountPartialDetailSerializer()

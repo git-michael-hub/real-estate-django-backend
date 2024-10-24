@@ -119,7 +119,7 @@ export default function Details() {
                             )}
                         </div>
                         <section>
-                            <ContactForm listing={listing}></ContactForm>
+                            <ContactForm listing={listing} seller={listing.seller}></ContactForm>
                         </section>
                     </>
                 ) : (

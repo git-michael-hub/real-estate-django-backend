@@ -15,6 +15,7 @@
     --text-color-3: #788593;
 
     --link-color-1: var(--color-accent-2);
+    --link-color-1-hov: var(--color-accent-2-hov);
 
     --font-family-primary: "Roboto", "Arial", sans-serif;
     --font-family-secondary: "Ubuntu", sans-serif;

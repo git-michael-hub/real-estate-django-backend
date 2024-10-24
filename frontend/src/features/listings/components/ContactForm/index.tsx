@@ -2,31 +2,34 @@ import { Link } from "react-router-dom";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
 import InputBasic from "../../../../components/Forms/InputBasic";
 import TextAreaBasic from "../../../../components/Forms/TextAreaBasic";
-import { ListingType } from "../ListingEntry";
+import { ListingType, SellerListType } from "../ListingEntry";
 import "./index.css";
 
 type ContactFormProps = {
-    listing: ListingType;
+    listing?: ListingType;
+    seller: SellerListType;
 };
 
-export default function ContactForm({ listing }: ContactFormProps) {
+export default function ContactForm({ listing, seller }: ContactFormProps) {
     return (
         <form className="contact-form">
             <h3>Contact Agent</h3>
             <div className="seller-contact-info-container">
-                <img src={listing?.seller.seller_image_url} alt="" />
+                <Link to={`/agents/@${seller.username}`}>
+                    <img src={seller.seller_image_url} alt="" />
+                </Link>
                 <ul>
-                    <Link to={""}>
+                    <Link to={`/agents/@${seller.username}`}>
                         <b>
-                            {listing?.seller.first_name} {listing?.seller.last_name}
+                            {seller.first_name} {seller.last_name}
                         </b>
                     </Link>
                     <li>
-                        <i className="fa-solid fa-phone"></i> {listing?.seller.contact_number_1}
+                        <i className="fa-solid fa-phone"></i> {seller.contact_number_1}
                     </li>
-                    {listing.seller.contact_number_2 ? (
+                    {seller.contact_number_2 ? (
                         <li>
-                            <i className="fa-solid fa-phone"></i> {listing?.seller.contact_number_2}
+                            <i className="fa-solid fa-phone"></i> {seller.contact_number_2}
                         </li>
                     ) : (
                         <></>
@@ -34,6 +37,7 @@ export default function ContactForm({ listing }: ContactFormProps) {
                 </ul>
             </div>
             <div className="contact-form-input">
+                {listing ? <input type="hidden" name="listing_id" value={listing.id} /> : <></>}
                 <InputBasic name="name" placeholder="Name"></InputBasic>
                 <InputBasic name="Email" placeholder="Email"></InputBasic>
                 <InputBasic name="Phone" placeholder="Phone"></InputBasic>

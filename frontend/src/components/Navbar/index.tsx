@@ -46,7 +46,7 @@ export default function Navbar() {
                     <Link to={"/listings"} className="navbar-item">
                         Listings
                     </Link>
-                    <Link to={"/"} className="navbar-item">
+                    <Link to={"/agents"} className="navbar-item">
                         Find Agent
                     </Link>
                     {user ? (
@@ -133,7 +133,7 @@ export default function Navbar() {
                                     <Link to={"/listings"}>Listings</Link>
                                 </li>
                                 <li>
-                                    <Link to={"/"}>Find Agent</Link>
+                                    <Link to={"/agents"}>Find Agent</Link>
                                 </li>
                             </ListDropDown>
                         ) : (

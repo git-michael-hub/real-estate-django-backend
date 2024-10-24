@@ -7,6 +7,7 @@ import helperFn from "../../../../ts/helper";
 import BtnIcon from "../../../../components/Buttons/BtnIcon";
 
 export type SellerListType = {
+    id: number;
     first_name: string;
     last_name: string;
     username: string;
@@ -141,7 +142,7 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                             <div className="listing-seller-and-price">
                                 <div>
                                     <img src={listing.seller.seller_image_url} alt="" />
-                                    <Link to={`/listings/${listing.id}`}>
+                                    <Link to={`/agents/@${listing.seller.username}`}>
                                         {listing.seller.first_name} {listing.seller.last_name}
                                     </Link>
                                 </div>

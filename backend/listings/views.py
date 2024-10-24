@@ -31,7 +31,7 @@ class ListingListCreateView(generics.ListCreateAPIView):
         listings = self.get_queryset()
 
         if username:
-            listings = listings.filter(owner__username=username)
+            listings = listings.filter(seller__username=username)
         if property_type == 'HL' or property_type == 'CL' or property_type == 'RL' or property_type == 'CO':
             listings = listings.filter(property_type=property_type)
         if listing_type == 'FS' or listing_type == 'FR' or listing_type == 'FC':

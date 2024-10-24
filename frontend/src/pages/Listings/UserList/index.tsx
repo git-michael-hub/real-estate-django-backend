@@ -8,7 +8,7 @@ export default function UserList() {
     useEffect(() => {
         const fetchList = async () => {
             const response = await apiFns.get(`listings/?username=${user?.username}`);
-            const data = await response.json();
+            const data = response.data;
             console.log(data);
         };
 

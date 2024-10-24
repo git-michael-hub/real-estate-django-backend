@@ -20,6 +20,7 @@ class TestSellerSetUp(TestUserSetUp):
         self.seller_application_create_url = reverse('seller-application')
         self.approve_seller_application_url = reverse(
             'admin:sellers_sellerapplication_change', args=(self.seller_application_form.id,))
+        self.seller_list_url = reverse('seller-list')
         self.seller_detail_url = reverse(
             'seller-detail-update', kwargs={'username': self.seller_account.user.username})
         self.seller_update_url = reverse(
@@ -66,6 +67,10 @@ class TestSeller(TestSellerSetUp):
             self.seller_application_create_url, seller_validation_data)
 
         self.assertEqual(res2.status_code, 201)
+
+    def test_user_can_get_seller_list(self):
+        res = self.client.get(self.seller_list_url)
+        self.assertEqual(res.status_code, 200)
 
     def test_user_can_get_seller_details(self):
         res = self.client.get(self.seller_detail_url)
