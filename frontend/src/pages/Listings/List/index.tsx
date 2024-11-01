@@ -1,34 +1,24 @@
 import { useEffect, useState } from "react";
 import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
-import ListingEntry, { ListingType } from "../../../features/listings/components/ListingEntry";
-import "./index.css";
-import useAuth from "../../../features/auth/hooks/useAuth";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import useAuth from "../../../features/auth/hooks/useAuth";
+import useListing from "../../../features/listings/hooks/useListings";
+import ListingEntry from "../../../features/listings/components/ListingEntry";
 import ListingSearchForm from "../../../features/listings/components/ListingSearchForm";
-
-type ListListingStateType = ListingType[];
+import PageBtns from "../../../components/PageBtns";
+import "./index.css";
 
 export default function List() {
-    const [searchForm, setSearchForm] = useState<FormData>(new FormData());
-    const [listings, setListings] = useState<ListListingStateType>([]);
     const [favoriteListings, setFavoriteListings] = useState([]);
     const { user } = useAuth();
+    const { listings, page, pages, nextPageLink, previousPageLink, fetchListingsAndUpdateState } = useListing();
 
     useEffect(() => {
-        const fetchListings = async (): Promise<void> => {
-            try {
-                const response: APIResponseType = await apiFns.get(`listings/${window.location.search}`);
-                const listings: ListListingStateType = response.data;
-                setListings(listings);
-                console.log(listings);
-            } catch (error: unknown) {
-                console.log(
-                    `An error occurred at function ${fetchListings.name}() inside pages/Listings/index.tsx. \n${error}`
-                );
-            }
+        const initListings = async (): Promise<void> => {
+            await fetchListingsAndUpdateState(window.location.search);
         };
 
-        const fetchFavorites = async (): Promise<void> => {
+        const initFavorites = async (): Promise<void> => {
             const token: Token = cookieHandler.get("token");
             if (!token || !user) return;
 
@@ -39,37 +29,51 @@ export default function List() {
                 setFavoriteListings(favorites.listings);
             } catch (error: unknown) {
                 console.log(
-                    `An error occurred at function ${fetchFavorites.name}() inside pages/Listings/index.tsx. \n${error}`
+                    `An error occurred at function ${initFavorites.name}() inside pages/Listings/index.tsx. \n${error}`
                 );
             }
         };
 
-        fetchFavorites();
-        fetchListings();
-    }, [searchForm]);
+        initFavorites();
+        initListings();
+    }, []);
 
     return (
         <main id="listings-page">
             <div id="listing-grid-container">
-                <div>
+                <header>
                     <h2>Listings</h2>
                     <hr />
-                </div>
+                </header>
                 <section>
-                    <ListingSearchForm setSearchForm={setSearchForm}></ListingSearchForm>
+                    <ListingSearchForm></ListingSearchForm>
                 </section>
-                <ul>
-                    {listings.map((listing) => {
-                        return (
-                            <ListingEntry
-                                listing={listing}
-                                key={listing.id}
-                                favoriteListings={favoriteListings}
-                                setFavoriteListings={setFavoriteListings}
-                            />
-                        );
-                    })}
-                </ul>
+                <div>
+                    {listings.length > 0 ? (
+                        <ul>
+                            {listings.map((listing) => {
+                                return (
+                                    <ListingEntry
+                                        listing={listing}
+                                        key={listing.id}
+                                        favoriteListings={favoriteListings}
+                                        setFavoriteListings={setFavoriteListings}
+                                    />
+                                );
+                            })}
+                        </ul>
+                    ) : (
+                        <p>No listings found.</p>
+                    )}
+                    <PageBtns
+                        page={page}
+                        pages={pages}
+                        nextPageLink={nextPageLink}
+                        previousPageLink={previousPageLink}
+                        action={fetchListingsAndUpdateState}
+                        enableNavigate={true}
+                    ></PageBtns>
+                </div>
             </div>
         </main>
     );

@@ -18,3 +18,11 @@
     background-color: var(--link-color-1);
     transition: color 0.3s, background-color 0.3s;
 }
+
+.icon-btn:disabled {
+    color: var(--text-color-3);
+    border: 1px solid var(--text-color-3);
+    background-color: var(--color-secondary);
+    opacity: 0.5;
+    cursor: default;
+}

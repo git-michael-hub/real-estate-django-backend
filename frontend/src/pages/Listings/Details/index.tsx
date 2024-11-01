@@ -1,27 +1,22 @@
-import { useEffect, useState } from "react";
-import { apiFns, APIResponseType } from "../../../ts/api-service";
-import { ListingType } from "../../../features/listings/components/ListingEntry";
-import { UserType } from "../../../features/auth/context/AuthProvider";
-import ContactForm from "../../../features/listings/components/ContactForm";
-import "./index.css";
-import Tag from "../../../components/Tag";
+import { useEffect } from "react";
 import helperFn from "../../../ts/helper";
+import { ListingType } from "../../../features/listings/context/ListingsProvider";
+import ContactForm from "../../../features/listings/components/ContactForm";
 import BtnIcon from "../../../components/Buttons/BtnIcon";
 import BtnIconActive from "../../../components/Buttons/BtnIconActive";
-
-type DetailsListingStateType = (Omit<ListingType, "owner"> & { owner: UserType }) | null;
+import Tag from "../../../components/Tag";
+import "./index.css";
+import useListing from "../../../features/listings/hooks/useListings";
 
 export default function Details() {
-    const [listing, setListing] = useState<DetailsListingStateType>(null);
+    const { listing, setListing, fetchListing } = useListing();
 
     useEffect(() => {
-        const fetchListing = async () => {
-            const response: APIResponseType = await apiFns.get(`${window.location.pathname}`);
-            const listing: DetailsListingStateType = response.data;
-            response.success ? setListing(listing) : setListing(null);
-            console.log(listing);
+        const initState = async () => {
+            const listing: ListingType | null = await fetchListing(window.location.pathname);
+            setListing(listing);
         };
-        fetchListing();
+        initState();
     }, []);
 
     return (

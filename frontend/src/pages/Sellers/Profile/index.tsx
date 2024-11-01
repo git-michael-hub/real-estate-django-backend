@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import ContactForm from "../../../features/listings/components/ContactForm";
 import "./index.css";
 import { apiFns, APIResponseType } from "../../../ts/api-service";
-import ListingEntry, { ListingType, SellerListType } from "../../../features/listings/components/ListingEntry";
+import ListingEntry from "../../../features/listings/components/ListingEntry";
+import { SellerDetailsType } from "../../../features/sellers/context/SellersProvider";
 import BtnBasic from "../../../components/Buttons/BtnBasic";
-
-type SellerDetailsType = SellerListType & { bio: string };
+import useListing from "../../../features/listings/hooks/useListings";
+import PageBtns from "../../../components/PageBtns";
 
 export default function Profile() {
     const [seller, setSeller] = useState<SellerDetailsType>();
-    const [listings, setListing] = useState<ListingType[]>();
     const [favoriteListings, setFavoriteListings] = useState([]);
+    const { listings, previousPageLink, nextPageLink, page, pages, fetchListingsAndUpdateState } = useListing();
 
     useEffect(() => {
         const username = window.location.pathname.slice(9);
@@ -18,14 +19,11 @@ export default function Profile() {
         const fetchSeller = async () => {
             const response: APIResponseType = await apiFns.get(`sellers/${username}`);
             const seller: SellerDetailsType = response.data;
-            console.log(seller);
             setSeller(seller);
         };
 
         const fetchListings = async () => {
-            const response: APIResponseType = await apiFns.get(`listings/?username=${username}`);
-            const listings: ListingType[] = response.data;
-            setListing(listings);
+            await fetchListingsAndUpdateState(`?username=${username}`);
         };
 
         fetchSeller();
@@ -70,24 +68,33 @@ export default function Profile() {
                             </BtnBasic>
                         </div>
                         {listings ? (
-                            <ul>
-                                {listings.map((listing) => {
-                                    return (
-                                        <ListingEntry
-                                            listing={listing}
-                                            key={listing.id}
-                                            favoriteListings={favoriteListings}
-                                            setFavoriteListings={setFavoriteListings}
-                                        />
-                                    );
-                                })}
-                            </ul>
+                            <>
+                                <ul>
+                                    {listings.map((listing) => {
+                                        return (
+                                            <ListingEntry
+                                                listing={listing}
+                                                key={listing.id}
+                                                favoriteListings={favoriteListings}
+                                                setFavoriteListings={setFavoriteListings}
+                                            />
+                                        );
+                                    })}
+                                </ul>
+                                <PageBtns
+                                    page={page}
+                                    pages={pages}
+                                    previousPageLink={previousPageLink}
+                                    nextPageLink={nextPageLink}
+                                    action={fetchListingsAndUpdateState}
+                                ></PageBtns>
+                            </>
                         ) : (
                             <></>
                         )}
                     </div>
                     <div>
-                        <ContactForm seller={seller as SellerListType}></ContactForm>
+                        <ContactForm seller={seller}></ContactForm>
                     </div>
                 </div>
             ) : (

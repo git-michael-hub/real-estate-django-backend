@@ -33,9 +33,9 @@ class SellerAccountDetailUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerAccount
         fields = ['id', 'first_name', 'last_name', 'username', 'email', 'contact_number_1',
-                  'contact_number_2', 'seller_image_url', 'bio', 'address', 'birthdate', 'gender']
+                  'contact_number_2', 'seller_image_url', 'bio', 'address', 'birthdate', 'gender', 'date_joined']
         read_only_fields = [
-            'id', 'first_name', 'last_name', 'username', 'email', 'birthdate', 'gender', 'seller_image_url']
+            'id', 'first_name', 'last_name', 'username', 'email', 'birthdate', 'gender', 'seller_image_url', 'date_joined']
         extra_kwargs = {
             'password': {'write_only': True}
         }

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { apiFns, APIResponseType } from "../../../ts/api-service";
-import { SellerListType } from "../../../features/listings/components/ListingEntry";
+import { SellerType } from "../../../features/sellers/context/SellersProvider";
 import "./index.css";
 import { Link } from "react-router-dom";
 import BtnBasic from "../../../components/Buttons/BtnBasic";
 
 export default function List() {
-    const [sellers, setSellers] = useState<SellerListType[]>([]);
+    const [sellers, setSellers] = useState<SellerType[]>([]);
 
     useEffect(() => {
         const fetchSellers = async () => {
             const response: APIResponseType = await apiFns.get("sellers/");
-            const sellers: SellerListType[] = response.data;
+            const sellers: SellerType[] = response.data;
             console.log(sellers);
             setSellers(sellers);
         };

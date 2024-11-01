@@ -5,46 +5,15 @@ import { apiFns, APIResponseType, HeaderType } from "../../../../ts/api-service"
 import cookieHandler, { Token } from "../../../../ts/cookie-handler";
 import helperFn from "../../../../ts/helper";
 import BtnIcon from "../../../../components/Buttons/BtnIcon";
+import { ListingType } from "../../context/ListingsProvider";
 
-export type SellerListType = {
-    id: number;
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
-    contact_number_1: number;
-    contact_number_2?: number;
-    seller_image_url: string;
-};
-
-export type ListingType = {
-    id: number;
-    seller: SellerListType;
-    title: string;
-    listing_type: string;
-    listing_type_display: string;
-    property_type: string;
-    property_type_display: string;
-    price: number;
-    image?: string;
-    property_size: number;
-    description: string;
-    is_available: boolean;
-    bedrooms?: number;
-    bathrooms?: number;
-    province: string;
-    city: string;
-    baranggay: string;
-    street: string;
-};
-
-type ListingEntryProp = {
+type ListingEntryPropType = {
     listing: ListingType;
     favoriteListings: any[]; // MUST CREATE TYPE FOR FAVORITELISTINGS!
     setFavoriteListings: React.Dispatch<React.SetStateAction<never[]>>;
 };
 
-export default function ListingEntry({ listing, favoriteListings, setFavoriteListings }: ListingEntryProp) {
+export default function ListingEntry({ listing, favoriteListings, setFavoriteListings }: ListingEntryPropType) {
     const token: Token = cookieHandler.get("token");
     const { user } = useAuth();
 

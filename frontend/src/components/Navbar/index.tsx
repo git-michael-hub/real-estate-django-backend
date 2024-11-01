@@ -3,8 +3,9 @@ import { useState } from "react";
 import useAuth from "../../features/auth/hooks/useAuth";
 import ListDropDown from "../List/ListDropDown";
 import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
+import BtnIconRound from "../Buttons/BtnIconRound";
+
 import "./index.css";
-import BtnIconRound from "../Buttons/BtnIcon copy";
 
 export default function Navbar() {
     const [isListDropdownVisible, setIsListDropdownVisible] = useState<boolean>(false);
@@ -43,7 +44,7 @@ export default function Navbar() {
                     <Link to={"/"} className="navbar-item">
                         About Us
                     </Link>
-                    <Link to={"/listings"} className="navbar-item">
+                    <Link to={"/listings/?page=1"} className="navbar-item">
                         Listings
                     </Link>
                     <Link to={"/agents"} className="navbar-item">
@@ -130,7 +131,7 @@ export default function Navbar() {
                                     <Link to={"/"}>About Us</Link>
                                 </li>
                                 <li>
-                                    <Link to={"/listings"}>Listings</Link>
+                                    <Link to={"/listings/?page=1"}>Listings</Link>
                                 </li>
                                 <li>
                                     <Link to={"/agents"}>Find Agent</Link>

@@ -1,0 +1,10 @@
+.page-btn-container {
+    display: flex;
+    gap: 5px;
+}
+
+.page-btn-container .icon-btn,
+.page-btn-container .icon-btn-active {
+    width: 30px;
+    height: 30px;
+}

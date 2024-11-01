@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import BtnBasic from "../../../../components/Buttons/BtnBasic";
 import InputBasic from "../../../../components/Forms/InputBasic";
 import TextAreaBasic from "../../../../components/Forms/TextAreaBasic";
-import { ListingType, SellerListType } from "../ListingEntry";
+import { ListingType } from "../../context/ListingsProvider";
+import { SellerType, SellerDetailsType } from "../../../sellers/context/SellersProvider";
 import "./index.css";
 
 type ContactFormProps = {
     listing?: ListingType;
-    seller: SellerListType;
+    seller: SellerType | SellerDetailsType;
 };
 
 export default function ContactForm({ listing, seller }: ContactFormProps) {
