@@ -4,14 +4,19 @@ import { apiFns, APIResponseType } from "../../../ts/api-service";
 
 export type ListingType = {
     id: number;
-    seller: SellerType;
+    seller: number;
+    seller_details: SellerType;
     title: string;
     listing_type: string;
     listing_type_display: string;
     property_type: string;
     property_type_display: string;
     price: number;
-    image?: string;
+    image1?: string;
+    image2?: string;
+    image3?: string;
+    image4?: string;
+    image5?: string;
     property_size: number;
     description: string;
     is_available: boolean;

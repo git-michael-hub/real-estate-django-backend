@@ -19,9 +19,9 @@ function App() {
                 <Route path="/agents" element={<Pages.Sellers.List />} />
                 <Route path="/agents/:username" element={<Pages.Sellers.Profile />} />
 
-                <Route element={<RequireAuth roles={["seller"]} />}>
-                    <Route path="/listings/new" element={<Pages.Listings.New />} />
-                </Route>
+                {/* <Route element={<RequireAuth roles={["seller"]} />}> */}
+                <Route path="/listings/new" element={<Pages.Listings.New />} />
+                {/* </Route> */}
             </Route>
         </Routes>
     );

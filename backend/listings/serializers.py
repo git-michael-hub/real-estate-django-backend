@@ -2,14 +2,16 @@ from rest_framework import serializers
 
 from .models import Listing
 
-from sellers.serializers import SellerAccountPartialDetailSerializer
+from sellers.serializers import SellerAccountPartialDetailSerializer, SellerAccountDetailUpdateSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
 
     listing_type_display = serializers.SerializerMethodField()
     property_type_display = serializers.SerializerMethodField()
-    seller = SellerAccountPartialDetailSerializer()
+    seller_details = SellerAccountPartialDetailSerializer(
+        source='seller', required=False)
+    is_available = serializers.BooleanField(required=True)
 
     class Meta:
         model = Listing
@@ -34,9 +36,13 @@ class ListingSerializer(serializers.ModelSerializer):
     def get_property_type_display(self, obj):
         return obj.get_property_type_display()
 
+    # def get_seller_details(self, obj):
+    #     serializer = SellerAccountPartialDetailSerializer(obj.seller)
+    #     return serializer.data
+
 
 class ListingDetailSerializer(ListingSerializer):
-    seller = SellerAccountPartialDetailSerializer()
+    seller = SellerAccountDetailUpdateSerializer()
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields

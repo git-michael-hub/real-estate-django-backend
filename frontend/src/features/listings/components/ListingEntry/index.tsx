@@ -30,24 +30,24 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
             {listing.is_available ? (
                 <>
                     <li key={listing.id} className="listing-entry">
-                        {listing.image ? (
+                        {listing.image1 ? (
                             <div className="listing-image-container">
                                 <Link to={`/listings/${listing.id}`}>
-                                    <img src={listing.image} alt="" className="listing-image" />
+                                    <img src={listing.image1} alt="" className="listing-image" />
                                 </Link>
                             </div>
                         ) : (
                             <figure className="listing-image-container">
                                 <Link to={`/listings/${listing.id}`}>
                                     <img
-                                        src={"/images/256px-Image_not_available.jpg"}
+                                        src={"/images/256px-Image_not_available.png"}
                                         alt=""
                                         className="listing-image"
                                     />
                                 </Link>
                                 {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
                                 <figcaption className="listing-image-figcaption">
-                                    Image source:
+                                    Image source:{" "}
                                     <a href="https://commons.wikimedia.org/wiki/File:Image_not_available.png">
                                         no-image-available.png
                                     </a>
@@ -110,9 +110,9 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                             </div>
                             <div className="listing-seller-and-price">
                                 <div>
-                                    <img src={listing.seller.seller_image_url} alt="" />
-                                    <Link to={`/agents/@${listing.seller.username}`}>
-                                        {listing.seller.first_name} {listing.seller.last_name}
+                                    <img src={listing.seller_details.seller_image_url} alt="" />
+                                    <Link to={`/agents/@${listing.seller_details.username}`}>
+                                        {listing.seller_details.first_name} {listing.seller_details.last_name}
                                     </Link>
                                 </div>
                                 {listing.listing_type === "FR" ? (

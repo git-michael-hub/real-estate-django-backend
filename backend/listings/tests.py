@@ -141,7 +141,7 @@ class TestListingsView(TestListingsSetUp):
         self.assertEqual(res.status_code, 200)
 
         property_types = []
-        for data in res.data:
+        for data in res.data['results']:
             property_types.append(data['property_type'])
 
         self.assertIn('HL', property_types)

@@ -1,20 +1,91 @@
 #new-listing-page {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
 }
 
-#new-listing-page form {
-    max-width: 480px;
+#new-listing-page-container {
+    max-width: 690px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-#new-listing-page form h2 {
-    margin: 0;
+#new-listing-page-container > section {
+    min-width: 351px;
 }
 
-#new-listing-page form section {
-    margin: 30px 0;
+#new-listing-page-container .listing-details > div {
+    position: relative;
+}
+
+#new-listing-page-container .textarea-basic {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#new-listing-page-container .edit-listing-info {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+#new-listing-page-container .edit-listing-info > span {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#new-listing-page-container .edit-listing-info > span i {
+    width: 1rem;
+    color: var(--color-accent-2);
+}
+
+#new-listing-page-container .listing-image-list > div {
+    position: relative;
+}
+
+#new-listing-page-container .header-section {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+#new-listing-page-container .header-section .edit-btn {
+    right: 0;
+    bottom: unset;
+}
+
+#new-listing-page-container .header-edit .row {
+    display: grid;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+#new-listing-page-container .header-edit label {
+    color: var(--text-color-3);
+}
+
+#new-listing-page-container .header-edit .row-2 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#new-listing-page-container .header-edit .row-3 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+#new-listing-page-container .header-edit .input-basic {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+#new-listing-page-container .header-edit .select-with-label {
+    padding: 14.5px 10px;
+    line-height: 30px;
+}
+
+#new-listing-page-container input[type="file"] {
+    display: none;
+}
+
+#create-new-listing-btn {
+    width: fit-content;
+    position: relative;
 }

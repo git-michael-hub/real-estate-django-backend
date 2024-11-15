@@ -11,4 +11,4 @@ from django.utils.html import format_html
 class ListingAdmin(admin.ModelAdmin):
     list = [field.name for field in Listing._meta.get_fields()]
 
-    list_display = ['id', 'title', 'seller']
+    list_display = ['id', 'title']

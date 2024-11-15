@@ -4,6 +4,8 @@
     border: 1px solid var(--border-color-1);
     outline: none;
     line-height: 30px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .input-basic:focus {

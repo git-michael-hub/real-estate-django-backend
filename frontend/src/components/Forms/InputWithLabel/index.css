@@ -6,6 +6,8 @@
 .input-with-label label {
     color: var(--color-accent-1);
     font-weight: 400;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .input-with-label input {
@@ -14,6 +16,8 @@
     border: 1px solid var(--border-color-1);
     outline: none;
     line-height: 30px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .input-with-label input:focus {

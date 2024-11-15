@@ -4,8 +4,8 @@ from django.core.validators import validate_image_file_extension
 from sellers.models import SellerAccount
 
 
-def upload_to(instance, filename):
-    return 'images/listings/%d' % (instance.id)
+def upload_to(instance):
+    return 'images/listings/'
 
 
 class Listing(models.Model):
@@ -20,11 +20,20 @@ class Listing(models.Model):
     listing_type = models.CharField(choices=LISTING_TYPES, max_length=20)
     property_type = models.CharField(choices=PROPERTY_TYPES, max_length=20)
     price = models.PositiveIntegerField()
-    image = models.ImageField(blank=True, null=True,
-                              upload_to=upload_to, validators=[validate_image_file_extension])
+    image1 = models.ImageField(blank=True, null=True,
+                               upload_to='images/listings/', validators=[validate_image_file_extension])
+    image2 = models.ImageField(blank=True, null=True,
+                               upload_to='images/listings/', validators=[validate_image_file_extension])
+    image3 = models.ImageField(blank=True, null=True,
+                               upload_to='images/listings/', validators=[validate_image_file_extension])
+    image4 = models.ImageField(blank=True, null=True,
+                               upload_to='images/listings/', validators=[validate_image_file_extension])
+    image5 = models.ImageField(blank=True, null=True,
+                               upload_to='images/listings/', validators=[validate_image_file_extension])
+
     property_size = models.PositiveIntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
-    is_available = models.BooleanField(default=False)
+    is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Only for House and Lot and Condominuim property types

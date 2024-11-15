@@ -1,10 +1,10 @@
 const LOCALHOST_URL: string = "http://localhost:8000/";
 
-export type HeaderType = { Authorization: string };
+export type HeaderType = { Authorization: string; "Content-Type"?: string };
 export type PayloadType = {
     method: "GET" | "POST" | "PATCH" | "DELETE";
     headers?: HeaderType;
-    body?: FormData;
+    body?: FormData | string;
 };
 
 export type APIResponseType = { success: boolean; data: any };
@@ -21,7 +21,7 @@ const get = async (endpoint: string, headers?: HeaderType): Promise<APIResponseT
     return await processResponse(endpoint, payload);
 };
 
-const post = async (endpoint: string, body: FormData, headers?: HeaderType): Promise<APIResponseType> => {
+const post = async (endpoint: string, body: FormData | string, headers?: HeaderType): Promise<APIResponseType> => {
     const payload: PayloadType = { method: "POST" };
     if (headers) payload.headers = headers;
     if (body) payload.body = body;

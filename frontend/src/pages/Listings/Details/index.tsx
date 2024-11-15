@@ -49,8 +49,8 @@ export default function Details() {
                             )}
                         </header>
                         <div className="listing-details">
-                            {listing.image ? (
-                                <img src={listing.image} alt="" className="listing-image" />
+                            {listing.image1 ? (
+                                <img src={listing.image1} alt="" className="listing-image" />
                             ) : (
                                 <figure>
                                     <img
@@ -73,16 +73,17 @@ export default function Details() {
                             )}
 
                             <div className="listing-image-list">
-                                <img src={listing.image} alt="" />
-                                <img src={listing.image} alt="" />
-                                <img src={listing.image} alt="" />
-                                <img src={listing.image} alt="" />
-                                <img src={listing.image} alt="" />
+                                {listing.image1 ? <img src={listing.image1} alt="" /> : <></>}
+                                {listing.image2 ? <img src={listing.image2} alt="" /> : <></>}
+                                {listing.image3 ? <img src={listing.image3} alt="" /> : <></>}
+                                {listing.image4 ? <img src={listing.image4} alt="" /> : <></>}
+                                {listing.image5 ? <img src={listing.image5} alt="" /> : <></>}
                             </div>
 
                             <div>
-                                <h3>Overview</h3>
-
+                                <span>
+                                    <h3>Overview</h3>
+                                </span>
                                 <div className="listing-info">
                                     <span>
                                         <i className="fa-solid fa-expand"></i> {listing.property_size.toString()} sqm
@@ -106,7 +107,9 @@ export default function Details() {
 
                             {listing.description ? (
                                 <div className="listing-description">
-                                    <h3>Description</h3>
+                                    <h3>
+                                        <span>Description</span>
+                                    </h3>
                                     <p>{listing.description}</p>
                                 </div>
                             ) : (
@@ -114,7 +117,7 @@ export default function Details() {
                             )}
                         </div>
                         <section>
-                            <ContactForm listing={listing} seller={listing.seller}></ContactForm>
+                            <ContactForm listing={listing} seller={listing.seller_details}></ContactForm>
                         </section>
                     </>
                 ) : (

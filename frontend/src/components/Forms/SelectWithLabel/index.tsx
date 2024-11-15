@@ -1,13 +1,13 @@
 import "./index.css";
 
-type SelectBasicType = {
+type SelectWithLabelType = {
     label: string;
     children: React.ReactNode;
     labelProps?: React.ComponentProps<"label">;
     selectProps?: React.ComponentProps<"select">;
 };
 
-export default function SelectBasic({ label, children, labelProps, selectProps }: SelectBasicType) {
+export default function SelectWithLabel({ label, children, labelProps, selectProps }: SelectWithLabelType) {
     return (
         <div className="select-with-label-container">
             <label {...labelProps} className="select-with-label-label">

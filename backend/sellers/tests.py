@@ -95,14 +95,14 @@ class TestSeller(TestSellerSetUp):
         res = self.client.patch(self.seller_update_url, data,
                                 headers=self.create_auth_header(token))
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['first_name'], data['first_name'])
-        self.assertEqual(res.data['last_name'], data['last_name'])
         self.assertEqual(res.data['contact_number_1'],
                          data['contact_number_1'])
         self.assertEqual(res.data['contact_number_2'],
                          data['contact_number_2'])
 
-        # birthdate and gender are non-editable fields
+        # below are non-editable fields
+        self.assertNotEqual(res.data['first_name'], data['first_name'])
+        self.assertNotEqual(res.data['last_name'], data['last_name'])
         self.assertNotEqual(self.seller_account.birthdate, data['birthdate'])
         self.assertNotEqual(self.seller_account.gender, data['gender'])
 

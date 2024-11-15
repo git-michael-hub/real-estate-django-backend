@@ -3,6 +3,7 @@
     grid-template-columns: auto 1fr;
     max-width: 1200px;
     margin: auto;
+    margin-bottom: 20px;
 }
 
 #listing-grid-container > header {

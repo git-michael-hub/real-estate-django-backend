@@ -11,7 +11,7 @@ export default function Navbar() {
     const [isListDropdownVisible, setIsListDropdownVisible] = useState<boolean>(false);
     const [isNavDropdownVisible, setIsNavDropdownVisible] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { user, logout, isSeller } = useAuth();
+    const { user, logout } = useAuth();
 
     async function onClickLogout(): Promise<void> {
         const messages: FormMessageStateType = await logout();
@@ -56,18 +56,13 @@ export default function Navbar() {
                                 <i className="fa-solid fa-user"></i>
                             </BtnIconRound>
                             {isListDropdownVisible ? (
-                                <ListDropDown>
+                                <ListDropDown onClick={() => setIsListDropdownVisible(false)}>
                                     <li>
-                                        <Link to={"/listings/new"}>@{user.username}</Link>
+                                        <Link to={""}>@{user.username}</Link>
                                     </li>
-                                    {isSeller() ? (
-                                        <li>
-                                            <Link to={"/listings/new"}>Create Listing</Link>
-                                        </li>
-                                    ) : (
-                                        <></>
-                                    )}
-
+                                    <li>
+                                        <Link to={"/listings/new"}>Create Listing</Link>
+                                    </li>
                                     <li>
                                         <button type="button" onClick={onClickLogout}>
                                             Logout
@@ -91,17 +86,13 @@ export default function Navbar() {
                                 <i className="fa-solid fa-user"></i>
                             </BtnIconRound>
                             {isListDropdownVisible ? (
-                                <ListDropDown>
+                                <ListDropDown onClick={() => setIsListDropdownVisible(false)}>
                                     <li>
-                                        <Link to={"/listings/new"}>@{user.username}</Link>
+                                        <Link to={""}>@{user.username}</Link>
                                     </li>
-                                    {isSeller() ? (
-                                        <li>
-                                            <Link to={"/listings/new"}>Create Listing</Link>
-                                        </li>
-                                    ) : (
-                                        <></>
-                                    )}
+                                    <li>
+                                        <Link to={"/listings/new"}>Create Listing</Link>
+                                    </li>
 
                                     <li>
                                         <button type="button" onClick={onClickLogout}>
@@ -123,7 +114,7 @@ export default function Navbar() {
                             <i className="fa-solid fa-bars"></i>
                         </BtnIconRound>
                         {isNavDropdownVisible ? (
-                            <ListDropDown>
+                            <ListDropDown onClick={() => setIsNavDropdownVisible(false)}>
                                 <li>
                                     <Link to={"/"}>Home</Link>
                                 </li>

@@ -1,0 +1,18 @@
+.edit-btn {
+    color: var(--color-accent-2);
+    background: none;
+    border: none;
+    font-family: var(--default-font-family);
+    padding: 0;
+    font-size: 0.8em;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    gap: 0.4em;
+}
+
+.edit-btn:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
