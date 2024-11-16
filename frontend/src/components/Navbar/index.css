@@ -40,7 +40,7 @@
 
 #navbar span {
     display: inline-flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     position: relative;
 }
@@ -60,6 +60,7 @@
     top: 75px;
     animation: nav-dropdown-appear;
     animation-duration: 0.3s;
+    width: 200px;
 }
 
 #navbar .nav-menu {
@@ -89,11 +90,6 @@
     #navbar .nav-menu {
         display: inline-flex;
         gap: 10px;
-    }
-
-    #navbar span {
-        display: inline-flex;
-        justify-content: flex-end;
     }
 
     #navbar .list-drop-down {

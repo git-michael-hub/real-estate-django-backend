@@ -1,9 +1,10 @@
-.basic-btn {
+.basic-btn-active {
     outline: none;
-    border: 1px solid var(--color-accent-2);
+    border: none;
     border-radius: 5px;
     padding: 10px 15px;
-    background-color: var(--color-secondary);
+    border: 1px solid var(--color-accent-2);
+    background-color: var(--color-accent-2);
     width: 100%;
     display: flex;
     gap: 5px;
@@ -12,21 +13,16 @@
     transition: background-color 0.3s;
 }
 
-.basic-btn,
-.basic-btn span {
+.basic-btn-active,
+.basic-btn-active span {
     font-weight: 600;
     font-size: 1.1rem;
-    color: var(--color-accent-2);
+    color: var(--color-secondary);
 }
 
-.basic-btn:hover {
+.basic-btn-active:hover {
     cursor: pointer;
-    color: var(--color-secondary);
     border: 1px solid var(--color-accent-2-hov);
     background-color: var(--color-accent-2-hov);
-    transition: background-color 0.3s, border 0.3s, color 0.3;
-}
-
-.basic-btn:hover span {
-    color: var(--color-secondary);
+    transition: background-color 0.3s;
 }

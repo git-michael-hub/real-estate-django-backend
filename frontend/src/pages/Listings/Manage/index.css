@@ -1,0 +1,173 @@
+#manage-listings-page {
+    display: flex;
+    justify-content: center;
+}
+
+#manage-listings-page > div {
+    width: 1080px;
+    background-color: var(--color-tertiary);
+    height: calc(100vh - 73px);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    box-shadow: var(--default-box-shadow);
+}
+
+#manage-listings-page header {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#manage-listings-page header .row-2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+#manage-listings-page header .row-2 > div {
+    display: flex;
+    gap: 10px;
+}
+#manage-listings-page header nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#manage-listings-page header .basic-btn,
+#manage-listings-page header .basic-btn-active {
+    font-size: 0.8rem;
+    width: fit-content;
+}
+
+#manage-listings-page #listings {
+    overflow-y: scroll;
+}
+
+#manage-listings-page #listings li,
+#manage-listings-page #table-header {
+    display: grid;
+    grid-template-columns: 40px 150px 1fr 120px 120px 100px 90px 90px;
+    gap: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#manage-listings-page #table-header {
+    padding-right: 15px;
+}
+
+#manage-listings-page #listings li div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+}
+
+#manage-listings-page #table-header div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+}
+
+#manage-listings-page #listings .title {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-size: 0.8rem;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+#manage-listings-page #listings .title h3 {
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-accent-2);
+}
+
+#manage-listings-page #listings .title a {
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+#manage-listings-page #listings .title a:hover {
+    color: var(--color-accent-2-hov);
+}
+
+#manage-listings-page #listings .title span {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+#manage-listings-page #listings img {
+    max-width: 150px;
+    aspect-ratio: 1.8/1;
+    object-fit: cover;
+    overflow-clip-margin: unset;
+}
+
+#manage-listings-page #listings .tag-1,
+#manage-listings-page #listings .tag-2 {
+    font-size: 0.7rem;
+}
+
+#manage-listings-page #listings .basic-btn-active {
+    font-size: 0.7rem;
+    width: max-content;
+}
+
+#manage-listings-page .page-btn-container {
+    justify-content: center;
+    padding: 10px;
+}
+
+#manage-listings-page .deleted-listing {
+    grid-area: auto / auto / auto / span 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#background-mask {
+    position: absolute !important;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+#delete-form {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--default-box-shadow);
+    padding: 20px;
+    width: 200px;
+    height: 100px;
+    background-color: var(--color-secondary);
+    border-radius: 5px;
+    height: fit-content;
+    left: calc(50% - 100px);
+    top: calc(50% - 100px);
+}
+
+#delete-form p {
+    margin-top: 0;
+    font-family: var(--font-family-secondary);
+}
+
+#delete-form div {
+    display: flex;
+    gap: 10px;
+}

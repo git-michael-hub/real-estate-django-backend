@@ -8,27 +8,20 @@ import BtnIconRound from "../Buttons/BtnIconRound";
 import "./index.css";
 
 export default function Navbar() {
-    const [isListDropdownVisible, setIsListDropdownVisible] = useState<boolean>(false);
+    const [isUserMenuDropdownVisible, setIsUserMenuDropdownVisible] = useState<boolean>(false);
     const [isNavDropdownVisible, setIsNavDropdownVisible] = useState<boolean>(false);
-    const navigate = useNavigate();
-    const { user, logout } = useAuth();
-
-    async function onClickLogout(): Promise<void> {
-        const messages: FormMessageStateType = await logout();
-        if (messages.success) navigate("/login");
-        console.log(messages);
-    }
+    const { user } = useAuth();
 
     function onClickNavUsername(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
-        setIsListDropdownVisible(!isListDropdownVisible);
+        setIsUserMenuDropdownVisible(!isUserMenuDropdownVisible);
         setIsNavDropdownVisible(false);
     }
 
     function onClickNavMenu(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         setIsNavDropdownVisible(!isNavDropdownVisible);
-        setIsListDropdownVisible(false);
+        setIsUserMenuDropdownVisible(false);
     }
 
     return (
@@ -55,20 +48,8 @@ export default function Navbar() {
                             <BtnIconRound onClick={onClickNavUsername}>
                                 <i className="fa-solid fa-user"></i>
                             </BtnIconRound>
-                            {isListDropdownVisible ? (
-                                <ListDropDown onClick={() => setIsListDropdownVisible(false)}>
-                                    <li>
-                                        <Link to={""}>@{user.username}</Link>
-                                    </li>
-                                    <li>
-                                        <Link to={"/listings/new"}>Create Listing</Link>
-                                    </li>
-                                    <li>
-                                        <button type="button" onClick={onClickLogout}>
-                                            Logout
-                                        </button>
-                                    </li>
-                                </ListDropDown>
+                            {isUserMenuDropdownVisible ? (
+                                <UserMenuDropdown setIsUserMenuDropdownVisible={setIsUserMenuDropdownVisible} />
                             ) : (
                                 <></>
                             )}
@@ -85,21 +66,8 @@ export default function Navbar() {
                             <BtnIconRound onClick={onClickNavUsername}>
                                 <i className="fa-solid fa-user"></i>
                             </BtnIconRound>
-                            {isListDropdownVisible ? (
-                                <ListDropDown onClick={() => setIsListDropdownVisible(false)}>
-                                    <li>
-                                        <Link to={""}>@{user.username}</Link>
-                                    </li>
-                                    <li>
-                                        <Link to={"/listings/new"}>Create Listing</Link>
-                                    </li>
-
-                                    <li>
-                                        <button type="button" onClick={onClickLogout}>
-                                            Logout
-                                        </button>
-                                    </li>
-                                </ListDropDown>
+                            {isUserMenuDropdownVisible ? (
+                                <UserMenuDropdown setIsUserMenuDropdownVisible={setIsUserMenuDropdownVisible} />
                             ) : (
                                 <></>
                             )}
@@ -114,20 +82,7 @@ export default function Navbar() {
                             <i className="fa-solid fa-bars"></i>
                         </BtnIconRound>
                         {isNavDropdownVisible ? (
-                            <ListDropDown onClick={() => setIsNavDropdownVisible(false)}>
-                                <li>
-                                    <Link to={"/"}>Home</Link>
-                                </li>
-                                <li>
-                                    <Link to={"/"}>About Us</Link>
-                                </li>
-                                <li>
-                                    <Link to={"/listings/?page=1"}>Listings</Link>
-                                </li>
-                                <li>
-                                    <Link to={"/agents"}>Find Agent</Link>
-                                </li>
-                            </ListDropDown>
+                            <NavDropdown setIsNavDropdownVisible={setIsNavDropdownVisible} />
                         ) : (
                             <></>
                         )}
@@ -135,5 +90,59 @@ export default function Navbar() {
                 </nav>
             </div>
         </header>
+    );
+}
+
+type UserMenuDropdownType = {
+    setIsUserMenuDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function UserMenuDropdown({ setIsUserMenuDropdownVisible }: UserMenuDropdownType) {
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
+
+    async function onClickLogout(): Promise<void> {
+        const messages: FormMessageStateType = await logout();
+        if (messages.success) navigate("/login");
+        console.log(messages);
+    }
+
+    return (
+        <ListDropDown onClick={() => setIsUserMenuDropdownVisible(false)}>
+            <li>
+                <Link to={""}>@{user?.username}</Link>
+            </li>
+            <li>
+                <Link to={"/listings/manage"}>Manage Listings</Link>
+            </li>
+            <li>
+                <button type="button" onClick={onClickLogout}>
+                    Logout
+                </button>
+            </li>
+        </ListDropDown>
+    );
+}
+
+type NavDropdownType = {
+    setIsNavDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function NavDropdown({ setIsNavDropdownVisible }: NavDropdownType) {
+    return (
+        <ListDropDown onClick={() => setIsNavDropdownVisible(false)}>
+            <li>
+                <Link to={"/"}>Home</Link>
+            </li>
+            <li>
+                <Link to={"/"}>About Us</Link>
+            </li>
+            <li>
+                <Link to={"/listings/?page=1"}>Listings</Link>
+            </li>
+            <li>
+                <Link to={"/agents"}>Find Agent</Link>
+            </li>
+        </ListDropDown>
     );
 }

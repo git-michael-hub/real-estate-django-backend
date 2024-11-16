@@ -4,7 +4,7 @@ import Message from "../../../../components/Message";
 import "./index.css";
 import { FormMessageStateType } from "../../context/AuthProvider";
 import { useState } from "react";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import { Link } from "react-router-dom";
 import FormBasic from "../../../../components/Forms/FormBasic";
 
@@ -46,9 +46,9 @@ export default function ForgotPasswordForm() {
             </div>
 
             <div>
-                <BtnBasic>
+                <BtnBasicActive>
                     <span>Submit Request</span>
-                </BtnBasic>
+                </BtnBasicActive>
             </div>
 
             <div className="login-link">

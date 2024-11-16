@@ -5,7 +5,7 @@ import "./index.css";
 import { useState } from "react";
 import { FormMessageStateType } from "../../context/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import FormBasic from "../../../../components/Forms/FormBasic";
 
 export default function LoginForm() {
@@ -58,9 +58,9 @@ export default function LoginForm() {
             </div>
 
             <div>
-                <BtnBasic>
+                <BtnBasicActive>
                     <span>Login</span>
-                </BtnBasic>
+                </BtnBasicActive>
             </div>
             <div className="register-link">
                 <span>

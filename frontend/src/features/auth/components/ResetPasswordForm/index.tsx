@@ -5,7 +5,7 @@ import Message from "../../../../components/Message";
 import "./index.css";
 import { useState } from "react";
 import { FormMessageStateType } from "../../context/AuthProvider";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 
 export default function ResetPasswordForm() {
     const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
@@ -38,9 +38,9 @@ export default function ResetPasswordForm() {
             {formMessages.confirm_password ? <Message type="error">{formMessages.confirm_password[0]}</Message> : <></>}
 
             <div>
-                <BtnBasic type="submit">
+                <BtnBasicActive type="submit">
                     <span>Change Password</span>
-                </BtnBasic>
+                </BtnBasicActive>
             </div>
 
             <div className="login-link">

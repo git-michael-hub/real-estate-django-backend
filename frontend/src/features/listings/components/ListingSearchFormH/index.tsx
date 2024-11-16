@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import SelectBasic from "../../../../components/Forms/SelectBasic";
 import InputBasic from "../../../../components/Forms/InputBasic";
 import "./index.css";
@@ -53,18 +53,18 @@ export default function ListingSearchFormH() {
 
             <div className="button-container">
                 {isMoreOptionsVisible ? (
-                    <BtnBasic onClick={hideMoreOptions}>
+                    <BtnBasicActive onClick={hideMoreOptions}>
                         <i className="fa-solid fa-caret-down"></i>
                         <span>Hide Options</span>
-                    </BtnBasic>
+                    </BtnBasicActive>
                 ) : (
-                    <BtnBasic onClick={showMoreOptions}>
+                    <BtnBasicActive onClick={showMoreOptions}>
                         <i className="fa-solid fa-caret-right"></i>
                         <span>Show More Options</span>
-                    </BtnBasic>
+                    </BtnBasicActive>
                 )}
 
-                <BtnBasic type="submit">Search</BtnBasic>
+                <BtnBasicActive type="submit">Search</BtnBasicActive>
             </div>
             {isMoreOptionsVisible ? (
                 <div id="more-options-container">

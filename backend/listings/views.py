@@ -29,6 +29,7 @@ class ListingListCreateView(generics.ListCreateAPIView):
         if (min_area is None or min_area == ''):
             min_area = 0
         max_area = request.GET.get('max_area')
+        is_available = request.GET.get('is_available')
 
         listings = self.get_queryset()
 
@@ -42,18 +43,24 @@ class ListingListCreateView(generics.ListCreateAPIView):
             listings = listings.filter(province__icontains=province)
         if city:
             listings = listings.filter(city__icontains=city)
+
         if max_price:
             listings = listings.filter(
                 price__gte=min_price, price__lte=max_price)
         else:
             listings = listings.filter(
                 price__gte=min_price)
+
         if max_area:
             listings = listings.filter(
                 property_size__gte=min_area, property_size__lte=max_area)
         else:
             listings = listings.filter(
                 property_size__gte=min_area)
+
+        print(request.user.username, username)
+        if request.user.username != username:
+            listings = listings.filter(is_available=True)
 
         listings_serializer = ListingSerializer(
             listings, many=True, context={'request': request})

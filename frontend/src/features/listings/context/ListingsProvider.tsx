@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { SellerType } from "../../sellers/context/SellersProvider";
-import { apiFns, APIResponseType } from "../../../ts/api-service";
+import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
+import cookieHandler, { Token } from "../../../ts/cookie-handler";
 
 export type ListingType = {
     id: number;
@@ -26,6 +27,7 @@ export type ListingType = {
     city: string;
     baranggay: string;
     street: string;
+    DELETED?: boolean;
 };
 
 export type PaginatedListingsType = {
@@ -62,7 +64,15 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
     // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS
     const fetchListings = async (searchParams: string): Promise<PaginatedListingsType | null> => {
         try {
-            const response: APIResponseType = await apiFns.get(`listings/${searchParams}`);
+            const token: Token = cookieHandler.get("token");
+            let response: APIResponseType | undefined;
+            if (token) {
+                const headers: HeaderType = { Authorization: `Token ${token}` };
+                response = await apiFns.get(`listings/${searchParams}`, headers);
+            } else {
+                response = await apiFns.get(`listings/${searchParams}`);
+            }
+
             if (response.success) return response.data;
             return null;
         } catch {
@@ -78,10 +88,22 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
             const page = urlSearchParams.get("page");
             if (page) setPage(Number(page));
             if (page === null) setPage(1);
+            console.log(paginated_listings);
             setPages(paginated_listings.pages);
             setListings(paginated_listings.results);
             setNextPageLink(paginated_listings.links.next);
             setPreviousPageLink(paginated_listings.links.previous);
+        }
+    };
+
+    const deleteListing = async (listingId: number): Promise<boolean> => {
+        try {
+            const token: Token = cookieHandler.get("token");
+            const headers: HeaderType = { Authorization: `Token ${token}` };
+            const response: APIResponseType = await apiFns.del(`listings/${listingId}`, headers);
+            return response.success;
+        } catch (error) {
+            return false;
         }
     };
 
@@ -94,6 +116,7 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
                 setListings,
                 fetchListing,
                 fetchListings,
+                deleteListing,
                 page,
                 pages,
                 nextPageLink,
@@ -117,6 +140,7 @@ export type ListingContextType = {
     setListings: React.Dispatch<React.SetStateAction<ListingType[]>>;
     fetchListing: (path: string) => Promise<ListingType | null>;
     fetchListings: (searchParams: string) => Promise<PaginatedListingsType | null>;
+    deleteListing: (listingId: number) => Promise<boolean>;
     page: number;
     pages: number;
     nextPageLink: string | null;
@@ -135,6 +159,7 @@ const initListingContextState: ListingContextType = {
     setListings: () => {},
     fetchListing: () => Promise.resolve(null),
     fetchListings: () => Promise.resolve(null),
+    deleteListing: () => Promise.resolve(false),
     page: 1,
     pages: 1,
     nextPageLink: null,

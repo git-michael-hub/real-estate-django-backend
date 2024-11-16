@@ -5,7 +5,7 @@ import { FormMessageStateType } from "../../context/AuthProvider";
 import helperFn from "../../../../ts/helper";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import "./index.css";
 import FormWithRef from "../../../../components/Forms/FormWithRef";
 
@@ -98,9 +98,9 @@ export default function RegisterForm() {
                     </div>
 
                     <div>
-                        <BtnBasic onClick={onClickNext}>
+                        <BtnBasicActive onClick={onClickNext}>
                             <span>Next</span>
-                        </BtnBasic>
+                        </BtnBasicActive>
                     </div>
 
                     <div className="login-link">
@@ -126,9 +126,9 @@ export default function RegisterForm() {
                     </div>
 
                     <div>
-                        <BtnBasic type="submit">
+                        <BtnBasicActive type="submit">
                             <span>Register</span>
-                        </BtnBasic>
+                        </BtnBasicActive>
                     </div>
                 </>
             ) : (

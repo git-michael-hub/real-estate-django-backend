@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import SelectWithLabel from "../../../../components/Forms/SelectWithLabel";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import BtnToggle from "../../../../components/Buttons/BtnToggle";
@@ -101,7 +101,7 @@ export default function ListingSearchForm() {
                 </div>
             )}
 
-            <BtnBasic type="submit">Search</BtnBasic>
+            <BtnBasicActive type="submit">Search</BtnBasicActive>
         </form>
     );
 }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import BtnBasic from "../../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import InputBasic from "../../../../components/Forms/InputBasic";
 import TextAreaBasic from "../../../../components/Forms/TextAreaBasic";
 import { ListingType } from "../../context/ListingsProvider";
@@ -43,7 +43,7 @@ export default function ContactForm({ listing, seller }: ContactFormProps) {
                 <InputBasic name="Email" placeholder="Email"></InputBasic>
                 <InputBasic name="Phone" placeholder="Phone"></InputBasic>
                 <TextAreaBasic name="message" placeholder="Message"></TextAreaBasic>
-                <BtnBasic>Send Message</BtnBasic>
+                <BtnBasicActive>Send Message</BtnBasicActive>
             </div>
         </form>
     );

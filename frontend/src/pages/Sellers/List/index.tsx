@@ -3,7 +3,7 @@ import { apiFns, APIResponseType } from "../../../ts/api-service";
 import { SellerType } from "../../../features/sellers/context/SellersProvider";
 import "./index.css";
 import { Link } from "react-router-dom";
-import BtnBasic from "../../../components/Buttons/BtnBasic";
+import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 
 export default function List() {
     const [sellers, setSellers] = useState<SellerType[]>([]);
@@ -54,7 +54,7 @@ export default function List() {
                                 </span>
                             </div>
                             <Link to={`@${seller.username}`}>
-                                <BtnBasic>Details</BtnBasic>
+                                <BtnBasicActive>Details</BtnBasicActive>
                             </Link>
                         </li>
                     );
@@ -86,7 +86,7 @@ export default function List() {
                                     <i className="fa-solid fa-envelope"></i> {seller.email}
                                 </span>
                             </div>
-                            <BtnBasic>Details</BtnBasic>
+                            <BtnBasicActive>Details</BtnBasicActive>
                         </li>
                     );
                 })}

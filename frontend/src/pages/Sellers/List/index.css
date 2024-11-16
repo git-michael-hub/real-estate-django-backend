@@ -59,7 +59,7 @@
     color: var(--color-accent-2);
 }
 
-.seller-card-container .basic-btn {
+.seller-card-container .basic-btn-active {
     margin-top: 20px;
     width: 30%;
     font-size: 0.9rem;
