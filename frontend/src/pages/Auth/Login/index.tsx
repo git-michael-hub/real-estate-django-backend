@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
-import LoginForm from "../../../features/auth/components/LoginForm";
+import LoginForm from "../components/LoginForm";
 import "./index.css";
 
 export default function Login() {

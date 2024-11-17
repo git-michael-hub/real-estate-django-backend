@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
-import RegisterForm from "../../../features/auth/components/RegisterForm";
+import RegisterForm from "../components/RegisterForm";
 import "./index.css";
 
 export default function Register() {

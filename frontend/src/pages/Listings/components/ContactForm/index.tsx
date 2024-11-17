@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import InputBasic from "../../../../components/Forms/InputBasic";
 import TextAreaBasic from "../../../../components/Forms/TextAreaBasic";
-import { ListingType } from "../../context/ListingsProvider";
-import { SellerType, SellerDetailsType } from "../../../sellers/context/SellersProvider";
+import { ListingType } from "../../../../features/listings/context/ListingsProvider";
+import { SellerType, SellerDetailsType } from "../../../../features/sellers/context/SellersProvider";
 import "./index.css";
 
 type ContactFormProps = {

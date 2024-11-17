@@ -1,5 +1,5 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../../features/auth/hooks/useAuth";
 
 export type RolesType = string[];
 

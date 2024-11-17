@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import helperFn from "../../../ts/helper";
 import { ListingType } from "../../../features/listings/context/ListingsProvider";
-import ContactForm from "../../../features/listings/components/ContactForm";
+import ContactForm from "../components/ContactForm";
 import BtnIcon from "../../../components/Buttons/BtnIcon";
 import BtnIconActive from "../../../components/Buttons/BtnIconActive";
 import Tag from "../../../components/Tag";

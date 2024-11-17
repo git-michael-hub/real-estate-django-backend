@@ -5,7 +5,7 @@
 
 #manage-listings-page > div {
     width: 1080px;
-    background-color: var(--color-tertiary);
+    background-color: var(--color-secondary);
     height: calc(100vh - 73px);
     display: flex;
     flex-direction: column;

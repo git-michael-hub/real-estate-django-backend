@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import ContactForm from "../../../features/listings/components/ContactForm";
+import ContactForm from "../../Listings/components/ContactForm";
 import "./index.css";
 import { apiFns, APIResponseType } from "../../../ts/api-service";
-import ListingEntry from "../../../features/listings/components/ListingEntry";
+import ListingEntry from "../../Listings/components/ListingEntry";
 import { SellerDetailsType } from "../../../features/sellers/context/SellersProvider";
 import BtnBasic from "../../../components/Buttons/BtnBasic";
 import useListing from "../../../features/listings/hooks/useListings";

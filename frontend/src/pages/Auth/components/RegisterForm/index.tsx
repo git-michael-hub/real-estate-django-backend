@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
-import { FormMessageStateType } from "../../context/AuthProvider";
+import useAuth from "../../../../features/auth/hooks/useAuth";
+import { FormMessageStateType } from "../../../../features/auth/context/AuthProvider";
 import helperFn from "../../../../ts/helper";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";

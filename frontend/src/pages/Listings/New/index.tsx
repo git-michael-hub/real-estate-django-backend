@@ -210,8 +210,8 @@ export default function New() {
                         </>
                     )}
                 </section>
-                <section className="listing-details">
-                    <div className="listing-image-list">
+                <section className="listing-image-list">
+                    <div>
                         <BtnImageUpload
                             imageFile={image1}
                             inputProps={{ onChange: (e) => (e.target.files ? setImage1(e.target.files[0]) : {}) }}
@@ -239,7 +239,9 @@ export default function New() {
                             buttonProps={{ onClick: () => setImage5(null) }}
                         ></BtnImageUpload>
                     </div>
+                </section>
 
+                <section className="listing-details">
                     <div>
                         <BtnEdit onClick={(e) => toggleDisplay(e, setIsEditListingInfoActive, isEditListingInfoActive)}>
                             preview

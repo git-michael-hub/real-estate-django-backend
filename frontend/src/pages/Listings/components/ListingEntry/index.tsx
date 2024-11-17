@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import "./index.css";
-import useAuth from "../../../auth/hooks/useAuth";
+import useAuth from "../../../../features/auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../../ts/api-service";
 import cookieHandler, { Token } from "../../../../ts/cookie-handler";
 import helperFn from "../../../../ts/helper";
 import BtnIcon from "../../../../components/Buttons/BtnIcon";
-import { ListingType } from "../../context/ListingsProvider";
+import { ListingType } from "../../../../features/listings/context/ListingsProvider";
 
 type ListingEntryPropType = {
     listing: ListingType;

@@ -9,11 +9,13 @@ import PageBtns from "../../../components/PageBtns";
 import BtnIconRound from "../../../components/Buttons/BtnIconRound";
 import New from "../New";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
+import Edit from "../Edit";
 
 export default function Manage() {
-    const [activeTab, setActiveTab] = useState<"ML" | "CL">("ML");
+    const [activeTab, setActiveTab] = useState<"ML" | "CL" | "EL">("ML");
     const [isDeleteFormActive, setIsDeleteFormActive] = useState<boolean>(false);
     const [deleteItem, setDeleteItem] = useState<number | null>(null);
+    const [editItem, setEditItem] = useState<number | null>(null);
     const { user } = useAuth();
     const {
         listings,
@@ -37,6 +39,11 @@ export default function Manage() {
     function onOpenDeleteForm(listingId: number) {
         setDeleteItem(listingId);
         setIsDeleteFormActive(true);
+    }
+
+    function onClickEdit(listingId: number) {
+        setEditItem(listingId);
+        setActiveTab("EL");
     }
 
     async function onDeleteListing(e: React.FormEvent<HTMLFormElement>, listingId: number | null): Promise<void> {
@@ -80,7 +87,10 @@ export default function Manage() {
                                         </BtnBasicActive>
                                     </>
                                 ) : (
-                                    <></>
+                                    <>
+                                        <BtnBasicActive onClick={() => setActiveTab("ML")}>My Listings</BtnBasicActive>
+                                        <BtnBasic onClick={() => setActiveTab("CL")}>Create Listings</BtnBasic>
+                                    </>
                                 )}
                             </nav>
                             <div>
@@ -160,7 +170,9 @@ export default function Manage() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <BtnBasicActive>Edit</BtnBasicActive>
+                                                        <BtnBasicActive onClick={() => onClickEdit(listing.id)}>
+                                                            Edit
+                                                        </BtnBasicActive>
                                                     </div>
                                                     <div>
                                                         <BtnBasicActive onClick={() => onOpenDeleteForm(listing.id)}>
@@ -184,6 +196,8 @@ export default function Manage() {
                         </>
                     ) : activeTab === "CL" ? (
                         <New></New>
+                    ) : activeTab === "EL" ? (
+                        <Edit></Edit>
                     ) : (
                         <></>
                     )}

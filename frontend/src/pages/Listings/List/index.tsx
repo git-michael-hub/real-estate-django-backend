@@ -3,8 +3,8 @@ import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import useListing from "../../../features/listings/hooks/useListings";
-import ListingEntry from "../../../features/listings/components/ListingEntry";
-import ListingSearchForm from "../../../features/listings/components/ListingSearchForm";
+import ListingEntry from "../components/ListingEntry";
+import ListingSearchForm from "../components/ListingSearchForm";
 import PageBtns from "../../../components/PageBtns";
 import "./index.css";
 

@@ -1,10 +1,10 @@
 import { Link, useParams } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../../features/auth/hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import "./index.css";
 import { useState } from "react";
-import { FormMessageStateType } from "../../context/AuthProvider";
+import { FormMessageStateType } from "../../../../features/auth/context/AuthProvider";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 
 export default function ResetPasswordForm() {

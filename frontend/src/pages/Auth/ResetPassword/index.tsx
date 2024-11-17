@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
-import ResetPasswordForm from "../../../features/auth/components/ResetPasswordForm";
+import ResetPasswordForm from "../components/ResetPasswordForm";
 import "./index.css";
 
 export default function ResetPassword() {

@@ -20,6 +20,7 @@
 
 #new-listing-container .listing-details > div {
     position: relative;
+    box-shadow: var(--default-box-shadow);
 }
 
 #new-listing-container .textarea-basic {
@@ -44,6 +45,30 @@
     color: var(--color-accent-2);
 }
 
+.listing-image-list > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    padding: 0;
+    background: none;
+    gap: 5px;
+    margin-bottom: 40px;
+}
+
+.listing-image-list img {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1.5/1;
+    overflow-clip-margin: unset;
+}
+
+.listing-image-list img:hover {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+#new-listing-container .listing-image-list {
+    box-shadow: none !important;
+}
 #new-listing-container .listing-image-list > div {
     position: relative;
 }

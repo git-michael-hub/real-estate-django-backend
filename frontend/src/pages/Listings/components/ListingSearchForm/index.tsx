@@ -6,7 +6,7 @@ import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import BtnToggle from "../../../../components/Buttons/BtnToggle";
 import "./index.css";
 import InputBasic from "../../../../components/Forms/InputBasic";
-import useListing from "../../hooks/useListings";
+import useListing from "../../../../features/listings/hooks/useListings";
 
 export default function ListingSearchForm() {
     const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState<boolean>(false);
