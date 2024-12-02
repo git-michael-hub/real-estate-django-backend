@@ -134,6 +134,7 @@
     width: fit-content;
     align-self: flex-end;
     font-size: 0.8rem;
+    margin-top: 20px;
 }
 
 .hidden {

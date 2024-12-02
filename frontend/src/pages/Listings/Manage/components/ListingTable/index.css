@@ -1,0 +1,89 @@
+#listing-table li,
+#listing-table-header {
+    display: grid;
+    grid-template-columns: 40px 150px 1fr 120px 120px 100px 90px 90px;
+    gap: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#listing-table-header {
+    padding-right: 15px;
+}
+
+#listing-table-header div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+}
+
+#listing-table {
+    overflow-y: scroll;
+}
+
+#listing-table li div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+}
+
+#listing-table .title {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-size: 0.8rem;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+#listing-table .title h3 {
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-accent-2);
+}
+
+#listing-table .title a {
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+#listing-table .title a:hover {
+    color: var(--color-accent-2-hov);
+}
+
+#listing-table .title span {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+#listing-table img {
+    max-width: 150px;
+    aspect-ratio: 1.8/1;
+    object-fit: cover;
+    overflow-clip-margin: unset;
+}
+
+#listing-table .tag-1,
+#listing-table .tag-2 {
+    font-size: 0.7rem;
+}
+
+#listing-table .basic-btn-active {
+    font-size: 0.7rem;
+    width: max-content;
+}
+
+#listing-table .deleted-listing {
+    grid-area: auto / auto / auto / span 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

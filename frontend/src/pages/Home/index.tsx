@@ -1,4 +1,4 @@
-import ListingSearchFormH from "../../features/listings/components/ListingSearchFormH";
+import ListingSearchFormH from "../Listings/components/ListingSearchFormH";
 import "./index.css";
 
 export default function Home() {

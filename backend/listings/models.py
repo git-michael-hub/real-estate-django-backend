@@ -4,10 +4,6 @@ from django.core.validators import validate_image_file_extension
 from sellers.models import SellerAccount
 
 
-def upload_to(instance):
-    return 'images/listings/'
-
-
 class Listing(models.Model):
     LISTING_TYPES = [("FS", "For Sale"), ("FR", "For Rent"),
                      ("FC", "Foreclosure")]

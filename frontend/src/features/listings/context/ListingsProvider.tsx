@@ -8,16 +8,16 @@ export type ListingType = {
     seller: number;
     seller_details: SellerType;
     title: string;
-    listing_type: string;
+    listing_type: "FS" | "FR" | "FC";
     listing_type_display: string;
-    property_type: string;
+    property_type: "HL" | "CO" | "RL" | "CL";
     property_type_display: string;
     price: number;
-    image1?: string;
-    image2?: string;
-    image3?: string;
-    image4?: string;
-    image5?: string;
+    image1?: string | File | null;
+    image2?: string | File | null;
+    image3?: string | File | null;
+    image4?: string | File | null;
+    image5?: string | File | null;
     property_size: number;
     description: string;
     is_available: boolean;
@@ -43,7 +43,7 @@ export type PaginatedListingsType = {
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const ListingProvider = ({ children }: ChildrenType): React.ReactElement => {
-    const [listing, setListing] = useState<ListingType | null>(null);
+    const [listing, setListing] = useState<ListingType | Partial<ListingType> | null>(null);
     const [listings, setListings] = useState<ListingType[]>([]);
     const [page, setPage] = useState<number>(1);
     const [pages, setPages] = useState<number>(1);
@@ -134,8 +134,8 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
 };
 
 export type ListingContextType = {
-    listing: ListingType | null;
-    setListing: React.Dispatch<React.SetStateAction<ListingType | null>>;
+    listing: ListingType | Partial<ListingType> | null;
+    setListing: React.Dispatch<React.SetStateAction<ListingType | Partial<ListingType> | null>>;
     listings: ListingType[];
     setListings: React.Dispatch<React.SetStateAction<ListingType[]>>;
     fetchListing: (path: string) => Promise<ListingType | null>;

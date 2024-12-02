@@ -33,7 +33,7 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                         {listing.image1 ? (
                             <div className="listing-image-container">
                                 <Link to={`/listings/${listing.id}`}>
-                                    <img src={listing.image1} alt="" className="listing-image" />
+                                    <img src={listing.image1 as string} alt="" className="listing-image" />
                                 </Link>
                             </div>
                         ) : (

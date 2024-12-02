@@ -59,7 +59,7 @@ export default function List() {
                         </li>
                     );
                 })}
-                {sellers.map((seller) => {
+                {/* {sellers.map((seller) => {
                     return (
                         <li key={seller.id} className="seller-card-container">
                             <img src={seller.seller_image_url} alt="" />
@@ -89,7 +89,7 @@ export default function List() {
                             <BtnBasicActive>Details</BtnBasicActive>
                         </li>
                     );
-                })}
+                })} */}
             </ul>
         </main>
     );

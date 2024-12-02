@@ -36,10 +36,6 @@ class ListingSerializer(serializers.ModelSerializer):
     def get_property_type_display(self, obj):
         return obj.get_property_type_display()
 
-    # def get_seller_details(self, obj):
-    #     serializer = SellerAccountPartialDetailSerializer(obj.seller)
-    #     return serializer.data
-
 
 class ListingDetailSerializer(ListingSerializer):
     seller = SellerAccountDetailUpdateSerializer()

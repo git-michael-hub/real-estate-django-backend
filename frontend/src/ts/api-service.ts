@@ -2,7 +2,7 @@ const LOCALHOST_URL: string = "http://localhost:8000/";
 
 export type HeaderType = { Authorization: string; "Content-Type"?: string };
 export type PayloadType = {
-    method: "GET" | "POST" | "PATCH" | "DELETE";
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     headers?: HeaderType;
     body?: FormData | string;
 };
@@ -29,6 +29,11 @@ const post = async (endpoint: string, body: FormData | string, headers?: HeaderT
     return await processResponse(endpoint, payload);
 };
 
+const put = async (endpoint: string, body: FormData, headers: HeaderType): Promise<APIResponseType> => {
+    const payload: PayloadType = { method: "PUT", body: body, headers: headers };
+    return await processResponse(endpoint, payload);
+};
+
 const patch = async (endpoint: string, body: FormData, headers: HeaderType): Promise<APIResponseType> => {
     const payload: PayloadType = { method: "PATCH", body: body, headers: headers };
     return await processResponse(endpoint, payload);
@@ -39,6 +44,6 @@ const del = async (endpoint: string, headers: HeaderType): Promise<APIResponseTy
     return await processResponse(endpoint, payload);
 };
 
-const apiFns = { get, post, patch, del };
+const apiFns = { get, post, put, patch, del };
 
 export { apiFns };

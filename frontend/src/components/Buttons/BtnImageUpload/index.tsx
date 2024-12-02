@@ -3,7 +3,7 @@ import "./index.css";
 type BtnImageUploadProps = {
     buttonProps?: React.ComponentProps<"button">;
     inputProps?: React.ComponentProps<"input">;
-    imageFile?: File | null;
+    imageFile?: File | null | string;
 };
 
 export default function BtnImageUpload({ buttonProps, inputProps, imageFile = null }: BtnImageUploadProps) {
@@ -16,7 +16,11 @@ export default function BtnImageUpload({ buttonProps, inputProps, imageFile = nu
                             <i className="fa-solid fa-xmark"></i>
                         </span>
                     </button>
-                    <img src={URL.createObjectURL(imageFile)} alt="" />
+                    {typeof imageFile === "string" ? (
+                        <img src={imageFile} alt="" />
+                    ) : (
+                        <img src={URL.createObjectURL(imageFile)} alt="" />
+                    )}
                 </div>
             ) : (
                 <label className="image-upload-btn no-image">
