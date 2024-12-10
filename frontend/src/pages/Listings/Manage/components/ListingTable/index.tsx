@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import BtnBasicActive from "../../../../../components/Buttons/BtnBasicActive";
-import Tag from "../../../../../components/Tag";
 import useListing from "../../../../../features/listings/hooks/useListings";
 import PageBtns from "../../../../../components/PageBtns";
 import "./index.css";
@@ -64,10 +63,24 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
                                         </span>
                                     </div>
                                     <div>
-                                        <Tag className="tag-1">{listing.listing_type_display}</Tag>
+                                        {listing.listing_type === "FS" ? (
+                                            <span className="listing-type-fs">{listing.listing_type_display}</span>
+                                        ) : listing.listing_type === "FR" ? (
+                                            <span className="listing-type-fr">{listing.listing_type_display}</span>
+                                        ) : (
+                                            <span className="listing-type-fc">{listing.listing_type_display}</span>
+                                        )}
                                     </div>
                                     <div>
-                                        <Tag className="tag-2">{listing.property_type_display}</Tag>
+                                        {listing.property_type === "HL" ? (
+                                            <span className="property-type-hl">{listing.property_type_display}</span>
+                                        ) : listing.property_type === "CO" ? (
+                                            <span className="property-type-co">{listing.property_type_display}</span>
+                                        ) : listing.property_type === "RL" ? (
+                                            <span className="property-type-rl">{listing.property_type_display}</span>
+                                        ) : (
+                                            <span className="property-type-cl">{listing.property_type_display}</span>
+                                        )}
                                     </div>
                                     <div>
                                         <input

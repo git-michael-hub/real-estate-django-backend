@@ -87,3 +87,38 @@
     align-items: center;
     justify-content: center;
 }
+
+#listing-table .property-type-hl,
+#listing-table .property-type-co,
+#listing-table .property-type-rl,
+#listing-table .property-type-cl,
+#listing-table .listing-type-fs,
+#listing-table .listing-type-fr,
+#listing-table .listing-type-fc {
+    font-family: var(--font-family-primary);
+    font-size: small;
+    font-weight: bold;
+}
+
+#listing-table .listing-type-fs {
+    color: #fe4e4e;
+}
+#listing-table .listing-type-fr {
+    color: #aa3a39;
+}
+#listing-table .listing-type-fc {
+    color: #ff9838;
+}
+
+#listing-table .property-type-hl {
+    color: #634490;
+}
+#listing-table .property-type-co {
+    color: #3466a5;
+}
+#listing-table .property-type-rl {
+    color: #00c4d4;
+}
+#listing-table .property-type-cl {
+    color: #ee6397;
+}
