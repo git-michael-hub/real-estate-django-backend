@@ -3,6 +3,8 @@ import BtnBasicActive from "../../../../../components/Buttons/BtnBasicActive";
 import useListing from "../../../../../features/listings/hooks/useListings";
 import PageBtns from "../../../../../components/PageBtns";
 import "./index.css";
+import cookieHandler, { Token } from "../../../../../ts/cookie-handler";
+import { apiFns, APIResponseType, HeaderType } from "../../../../../ts/api-service";
 
 type ListingTableProps = {
     onClickEdit(listingId: number): void;
@@ -11,6 +13,22 @@ type ListingTableProps = {
 
 export default function ListingTable({ onClickEdit, onClickDelete }: ListingTableProps) {
     const { listings, page, pages, nextPageLink, previousPageLink, fetchListingsAndUpdateState } = useListing();
+
+    async function onToggleAvailability(e: React.ChangeEvent<HTMLInputElement>) {
+        const formData: FormData = new FormData();
+        formData.append("is_available", e.currentTarget.checked.toString());
+
+        const token: Token = cookieHandler.get("token");
+        if (!token) return null;
+
+        const headers: HeaderType = { Authorization: `Token ${token}` };
+        try {
+            const response: APIResponseType = await apiFns.patch(`listings/${e.currentTarget.id}`, formData, headers);
+            if (!response.success) alert("Failed to update listing.");
+        } catch {
+            alert("Failed to update listing.");
+        }
+    }
 
     return (
         <>
@@ -85,9 +103,10 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
                                     <div>
                                         <input
                                             type="checkbox"
-                                            id="is_available"
+                                            id={listing.id.toString()}
                                             name="is_available"
                                             defaultChecked={listing.is_available}
+                                            onChange={onToggleAvailability}
                                         />
                                     </div>
                                     <div>
