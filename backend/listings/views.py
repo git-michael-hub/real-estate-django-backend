@@ -29,6 +29,7 @@ class ListingListCreateView(generics.ListCreateAPIView):
         if (min_area is None or min_area == ''):
             min_area = 0
         max_area = request.GET.get('max_area')
+        sort_by = request.GET.get('sort_by')
         is_available = request.GET.get('is_available')
 
         listings = self.get_queryset()
@@ -58,9 +59,17 @@ class ListingListCreateView(generics.ListCreateAPIView):
             listings = listings.filter(
                 property_size__gte=min_area)
 
-        print(request.user.username, username)
         if request.user.username != username:
             listings = listings.filter(is_available=True)
+        elif is_available is not None:
+            listings = listings.filter(is_available=is_available)
+
+        if sort_by == 'OTN':
+            listings = listings.order_by('created_at')
+        elif sort_by == 'ATZ':
+            listings = listings.order_by('title')
+        else:
+            listings = listings.order_by('-created_at')
 
         listings_serializer = ListingSerializer(
             listings, many=True, context={'request': request})

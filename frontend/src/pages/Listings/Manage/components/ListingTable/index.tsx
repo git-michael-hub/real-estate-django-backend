@@ -79,6 +79,12 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
                                         <span>
                                             {listing.street}, {listing.baranggay}, {listing.city}, {listing.province}
                                         </span>
+                                        <span className="date-posted">
+                                            Date Posted:{" "}
+                                            {`${new Date(listing.created_at).getMonth()}/${new Date(
+                                                listing.created_at
+                                            ).getDate()}/${new Date(listing.created_at).getFullYear()}`}
+                                        </span>
                                     </div>
                                     <div>
                                         {listing.listing_type === "FS" ? (
@@ -112,7 +118,7 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
                                     <div>
                                         <BtnBasicActive onClick={() => onClickEdit(listing.id)}>Edit</BtnBasicActive>
                                     </div>
-                                    <div>
+                                    <div className="delete-btn-container">
                                         <BtnBasicActive onClick={() => onClickDelete(listing.id)}>
                                             Delete
                                         </BtnBasicActive>

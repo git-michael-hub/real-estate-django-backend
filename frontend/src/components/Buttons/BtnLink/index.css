@@ -1,6 +1,7 @@
 .btn-link {
     border: none;
     background: none;
+    color: var(--color-accent-2);
 }
 
 .btn-link:hover {

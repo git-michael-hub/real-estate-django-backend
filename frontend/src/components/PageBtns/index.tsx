@@ -66,13 +66,21 @@ export default function PageBtns({
                 let currentNum = index + 1;
 
                 if (page - 2 <= currentNum && page + 2 >= currentNum) {
-                    if (page === currentNum) return <BtnIconActive>{page}</BtnIconActive>;
-                    return <BtnIcon onClick={onClick}>{currentNum}</BtnIcon>;
+                    if (page === currentNum) return <BtnIconActive key={currentNum}>{page}</BtnIconActive>;
+                    return (
+                        <BtnIcon onClick={onClick} key={currentNum}>
+                            {currentNum}
+                        </BtnIcon>
+                    );
                 }
 
                 if ((page >= pages - 2 && currentNum >= pages - 4) || (page <= 2 && currentNum <= 5)) {
-                    if (page === currentNum) return <BtnIconActive>{page}</BtnIconActive>;
-                    return <BtnIcon onClick={onClick}>{currentNum}</BtnIcon>;
+                    if (page === currentNum) return <BtnIconActive key={currentNum}>{page}</BtnIconActive>;
+                    return (
+                        <BtnIcon onClick={onClick} key={currentNum}>
+                            {currentNum}
+                        </BtnIcon>
+                    );
                 }
 
                 return <></>;

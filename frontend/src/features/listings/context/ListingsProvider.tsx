@@ -21,6 +21,7 @@ export type ListingType = {
     property_size: number;
     description: string;
     is_available: boolean;
+    created_at: Date;
     bedrooms?: number;
     bathrooms?: number;
     province: string;
@@ -88,7 +89,6 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
             const page = urlSearchParams.get("page");
             if (page) setPage(Number(page));
             if (page === null) setPage(1);
-            console.log(paginated_listings);
             setPages(paginated_listings.pages);
             setListings(paginated_listings.results);
             setNextPageLink(paginated_listings.links.next);

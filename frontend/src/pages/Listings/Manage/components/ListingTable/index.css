@@ -32,7 +32,6 @@
 #listing-table .title {
     display: flex;
     flex-direction: column;
-    gap: 5px;
     align-items: flex-start;
     justify-content: flex-start;
     font-size: 0.8rem;
@@ -64,6 +63,11 @@
     width: 100%;
 }
 
+#listing-table .date-posted {
+    font-size: smaller;
+    opacity: 0.8;
+}
+
 #listing-table img {
     max-width: 150px;
     aspect-ratio: 1.8/1;
@@ -86,6 +90,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#listing-table .delete-btn-container > button {
+    background-color: #ff4444;
+    border: #ff4444;
+}
+
+#listing-table .delete-btn-container > button:hover {
+    background-color: #c83636;
+    border: #c83636;
 }
 
 #listing-table .property-type-hl,
