@@ -43,7 +43,7 @@ export default function ContactForm({ listing, seller }: ContactFormProps) {
                 <InputBasic name="Email" placeholder="Email"></InputBasic>
                 <InputBasic name="Phone" placeholder="Phone"></InputBasic>
                 <TextAreaBasic name="message" placeholder="Message"></TextAreaBasic>
-                <BtnBasicActive>Send Message</BtnBasicActive>
+                <BtnBasicActive type="submit">Send Message</BtnBasicActive>
             </div>
         </form>
     );
