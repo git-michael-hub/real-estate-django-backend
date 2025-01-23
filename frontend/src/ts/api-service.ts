@@ -1,4 +1,4 @@
-const LOCALHOST_URL: string = "http://localhost:8000/";
+const API_URL: string = "http://localhost:8000/";
 
 export type HeaderType = { Authorization: string; "Content-Type"?: string };
 export type PayloadType = {
@@ -10,7 +10,8 @@ export type PayloadType = {
 export type APIResponseType = { success: boolean; data?: any };
 
 const processResponse = async (endpoint: string, payload: PayloadType): Promise<APIResponseType> => {
-    const response: Response = await fetch(LOCALHOST_URL + endpoint, payload);
+    const response: Response = await fetch(API_URL + endpoint, payload);
+    console.log(response);
     if (response.status === 204) return { success: response.ok };
     const data: any = await response.json();
     return { success: response.ok, data: data };

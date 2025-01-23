@@ -5,6 +5,7 @@ import PageBtns from "../../../../../components/PageBtns";
 import "./index.css";
 import cookieHandler, { Token } from "../../../../../ts/cookie-handler";
 import { apiFns, APIResponseType, HeaderType } from "../../../../../ts/api-service";
+import { API_DIRECTORY_LISTINGS } from "../../../../../features/listings/context/ListingsProvider";
 
 type ListingTableProps = {
     onClickEdit(listingId: number): void;
@@ -23,7 +24,11 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
 
         const headers: HeaderType = { Authorization: `Token ${token}` };
         try {
-            const response: APIResponseType = await apiFns.patch(`listings/${e.currentTarget.id}`, formData, headers);
+            const response: APIResponseType = await apiFns.patch(
+                `${API_DIRECTORY_LISTINGS}${e.currentTarget.id}`,
+                formData,
+                headers
+            );
             if (!response.success) alert("Failed to update listing.");
         } catch {
             alert("Failed to update listing.");
@@ -70,7 +75,11 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
                                         <input type="checkbox" />
                                     </div>
                                     <div>
-                                        <img src={listing.image1 as string} alt="" />
+                                        {listing.image1 ? (
+                                            <img src={listing.image1 as string} alt="" />
+                                        ) : (
+                                            <img src="/static/images/256px-Image_not_available.png" alt="" />
+                                        )}
                                     </div>
                                     <div className="title">
                                         <h3>

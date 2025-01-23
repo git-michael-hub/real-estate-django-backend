@@ -14,7 +14,8 @@ export default function Details() {
 
     useEffect(() => {
         const initState = async () => {
-            const listing: ListingType | null = await fetchListing(window.location.pathname);
+            const listing_id = window.location.pathname.slice(10);
+            const listing: ListingType | null = await fetchListing(listing_id);
             setListing(listing);
         };
         initState();
@@ -55,7 +56,7 @@ export default function Details() {
                             ) : (
                                 <figure>
                                     <img
-                                        src={"/images/256px-Image_not_available.png"}
+                                        src="/static/images/256px-Image_not_available.png"
                                         alt=""
                                         className="listing-image"
                                     />

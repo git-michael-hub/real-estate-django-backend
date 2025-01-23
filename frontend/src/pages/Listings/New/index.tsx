@@ -2,7 +2,7 @@ import useAuth from "../../../features/auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { useNavigate } from "react-router-dom";
-import { ListingType } from "../../../features/listings/context/ListingsProvider";
+import { API_DIRECTORY_LISTINGS, ListingType } from "../../../features/listings/context/ListingsProvider";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import HeaderSection from "./components/HeaderSection";
 import "./index.css";
@@ -28,7 +28,7 @@ export default function New() {
         if (listing?.image4) formData.append("image4", listing?.image4);
         if (listing?.image5) formData.append("image5", listing?.image5);
         const headers: HeaderType = { Authorization: `Token ${token}` };
-        const response: APIResponseType = await apiFns.post("listings/", formData, headers);
+        const response: APIResponseType = await apiFns.post(`${API_DIRECTORY_LISTINGS}`, formData, headers);
         if (response.success) {
             const data: ListingType = response.data;
             navigate(`/listings/${data.id}`);

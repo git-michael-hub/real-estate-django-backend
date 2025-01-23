@@ -25,7 +25,7 @@ export default function BtnImageUpload({ buttonProps, inputProps, imageFile = nu
             ) : (
                 <label className="image-upload-btn no-image">
                     <input type="file" accept="image/png, image/jpeg" {...inputProps} />
-                    <img src={"/images/256px-Image_not_available.png"} alt="" />
+                    <img src="/static/images/256px-Image_not_available.png" alt="" />
                 </label>
             )}
         </>

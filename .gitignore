@@ -7,6 +7,7 @@ sqlite3_analyzer.exe
 sqlite3.exe
 __misc
 media
+staticfiles
 
 # Logs
 logs

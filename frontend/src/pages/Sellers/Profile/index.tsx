@@ -3,7 +3,7 @@ import ContactForm from "../../Listings/components/ContactForm";
 import "./index.css";
 import { apiFns, APIResponseType } from "../../../ts/api-service";
 import ListingEntry from "../../Listings/components/ListingEntry";
-import { SellerDetailsType } from "../../../features/sellers/context/SellersProvider";
+import { API_DIRECTORY_SELLERS, SellerDetailsType } from "../../../features/sellers/context/SellersProvider";
 import BtnBasic from "../../../components/Buttons/BtnBasic";
 import useListing from "../../../features/listings/hooks/useListings";
 import PageBtns from "../../../components/PageBtns";
@@ -17,7 +17,7 @@ export default function Profile() {
         const username = window.location.pathname.slice(9);
 
         const fetchSeller = async () => {
-            const response: APIResponseType = await apiFns.get(`sellers/${username}`);
+            const response: APIResponseType = await apiFns.get(`${API_DIRECTORY_SELLERS}${username}`);
             const seller: SellerDetailsType = response.data;
             setSeller(seller);
         };

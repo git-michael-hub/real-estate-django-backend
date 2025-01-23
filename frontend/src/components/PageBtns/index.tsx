@@ -26,7 +26,7 @@ export default function PageBtns({
         if (previousPageLink) {
             const url = new URL(previousPageLink);
             await action(url.search);
-            if (enableNavigate) navigate(`${url.pathname + url.search}`);
+            if (enableNavigate) navigate(`${url.pathname.slice(4) + url.search}`); // .slice(4) is used to remove '/api' from path
         }
     }
 
@@ -34,7 +34,7 @@ export default function PageBtns({
         if (nextPageLink) {
             const url = new URL(nextPageLink);
             await action(url.search);
-            if (enableNavigate) navigate(`${url.pathname + url.search}`);
+            if (enableNavigate) navigate(`${url.pathname.slice(4) + url.search}`); // .slice(4) is used to remove '/api' from path
         }
     }
 
@@ -47,7 +47,7 @@ export default function PageBtns({
         params.delete("page");
         params.append("page", e.currentTarget.innerText);
         await action(`?${params.toString()}`);
-        if (enableNavigate) navigate(`${url.pathname}?${params.toString()}`);
+        if (enableNavigate) navigate(`${url.pathname.slice(4)}?${params.toString()}`); // .slice(4) is used to remove '/api' from path
     }
 
     return (

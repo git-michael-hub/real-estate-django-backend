@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiFns, APIResponseType } from "../../../ts/api-service";
-import { SellerType } from "../../../features/sellers/context/SellersProvider";
+import { API_DIRECTORY_SELLERS, SellerType } from "../../../features/sellers/context/SellersProvider";
 import "./index.css";
 import { Link } from "react-router-dom";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
@@ -10,7 +10,7 @@ export default function List() {
 
     useEffect(() => {
         const fetchSellers = async () => {
-            const response: APIResponseType = await apiFns.get("sellers/");
+            const response: APIResponseType = await apiFns.get(API_DIRECTORY_SELLERS);
             const sellers: SellerType[] = response.data;
             console.log(sellers);
             setSellers(sellers);

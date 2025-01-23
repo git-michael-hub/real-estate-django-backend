@@ -27,6 +27,8 @@ export type FormMessageStateType = {
     pin_code?: string[];
 };
 
+export const API_DIRECTORY_USERS = "api/users/";
+
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => {
@@ -76,7 +78,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
         try {
             const headers: HeaderType = { Authorization: `Token ${token}` };
-            const response: APIResponseType = await apiFns.get("users/auth-user", headers);
+            const response: APIResponseType = await apiFns.get(`${API_DIRECTORY_USERS}auth-user`, headers);
             if (!response.success) return null;
             const user: UserStateType = response.data;
             return user;
@@ -87,7 +89,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
     };
 
     const login = async (formData: FormData): Promise<FormMessageStateType> => {
-        const { message, data } = await processForm("users/login", formData, "Login success!");
+        const { message, data } = await processForm(`${API_DIRECTORY_USERS}login`, formData, "Login success!");
         if (message.success) {
             const token: Token = data.token;
             const user: UserType = data.user;
@@ -117,7 +119,12 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         const formData: FormData = new FormData();
         const token: Token = cookieHandler.get("token");
         const headers: HeaderType = { Authorization: `Token ${token}` };
-        const { message } = await processForm("users/logout", formData, "Successfully logged out.", headers);
+        const { message } = await processForm(
+            `${API_DIRECTORY_USERS}logout`,
+            formData,
+            "Successfully logged out.",
+            headers
+        );
         if (message.success) {
             cookieHandler.delete("token");
             setUser(null);
@@ -128,7 +135,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
     const requestResetPassword = async (formData: FormData): Promise<FormMessageStateType> => {
         const { message } = await processForm(
-            "users/request-password-reset",
+            `${API_DIRECTORY_USERS}request-password-reset`,
             formData,
             "We have sent a link to your email address."
         );
@@ -137,7 +144,10 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
     const resetPassword = async (formData: FormData, resetToken: string): Promise<FormMessageStateType> => {
         try {
-            const response: APIResponseType = await apiFns.post(`users/password-reset/${resetToken}`, formData);
+            const response: APIResponseType = await apiFns.post(
+                `${API_DIRECTORY_USERS}password-reset/${resetToken}`,
+                formData
+            );
             const messages = response.data;
             return messages;
         } catch (error) {

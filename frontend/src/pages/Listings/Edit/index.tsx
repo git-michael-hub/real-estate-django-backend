@@ -21,7 +21,7 @@ export default function Edit({ listingId }: EditProps) {
 
     useEffect(() => {
         const init = async () => {
-            const listing: ListingType | null | Partial<ListingType> = await fetchListing(`listings/${listingId}`);
+            const listing: ListingType | null | Partial<ListingType> = await fetchListing(`${listingId}`);
             setListing(listing);
         };
         console.log(listing);

@@ -41,6 +41,8 @@ export type PaginatedListingsType = {
     results: ListingType[];
 };
 
+export const API_DIRECTORY_LISTINGS = "api/listings/";
+
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const ListingProvider = ({ children }: ChildrenType): React.ReactElement => {
@@ -52,9 +54,10 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
     const [previousPageLink, setPreviousPageLink] = useState<string | null>(null);
 
     // GET 1 SPECIFIC LISTING
-    const fetchListing = async (path: string): Promise<ListingType | null> => {
+    const fetchListing = async (listingId: string | number): Promise<ListingType | null> => {
         try {
-            const response: APIResponseType = await apiFns.get(`${path}`);
+            const response: APIResponseType = await apiFns.get(`${API_DIRECTORY_LISTINGS}${listingId}`);
+
             if (response.success) return response.data;
             return null;
         } catch {
@@ -69,9 +72,9 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
             let response: APIResponseType | undefined;
             if (token) {
                 const headers: HeaderType = { Authorization: `Token ${token}` };
-                response = await apiFns.get(`listings/${searchParams}`, headers);
+                response = await apiFns.get(`${API_DIRECTORY_LISTINGS}${searchParams}`, headers);
             } else {
-                response = await apiFns.get(`listings/${searchParams}`);
+                response = await apiFns.get(`${API_DIRECTORY_LISTINGS}${searchParams}`);
             }
 
             if (response.success) return response.data;
@@ -100,7 +103,7 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
         try {
             const token: Token = cookieHandler.get("token");
             const headers: HeaderType = { Authorization: `Token ${token}` };
-            const response: APIResponseType = await apiFns.del(`listings/${listingId}`, headers);
+            const response: APIResponseType = await apiFns.del(`${API_DIRECTORY_LISTINGS}${listingId}`, headers);
             return response.success;
         } catch (error) {
             return false;

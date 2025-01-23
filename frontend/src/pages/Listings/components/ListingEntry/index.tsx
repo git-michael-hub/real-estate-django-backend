@@ -40,7 +40,7 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                             <figure className="listing-image-container">
                                 <Link to={`/listings/${listing.id}`}>
                                     <img
-                                        src={"/images/256px-Image_not_available.png"}
+                                        src="/static/images/256px-Image_not_available.png"
                                         alt=""
                                         className="listing-image"
                                     />

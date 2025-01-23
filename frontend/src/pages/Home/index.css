@@ -22,7 +22,7 @@
 }
 
 #home-page-bg {
-    background-image: url("../../../public/images/homepage-bg.jpg");
+    background-image: url("/static/images/homepage-bg.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;

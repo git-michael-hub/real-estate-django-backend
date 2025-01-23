@@ -16,3 +16,5 @@ export type SellerDetailsType = SellerType & {
     date_joined: Date;
     gender: "M" | "F";
 };
+
+export const API_DIRECTORY_SELLERS = "api/sellers/";
