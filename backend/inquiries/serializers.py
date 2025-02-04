@@ -1,17 +1,10 @@
 from rest_framework import serializers
-from .models import Inquiries
 
 
-class InquiriesListCreateSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Inquiries
-        fields = '__all__'
-        read_only_fields = ['is_read']
-
-
-class InquriesDetailEditDeleteSerializer(InquiriesListCreateSerializer):
-    class Meta(InquiriesListCreateSerializer.Meta):
-        fields = InquiriesListCreateSerializer.Meta.fields
-        read_only_fields = ['recipient', 'listing', 'sender_name',
-                            'email', 'contact_number', 'message', 'created_at']
+class InquiriesSerializer(serializers.Serializer):
+    agent_email = serializers.EmailField()
+    sender_name = serializers.CharField(max_length=100)
+    sender_email = serializers.EmailField()
+    sender_contact_number = serializers.IntegerField()
+    message = serializers.CharField(max_length=1000)
+    listing_id = serializers.IntegerField(required=False)

@@ -87,13 +87,14 @@ class PasswordResetRequestView(generics.GenericAPIView):
             token = PasswordResetTokenGenerator().make_token(user)
             reset_request = PasswordResetRequest(email=email, token=token)
             reset_request.save()
-            reset_url = f"Click the provided link to reset your password {CORS_ALLOWED_ORIGINS[0]}/password-reset/{token}"
+            reset_url = f"{CORS_ALLOWED_ORIGINS[0]}/password-reset/{token}"
             send_mail(
                 "Real Estate System: Request for password reset.",
-                reset_url,
+                f"Copy and paste the provided link to reset your password {reset_url}",
                 EMAIL_HOST_USER,
                 [email],
                 fail_silently=False,
+                html_message=f"<p>Click the provided link to reset your password <a href={reset_url}>{reset_url}</a></p>"
             )
 
             return Response({'success': ['We have sent you a link to reset your password']}, status=status.HTTP_200_OK)

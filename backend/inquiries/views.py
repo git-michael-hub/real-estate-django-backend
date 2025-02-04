@@ -1,62 +1,75 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 from django.core.mail import send_mail
 
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
-from sellers.models import SellerAccount
+from listings.models import Listing
 
-from .models import Inquiries
-from .serializers import InquiriesListCreateSerializer, InquriesDetailEditDeleteSerializer
-from .permissions import IsRecipient
+from .serializers import InquiriesSerializer
 
 
-class SendInquiryView(generics.GenericAPIView):
+class MailInquiryView(generics.GenericAPIView):
+    serializer_class = InquiriesSerializer
+
     def post(self, request):
-        sender_name = request.POST.get('sender_name')
-        sender_contact_number = request.POST.get('sender_contact_number')
-        sender_email = request.POST.get('sender_email')
-        message = request.POST.get('message')
-        agent_id = request.POST.get('agent_id')
-        agent = SellerAccount.objects.get(id=agent_id)
+        serializer = self.get_serializer(data=request.data,
+                                         context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        inquiry = serializer.validated_data
 
-        send_mail(
-            f"You have received an inquiry from user {sender_name}.",
-            f"""Sender Name: {sender_name} \n
-            Sender Email: {sender_email} \n
-            Sender Contact Number: {sender_contact_number} \n \n
-            Message: ${message}
-            """,
-            EMAIL_HOST_USER,
-            [agent.email],
-            fail_silently=False,
-        )
+        listing_id = inquiry.get('listing_id')
+        if listing_id:
+            listing = Listing.objects.get(pk=listing_id)
+            listing_link = f"{CORS_ALLOWED_ORIGINS[0]}/listings/{listing_id}"
+
+            send_mail(
+                f"Real Estate System: You have received an inquiry from user {inquiry['sender_name']}.",
+                f"""
+                Sender Name: {inquiry['sender_name']} \n
+                Sender Email: {inquiry['sender_email']} \n
+                Sender Contact Number: {inquiry['sender_contact_number']} \n \n
+                Message: {inquiry['message']} \n \n
+                From listing: {listing.title} \n
+                Listing Link: {listing_link}
+                """,
+                EMAIL_HOST_USER,
+                [inquiry['agent_email']],
+                fail_silently=False,
+                html_message=f"""
+                <div>
+                    <p>Sender Name: {inquiry['sender_name']}</p>
+                    <p>Sender Email: {inquiry['sender_email']}</p>
+                    <p>Sender Contact Number: {inquiry['sender_contact_number']}</p>
+                    <p>Message: <strong>{inquiry['message']}</strong></p>
+                    <p>From listing: <a href={listing_link}>{listing.title}</a></p>
+                </div>
+                """,
+            )
+        else:
+            send_mail(
+                f"Real Estate System: You have received an inquiry from user {inquiry['sender_name']}.",
+                f"""
+                Sender Name: {inquiry['sender_name']} \n
+                Sender Email: {inquiry['sender_email']} \n
+                Sender Contact Number: {inquiry['sender_contact_number']} \n \n
+                Message: {inquiry['message']} \n \n
+                """,
+                EMAIL_HOST_USER,
+                [inquiry['agent_email']],
+                fail_silently=False,
+                html_message=f"""
+                <div>
+                    <p>Sender Name: {inquiry['sender_name']}</p>
+                    <p>Sender Email: {inquiry['sender_email']}</p>
+                    <p>Sender Contact Number: {inquiry['sender_contact_number']}</p>
+                    <p>Message: <strong>{inquiry['message']}</strong></p>
+                </div>
+                """,
+            )
+
+        return Response({'success': ['Successfully mailed your inquiry.']}, status=status.HTTP_200_OK)
 
 
-send_inquiry_view = SendInquiryView.as_view()
-
-
-class InquiriesListCreateView(generics.ListCreateAPIView):
-    queryset = Inquiries
-    serializer_class = InquiriesListCreateSerializer
-    permission_classes = [IsRecipient]
-
-    def get_queryset(self):
-        recipient_username = self.kwargs['recipient_username']
-        inbox = self.queryset.objects.filter(
-            recipient__username=recipient_username)
-        super().get_queryset()
-        return inbox
-
-
-inquiries_list_create_view = InquiriesListCreateView.as_view()
-
-
-class InquiriesDetailEditDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Inquiries
-    serializer_class = InquriesDetailEditDeleteSerializer
-    permission_classes = [IsRecipient]
-    lookup_field = 'id'
-
-
-inquiries_detail_edit_delete_view = InquiriesDetailEditDeleteView.as_view()
+mail_inquiry_view = MailInquiryView.as_view()

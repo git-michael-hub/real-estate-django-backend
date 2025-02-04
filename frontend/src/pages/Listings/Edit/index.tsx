@@ -2,7 +2,7 @@ import useAuth from "../../../features/auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { useNavigate } from "react-router-dom";
-import { ListingType } from "../../../features/listings/context/ListingsProvider";
+import { API_DIRECTORY_LISTINGS, ListingType } from "../../../features/listings/context/ListingsProvider";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import useListing from "../../../features/listings/hooks/useListings";
 import HeaderSection from "../New/components/HeaderSection";
@@ -50,7 +50,11 @@ export default function Edit({ listingId }: EditProps) {
         appendImages(formData);
 
         const headers: HeaderType = { Authorization: `Token ${token}` };
-        const response: APIResponseType = await apiFns.patch(`listings/${listingId}`, formData, headers);
+        const response: APIResponseType = await apiFns.patch(
+            `${API_DIRECTORY_LISTINGS}${listingId}`,
+            formData,
+            headers
+        );
         if (response.success) {
             const data: ListingType = response.data;
             navigate(`/listings/${data.id}`);
