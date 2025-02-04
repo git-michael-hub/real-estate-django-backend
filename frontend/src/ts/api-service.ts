@@ -1,3 +1,7 @@
+// PRODUCTION
+// const API_URL: string = "http://52.77.229.203:80/";
+
+// DEVELOPMENT
 const API_URL: string = "http://localhost:8000/";
 
 export type HeaderType = { Authorization: string; "Content-Type"?: string };

@@ -18,8 +18,8 @@ class SellerRequirements(EmailValidationRequest):
     birthdate = models.DateField(editable=False, blank=True, null=True)
     gender = models.CharField(
         max_length=20, editable=False, blank=True, null=True, choices=GENDER_CHOICES)
-    contact_number_1 = models.PositiveIntegerField()
-    contact_number_2 = models.PositiveIntegerField(blank=True, null=True)
+    contact_number_1 = models.BigIntegerField()
+    contact_number_2 = models.BigIntegerField(blank=True, null=True)
 
     seller_image_url = models.ImageField(
         upload_to=upload_to, validators=[validate_image_file_extension], blank=True, null=True, editable=False)

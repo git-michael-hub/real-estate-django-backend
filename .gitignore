@@ -8,6 +8,8 @@ sqlite3.exe
 __misc
 media
 staticfiles
+fixtures
+fixtures.json
 
 # Logs
 logs
@@ -33,3 +35,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
