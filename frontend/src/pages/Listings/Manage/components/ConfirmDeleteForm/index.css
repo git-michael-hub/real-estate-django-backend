@@ -33,3 +33,13 @@
     display: flex;
     gap: 10px;
 }
+
+#confirm-delete-form .delete-btn-container > button {
+    background-color: #ff4444;
+    border: #ff4444;
+}
+
+#confirm-delete-form .delete-btn-container > button:hover {
+    background-color: #c83636;
+    border: #c83636;
+}

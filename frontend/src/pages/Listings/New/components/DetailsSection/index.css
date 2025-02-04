@@ -1,0 +1,26 @@
+#new-listing-container .listing-details > div {
+    position: relative;
+    box-shadow: var(--default-box-shadow);
+}
+
+#new-listing-container .textarea-basic {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#new-listing-container .edit-listing-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#new-listing-container .edit-listing-info > div > span {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#new-listing-container .edit-listing-info > div > span i {
+    width: 1rem;
+    color: var(--color-accent-2);
+}

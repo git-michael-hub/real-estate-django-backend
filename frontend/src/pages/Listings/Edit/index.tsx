@@ -2,13 +2,17 @@ import useAuth from "../../../features/auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { useNavigate } from "react-router-dom";
-import { API_DIRECTORY_LISTINGS, ListingType } from "../../../features/listings/context/ListingsProvider";
+import {
+    API_DIRECTORY_LISTINGS,
+    ListingFormMessageStateType,
+    ListingType,
+} from "../../../features/listings/context/ListingsProvider";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import useListing from "../../../features/listings/hooks/useListings";
 import HeaderSection from "../New/components/HeaderSection";
 import ImageListSection from "../New/components/ImageListSection";
 import DetailsSection from "../New/components/DetailsSection";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type EditProps = {
     listingId: number;
@@ -16,6 +20,7 @@ type EditProps = {
 
 export default function Edit({ listingId }: EditProps) {
     const navigate = useNavigate();
+    const [formMessages, setFormMessages] = useState<ListingFormMessageStateType>({});
     const { user } = useAuth();
     const { listing, setListing, fetchListing } = useListing();
 
@@ -58,6 +63,8 @@ export default function Edit({ listingId }: EditProps) {
         if (response.success) {
             const data: ListingType = response.data;
             navigate(`/listings/${data.id}`);
+        } else {
+            setFormMessages(response.data);
         }
     }
 
@@ -66,11 +73,15 @@ export default function Edit({ listingId }: EditProps) {
             <form id="new-listing-container" onSubmit={submitForm}>
                 <h3>Edit Listing</h3>
 
-                <HeaderSection listing={listing} setListing={setListing}></HeaderSection>
+                <HeaderSection listing={listing} setListing={setListing} formMessages={formMessages}></HeaderSection>
 
-                <ImageListSection listing={listing} setListing={setListing}></ImageListSection>
+                <ImageListSection
+                    listing={listing}
+                    setListing={setListing}
+                    formMessages={formMessages}
+                ></ImageListSection>
 
-                <DetailsSection listing={listing} setListing={setListing}></DetailsSection>
+                <DetailsSection listing={listing} setListing={setListing} formMessages={formMessages}></DetailsSection>
 
                 <input type="checkbox" name="is_available" defaultChecked={true} className="hidden" />
                 <input type="hidden" name="seller" defaultValue={user?.id} />

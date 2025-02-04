@@ -1,20 +1,15 @@
-#listing-table li,
-#listing-table-header {
+#listing-table li {
     display: grid;
-    grid-template-columns: 40px 150px 1fr 120px 120px 100px 90px 90px;
+    grid-template-columns: 40px 150px minmax(100px, 1fr) 120px 120px 100px 90px 90px;
     gap: 10px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-#listing-table-header {
-    padding-right: 15px;
 }
 
 #listing-table-header div {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 40px !important;
 }
 
 #listing-table {

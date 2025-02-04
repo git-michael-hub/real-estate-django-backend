@@ -41,6 +41,28 @@ export type PaginatedListingsType = {
     results: ListingType[];
 };
 
+export type ListingFormMessageStateType = {
+    success?: string[];
+    error?: string[];
+    title?: string[];
+    listing_type?: string[];
+    property_type?: string[];
+    price?: string[];
+    image1?: string[];
+    image2?: string[];
+    image3?: string[];
+    image4?: string[];
+    image5?: string[];
+    property_size?: string[];
+    description?: string[];
+    bedrooms?: string[];
+    bathrooms?: string[];
+    province?: string[];
+    city?: string[];
+    baranggay?: string[];
+    street?: string[];
+};
+
 export const API_DIRECTORY_LISTINGS = "api/listings/";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };

@@ -34,7 +34,9 @@ export default function ConfirmDeleteForm({ listingId, setIsConfirmDeleteFormAct
             <form id="confirm-delete-form" onSubmit={(e) => onDeleteListing(e, listingId)}>
                 <p>Confirm Delete</p>
                 <div>
-                    <BtnBasicActive type="submit">Delete</BtnBasicActive>
+                    <div className="delete-btn-container">
+                        <BtnBasicActive type="submit">Delete</BtnBasicActive>
+                    </div>
                     <BtnBasicActive type="button" onClick={() => setIsConfirmDeleteFormActive(false)}>
                         Cancel
                     </BtnBasicActive>

@@ -2,17 +2,22 @@ import useAuth from "../../../features/auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
 import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { useNavigate } from "react-router-dom";
-import { API_DIRECTORY_LISTINGS, ListingType } from "../../../features/listings/context/ListingsProvider";
+import {
+    API_DIRECTORY_LISTINGS,
+    ListingFormMessageStateType,
+    ListingType,
+} from "../../../features/listings/context/ListingsProvider";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import HeaderSection from "./components/HeaderSection";
-import "./index.css";
 import ImageListSection from "./components/ImageListSection";
 import DetailsSection from "./components/DetailsSection";
 import { useState } from "react";
+import "./index.css";
 
 export default function New() {
     const navigate = useNavigate();
     const [listing, setListing] = useState<ListingType | Partial<ListingType> | null>(null);
+    const [formMessages, setFormMessages] = useState<ListingFormMessageStateType>({});
     const { user } = useAuth();
 
     async function submitForm(e: React.FormEvent<HTMLFormElement>) {
@@ -28,10 +33,15 @@ export default function New() {
         if (listing?.image4) formData.append("image4", listing?.image4);
         if (listing?.image5) formData.append("image5", listing?.image5);
         const headers: HeaderType = { Authorization: `Token ${token}` };
-        const response: APIResponseType = await apiFns.post(`${API_DIRECTORY_LISTINGS}`, formData, headers);
-        if (response.success) {
-            const data: ListingType = response.data;
-            navigate(`/listings/${data.id}`);
+        try {
+            const response: APIResponseType = await apiFns.post(`${API_DIRECTORY_LISTINGS}`, formData, headers);
+            if (response.success) {
+                const data: ListingType = response.data;
+                navigate(`/listings/${data.id}`);
+                alert("Successfully created listing.");
+            } else setFormMessages(response.data);
+        } catch (error) {
+            alert("An error has occurred.");
         }
     }
 
@@ -40,11 +50,15 @@ export default function New() {
             <form id="new-listing-container" onSubmit={submitForm}>
                 <h3>New Listing</h3>
 
-                <HeaderSection listing={listing} setListing={setListing}></HeaderSection>
+                <HeaderSection listing={listing} setListing={setListing} formMessages={formMessages}></HeaderSection>
 
-                <ImageListSection listing={listing} setListing={setListing}></ImageListSection>
+                <ImageListSection
+                    listing={listing}
+                    setListing={setListing}
+                    formMessages={formMessages}
+                ></ImageListSection>
 
-                <DetailsSection listing={listing} setListing={setListing}></DetailsSection>
+                <DetailsSection listing={listing} setListing={setListing} formMessages={formMessages}></DetailsSection>
 
                 <input type="checkbox" name="is_available" defaultChecked={true} className="hidden" />
                 <input type="hidden" name="seller" defaultValue={user?.id} />

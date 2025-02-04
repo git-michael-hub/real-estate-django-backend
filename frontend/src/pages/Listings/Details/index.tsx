@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import helperFn from "../../../ts/helper";
 import { ListingType } from "../../../features/listings/context/ListingsProvider";
 import ContactForm from "../components/ContactForm";
 import BtnIcon from "../../../components/Buttons/BtnIcon";
 import BtnIconActive from "../../../components/Buttons/BtnIconActive";
 import Tag from "../../../components/Tag";
-import "./index.css";
 import useListing from "../../../features/listings/hooks/useListings";
 import { SellerDetailsType, SellerType } from "../../../features/sellers/context/SellersProvider";
+import "./index.css";
 
 export default function Details() {
+    const [displayImage, setDisplayImage] = useState<string | null>(null);
     const { listing, setListing, fetchListing } = useListing();
 
     useEffect(() => {
@@ -17,9 +18,15 @@ export default function Details() {
             const listing_id = window.location.pathname.slice(10);
             const listing: ListingType | null = await fetchListing(listing_id);
             setListing(listing);
+            if (listing?.image1) setDisplayImage(listing.image1 as string);
         };
         initState();
     }, []);
+
+    function onClickImage(e: React.MouseEvent<HTMLImageElement>) {
+        e.preventDefault();
+        setDisplayImage(e.currentTarget.src);
+    }
 
     return (
         <main id="details-page">
@@ -51,8 +58,8 @@ export default function Details() {
                             )}
                         </header>
                         <div className="listing-details">
-                            {listing.image1 ? (
-                                <img src={listing.image1 as string} alt="" className="listing-image" />
+                            {displayImage ? (
+                                <img src={displayImage} alt="" className="listing-image" />
                             ) : (
                                 <figure>
                                     <img
@@ -75,11 +82,11 @@ export default function Details() {
                             )}
 
                             <div className="listing-image-list">
-                                {listing.image1 ? <img src={listing.image1 as string} alt="" /> : <></>}
-                                {listing.image2 ? <img src={listing.image2 as string} alt="" /> : <></>}
-                                {listing.image3 ? <img src={listing.image3 as string} alt="" /> : <></>}
-                                {listing.image4 ? <img src={listing.image4 as string} alt="" /> : <></>}
-                                {listing.image5 ? <img src={listing.image5 as string} alt="" /> : <></>}
+                                {listing.image1 ? <img src={listing.image1 as string} onClick={onClickImage} /> : <></>}
+                                {listing.image2 ? <img src={listing.image2 as string} onClick={onClickImage} /> : <></>}
+                                {listing.image3 ? <img src={listing.image3 as string} onClick={onClickImage} /> : <></>}
+                                {listing.image4 ? <img src={listing.image4 as string} onClick={onClickImage} /> : <></>}
+                                {listing.image5 ? <img src={listing.image5 as string} onClick={onClickImage} /> : <></>}
                             </div>
 
                             <div>

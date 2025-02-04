@@ -1,13 +1,16 @@
 import InputBasic from "../../../../../components/Forms/InputBasic";
 import TextAreaBasic from "../../../../../components/Forms/TextAreaBasic";
-import { ListingType } from "../../../../../features/listings/context/ListingsProvider";
+import Message from "../../../../../components/Message";
+import { ListingFormMessageStateType, ListingType } from "../../../../../features/listings/context/ListingsProvider";
+import "./index.css";
 
 type DetailsSectionProps = {
     listing: ListingType | Partial<ListingType> | null;
     setListing: React.Dispatch<React.SetStateAction<ListingType | Partial<ListingType> | null>>;
+    formMessages: ListingFormMessageStateType;
 };
 
-export default function DetailsSection({ listing, setListing }: DetailsSectionProps) {
+export default function DetailsSection({ listing, setListing, formMessages }: DetailsSectionProps) {
     function checkNum(num: number): number {
         try {
             if (num < 0) num = 0;
@@ -22,55 +25,78 @@ export default function DetailsSection({ listing, setListing }: DetailsSectionPr
             <div>
                 <h3>Overview</h3>
                 <div className="edit-listing-info">
-                    <span>
-                        <i className="fa-solid fa-expand"></i>{" "}
-                        <InputBasic
-                            placeholder="Property Size (sqm)"
-                            type="number"
-                            name="property_size"
-                            min={0}
-                            onChange={(e) => setListing({ ...listing, property_size: Number(e.currentTarget.value) })}
-                            defaultValue={listing?.property_size}
-                        />
-                    </span>
+                    <div>
+                        <span>
+                            <i className="fa-solid fa-expand"></i>{" "}
+                            <InputBasic
+                                placeholder="Property Size (sqm)"
+                                type="number"
+                                name="property_size"
+                                min={0}
+                                onChange={(e) =>
+                                    setListing({ ...listing, property_size: Number(e.currentTarget.value) })
+                                }
+                                defaultValue={listing?.property_size}
+                            />
+                        </span>
+                        {formMessages.property_size ? (
+                            <Message type="error">{formMessages.property_size}</Message>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
                     {listing?.property_type === "RL" ? (
                         <></>
                     ) : listing?.property_type === "CL" ? (
                         <></>
                     ) : (
                         <>
-                            <span>
-                                <i className="fa-solid fa-bed"></i>
-                                <InputBasic
-                                    placeholder="No. of bedrooms"
-                                    type="number"
-                                    name="bedrooms"
-                                    min={0}
-                                    onChange={(e) =>
-                                        setListing({
-                                            ...listing,
-                                            bedrooms: checkNum(Number(e.currentTarget.value)),
-                                        })
-                                    }
-                                    defaultValue={listing?.bedrooms}
-                                />
-                            </span>
-                            <span>
-                                <i className="fa-solid fa-shower"></i>
-                                <InputBasic
-                                    placeholder="No. of bathrooms"
-                                    type="number"
-                                    name="bathrooms"
-                                    min={0}
-                                    onChange={(e) =>
-                                        setListing({
-                                            ...listing,
-                                            bathrooms: checkNum(Number(e.currentTarget.value)),
-                                        })
-                                    }
-                                    defaultValue={listing?.bathrooms}
-                                />
-                            </span>
+                            <div>
+                                <span>
+                                    <i className="fa-solid fa-bed"></i>
+                                    <InputBasic
+                                        placeholder="No. of bedrooms"
+                                        type="number"
+                                        name="bedrooms"
+                                        min={0}
+                                        onChange={(e) =>
+                                            setListing({
+                                                ...listing,
+                                                bedrooms: checkNum(Number(e.currentTarget.value)),
+                                            })
+                                        }
+                                        defaultValue={listing?.bedrooms}
+                                    />
+                                </span>
+                                {formMessages.bedrooms ? (
+                                    <Message type="error">{formMessages.bedrooms}</Message>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
+                            <div>
+                                <span>
+                                    <i className="fa-solid fa-shower"></i>
+                                    <InputBasic
+                                        placeholder="No. of bathrooms"
+                                        type="number"
+                                        name="bathrooms"
+                                        min={0}
+                                        onChange={(e) =>
+                                            setListing({
+                                                ...listing,
+                                                bathrooms: checkNum(Number(e.currentTarget.value)),
+                                            })
+                                        }
+                                        defaultValue={listing?.bathrooms}
+                                    />
+                                </span>
+                                {formMessages.bathrooms ? (
+                                    <Message type="error">{formMessages.bathrooms}</Message>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
                         </>
                     )}
                 </div>
@@ -82,6 +108,7 @@ export default function DetailsSection({ listing, setListing }: DetailsSectionPr
                     defaultValue={listing?.description}
                     name="description"
                 />
+                {formMessages.description ? <Message type="error">{formMessages.description}</Message> : <></>}
             </div>
         </section>
     );

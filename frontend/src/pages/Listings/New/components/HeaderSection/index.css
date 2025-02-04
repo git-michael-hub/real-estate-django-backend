@@ -1,0 +1,52 @@
+#new-listing-container .header-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 40px;
+}
+
+#new-listing-container .header-section h2 {
+    margin-bottom: 0;
+}
+#new-listing-container .header-section b {
+    font-size: 1.2rem;
+    color: var(--color-accent-2);
+}
+
+#new-listing-container .header-section address {
+    color: var(--text-color-3);
+}
+
+#new-listing-container .header-section .edit-btn {
+    right: 0;
+    bottom: unset;
+}
+
+#new-listing-container .header-edit .row {
+    display: grid;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+#new-listing-container .header-edit label {
+    color: var(--text-color-3);
+}
+
+#new-listing-container .header-edit .row-2 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#new-listing-container .header-edit .row-3 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+#new-listing-container .header-edit .input-basic {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+#new-listing-container .header-edit .select-with-label {
+    padding: 14.5px 10px;
+    line-height: 30px;
+}

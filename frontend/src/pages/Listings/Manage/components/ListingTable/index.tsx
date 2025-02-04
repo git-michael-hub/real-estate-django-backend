@@ -37,33 +37,33 @@ export default function ListingTable({ onClickEdit, onClickDelete }: ListingTabl
 
     return (
         <>
-            <div id="listing-table-header">
-                <div>
-                    <input type="checkbox" />
-                </div>
-                <div>
-                    <b>Image</b>
-                </div>
-                <div>
-                    <b>Title</b>
-                </div>
-                <div>
-                    <b>Listing Type</b>
-                </div>
-                <div>
-                    <b>Property Type</b>
-                </div>
-                <div>
-                    <b>Availability</b>
-                </div>
-                <div>
-                    <b>Edit</b>
-                </div>
-                <div>
-                    <b>Delete</b>
-                </div>
-            </div>
             <ul id="listing-table">
+                <li id="listing-table-header">
+                    <div>
+                        <input type="checkbox" />
+                    </div>
+                    <div>
+                        <b>Image</b>
+                    </div>
+                    <div>
+                        <b>Title</b>
+                    </div>
+                    <div>
+                        <b>Listing Type</b>
+                    </div>
+                    <div>
+                        <b>Property Type</b>
+                    </div>
+                    <div>
+                        <b>Availability</b>
+                    </div>
+                    <div>
+                        <b>Edit</b>
+                    </div>
+                    <div>
+                        <b>Delete</b>
+                    </div>
+                </li>
                 {listings.map((listing) => {
                     return (
                         <li key={listing.id}>
