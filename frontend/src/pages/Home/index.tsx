@@ -6,7 +6,9 @@ export default function Home() {
         <main id="home-page">
             <section id="search-form-section">
                 <h2>Find the perfect place to Live with your family</h2>
-                <ListingSearchFormH></ListingSearchFormH>
+                <div id="search-form-wrapper">
+                    <ListingSearchFormH></ListingSearchFormH>
+                </div>
             </section>
             <div id="home-page-bg"></div>
         </main>

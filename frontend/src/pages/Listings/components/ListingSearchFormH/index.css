@@ -16,6 +16,17 @@
     gap: 10px;
 }
 
+@keyframes search-form-appear {
+    from {
+        top: 100%;
+        opacity: 0;
+    }
+    to {
+        top: calc(100% + 10px);
+        opacity: 1;
+    }
+}
+
 #listing-search-form-h #more-options-container {
     display: grid;
     grid-template-columns: 320px 320px;
@@ -24,8 +35,9 @@
     background-color: var(--color-secondary);
     border-radius: 5px;
 
-    position: relative;
-    animation-name: appear;
+    position: absolute;
+    top: calc(100% + 10px);
+    animation-name: search-form-appear;
     animation-duration: 0.3s;
 }
 
@@ -41,4 +53,71 @@
 
 #listing-search-form-h #more-options-container input {
     max-width: 100px;
+}
+
+@media only screen and (max-width: 720px) {
+    #search-options-container {
+        grid-template-columns: 120px 120px 120px 120px;
+        gap: 8px;
+    }
+
+    #search-options-container input,
+    #search-options-container select {
+        padding: 7px;
+    }
+
+    #search-options-container * {
+        font-size: 0.75rem;
+    }
+
+    #listing-search-form-h .button-container {
+        gap: 8px;
+    }
+
+    #listing-search-form-h .button-container * {
+        font-size: 0.75rem;
+    }
+
+    #listing-search-form-h #more-options-container {
+        grid-template-columns: 240px 240px;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    #listing-search-form-h #more-options-container * {
+        font-size: 0.75rem;
+    }
+
+    #listing-search-form-h #more-options-container input {
+        padding: 7px;
+    }
+}
+
+@media only screen and (max-width: 540px) {
+    #search-options-container {
+        grid-template-columns: 100px 100px 100px 100px;
+    }
+
+    #search-options-container input,
+    #search-options-container select {
+        padding: 5px;
+    }
+
+    #listing-search-form-h #more-options-container {
+        grid-template-columns: 200px 200px;
+    }
+
+    #listing-search-form-h #more-options-container input {
+        padding: 5px;
+    }
+}
+
+@media only screen and (max-width: 460px) {
+    #search-options-container {
+        grid-template-columns: 80px 80px 80px 80px;
+    }
+
+    #listing-search-form-h #more-options-container {
+        grid-template-columns: 160px 160px;
+    }
 }
