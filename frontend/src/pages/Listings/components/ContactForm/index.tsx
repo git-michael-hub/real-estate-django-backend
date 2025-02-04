@@ -68,7 +68,7 @@ export default function ContactForm({ listing, seller }: ContactFormProps) {
             </div>
             <div className="contact-form-input">
                 {listing ? <input type="hidden" name="listing_id" value={listing.id} /> : <></>}
-                <input type="hidden" name="agent_email" value="jdf.tito@yahoo.com" />
+                <input type="hidden" name="agent_email" value={seller.email} />
                 {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
                 <div>
                     <InputBasic name="sender_name" placeholder="Name"></InputBasic>
