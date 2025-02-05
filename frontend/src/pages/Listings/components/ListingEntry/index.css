@@ -25,7 +25,8 @@
     gap: 10px;
 }
 
-.listing-details-container header .icon-btn {
+.listing-details-container header .icon-btn,
+.listing-details-container header .icon-btn-active {
     width: 30px;
     height: 30px;
     font-size: 0.9rem;

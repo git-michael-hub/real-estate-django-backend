@@ -132,6 +132,22 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
         }
     };
 
+    const editListing = async (formData: FormData, listingId: number): Promise<APIResponseType | null> => {
+        try {
+            const token: Token = cookieHandler.get("token");
+            const headers: HeaderType = { Authorization: `Token ${token}` };
+            const response: APIResponseType = await apiFns.patch(
+                `${API_DIRECTORY_LISTINGS}${listingId}`,
+                formData,
+                headers
+            );
+            return response;
+        } catch (error) {
+            alert("An error occurred");
+            return null;
+        }
+    };
+
     return (
         <ListingContext.Provider
             value={{
@@ -142,6 +158,7 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
                 fetchListing,
                 fetchListings,
                 deleteListing,
+                editListing,
                 page,
                 pages,
                 nextPageLink,
@@ -166,6 +183,7 @@ export type ListingContextType = {
     fetchListing: (path: string) => Promise<ListingType | null>;
     fetchListings: (searchParams: string) => Promise<PaginatedListingsType | null>;
     deleteListing: (listingId: number) => Promise<boolean>;
+    editListing: (formData: FormData, listingId: number) => Promise<APIResponseType | null>;
     page: number;
     pages: number;
     nextPageLink: string | null;
@@ -185,6 +203,7 @@ const initListingContextState: ListingContextType = {
     fetchListing: () => Promise.resolve(null),
     fetchListings: () => Promise.resolve(null),
     deleteListing: () => Promise.resolve(false),
+    editListing: () => Promise.resolve(null),
     page: 1,
     pages: 1,
     nextPageLink: null,

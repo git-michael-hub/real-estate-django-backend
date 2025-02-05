@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import helperFn from "../../../ts/helper";
 import { ListingType } from "../../../features/listings/context/ListingsProvider";
 import ContactForm from "../components/ContactForm";
-import BtnIcon from "../../../components/Buttons/BtnIcon";
-import BtnIconActive from "../../../components/Buttons/BtnIconActive";
 import Tag from "../../../components/Tag";
 import useListing from "../../../features/listings/hooks/useListings";
 import { SellerDetailsType, SellerType } from "../../../features/sellers/context/SellersProvider";
+import useAuth from "../../../features/auth/hooks/useAuth";
+import useBuyer from "../../../features/buyers/hooks/useBuyers";
+import BtnIconNoBg from "../../../components/Buttons/BtnIconNoBg";
 import "./index.css";
 
 export default function Details() {
     const [displayImage, setDisplayImage] = useState<string | null>(null);
     const { listing, setListing, fetchListing } = useListing();
+    const { user } = useAuth();
+    const { favoriteListings, editFavorites } = useBuyer();
 
     useEffect(() => {
         const initState = async () => {
@@ -47,14 +50,22 @@ export default function Details() {
                                 <i className="fa-solid fa-location-dot"></i>{" "}
                                 {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
                             </address>
-                            {true ? (
-                                <BtnIcon title="Add to favorites">
-                                    <i className="fa-regular fa-star"></i>
-                                </BtnIcon>
+                            {!user ? (
+                                <></>
+                            ) : favoriteListings.includes(listing.id) ? (
+                                <form onSubmit={(e) => editFavorites(e, user.username)}>
+                                    <input type="hidden" name="remove_from_favorites" value={listing.id} />
+                                    <BtnIconNoBg>
+                                        <i className="fa-solid fa-heart favorite"></i>
+                                    </BtnIconNoBg>
+                                </form>
                             ) : (
-                                <BtnIconActive title="Add to favorites">
-                                    <i className="fa-regular fa-star"></i>
-                                </BtnIconActive>
+                                <form onSubmit={(e) => editFavorites(e, user.username)}>
+                                    <input type="hidden" name="add_to_favorites" value={listing.id} />
+                                    <BtnIconNoBg>
+                                        <i className="fa-regular fa-heart"></i>
+                                    </BtnIconNoBg>
+                                </form>
                             )}
                         </header>
                         <div className="listing-details">

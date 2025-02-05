@@ -5,13 +5,16 @@ import App from "./App.tsx";
 import { AuthProvider } from "./features/auth/context/AuthProvider.tsx";
 import { ListingProvider } from "./features/listings/context/ListingsProvider.tsx";
 import "./index.css";
+import { BuyersProvider } from "./features/buyers/context/BuyersProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <BrowserRouter>
             <AuthProvider>
                 <ListingProvider>
-                    <App />
+                    <BuyersProvider>
+                        <App />
+                    </BuyersProvider>
                 </ListingProvider>
             </AuthProvider>
         </BrowserRouter>

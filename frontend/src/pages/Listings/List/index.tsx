@@ -1,41 +1,23 @@
-import { useEffect, useState } from "react";
-import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
-import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import { useEffect } from "react";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import useListing from "../../../features/listings/hooks/useListings";
+import useBuyer from "../../../features/buyers/hooks/useBuyers";
 import ListingEntry from "../components/ListingEntry";
 import ListingSearchForm from "../components/ListingSearchForm";
 import PageBtns from "../../../components/PageBtns";
 import "./index.css";
 
 export default function List() {
-    const [favoriteListings, setFavoriteListings] = useState([]);
     const { user } = useAuth();
     const { listings, page, pages, nextPageLink, previousPageLink, fetchListingsAndUpdateState } = useListing();
+    const { fetchFavoriteListings } = useBuyer();
 
     useEffect(() => {
-        const initListings = async (): Promise<void> => {
+        const init = async (): Promise<void> => {
             await fetchListingsAndUpdateState(window.location.search);
+            if (user) await fetchFavoriteListings(user.username);
         };
-
-        const initFavorites = async (): Promise<void> => {
-            const token: Token = cookieHandler.get("token");
-            if (!token || !user) return;
-
-            try {
-                const headers: HeaderType = { Authorization: `Token ${token}` };
-                const response: APIResponseType = await apiFns.get(`favorites/listings/${user.username}`, headers);
-                const favorites: any = response; // MUST CREATE TYPE FOR FAVORITES
-                setFavoriteListings(favorites.listings);
-            } catch (error: unknown) {
-                console.log(
-                    `An error occurred at function ${initFavorites.name}() inside pages/Listings/index.tsx. \n${error}`
-                );
-            }
-        };
-
-        initFavorites();
-        initListings();
+        init();
     }, []);
 
     return (
@@ -52,14 +34,7 @@ export default function List() {
                     {listings.length > 0 ? (
                         <ul>
                             {listings.map((listing) => {
-                                return (
-                                    <ListingEntry
-                                        listing={listing}
-                                        key={listing.id}
-                                        favoriteListings={favoriteListings}
-                                        setFavoriteListings={setFavoriteListings}
-                                    />
-                                );
+                                return <ListingEntry listing={listing} key={listing.id} />;
                             })}
                         </ul>
                     ) : (

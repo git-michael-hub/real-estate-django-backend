@@ -15,7 +15,6 @@ export type APIResponseType = { success: boolean; data?: any };
 
 const processResponse = async (endpoint: string, payload: PayloadType): Promise<APIResponseType> => {
     const response: Response = await fetch(API_URL + endpoint, payload);
-    console.log(response);
     if (response.status === 204) return { success: response.ok };
     const data: any = await response.json();
     return { success: response.ok, data: data };

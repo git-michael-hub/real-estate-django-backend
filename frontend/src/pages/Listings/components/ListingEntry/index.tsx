@@ -1,29 +1,18 @@
 import { Link } from "react-router-dom";
-import "./index.css";
 import useAuth from "../../../../features/auth/hooks/useAuth";
-import { apiFns, APIResponseType, HeaderType } from "../../../../ts/api-service";
-import cookieHandler, { Token } from "../../../../ts/cookie-handler";
 import helperFn from "../../../../ts/helper";
-import BtnIcon from "../../../../components/Buttons/BtnIcon";
 import { ListingType } from "../../../../features/listings/context/ListingsProvider";
+import BtnIconNoBg from "../../../../components/Buttons/BtnIconNoBg";
+import "./index.css";
+import useBuyer from "../../../../features/buyers/hooks/useBuyers";
 
 type ListingEntryPropType = {
     listing: ListingType;
-    favoriteListings: any[]; // MUST CREATE TYPE FOR FAVORITELISTINGS!
-    setFavoriteListings: React.Dispatch<React.SetStateAction<never[]>>;
 };
 
-export default function ListingEntry({ listing, favoriteListings, setFavoriteListings }: ListingEntryPropType) {
-    const token: Token = cookieHandler.get("token");
+export default function ListingEntry({ listing }: ListingEntryPropType) {
     const { user } = useAuth();
-
-    const submitEditFavorites = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const headers: HeaderType = { Authorization: `Token ${token}` };
-        const body: FormData = new FormData(e.currentTarget);
-        const response: APIResponseType = await apiFns.patch(`favorites/listings/${user?.username}`, body, headers);
-        setFavoriteListings(response.data);
-    };
+    const { favoriteListings, editFavorites } = useBuyer();
 
     return (
         <>
@@ -64,18 +53,18 @@ export default function ListingEntry({ listing, favoriteListings, setFavoriteLis
                                 {!user ? (
                                     <></>
                                 ) : favoriteListings.includes(listing.id) ? (
-                                    <form onSubmit={submitEditFavorites}>
+                                    <form onSubmit={(e) => editFavorites(e, user.username)}>
                                         <input type="hidden" name="remove_from_favorites" value={listing.id} />
-                                        <BtnIcon>
-                                            <i className="fa-regular fa-star"></i>
-                                        </BtnIcon>
+                                        <BtnIconNoBg>
+                                            <i className="fa-solid fa-heart favorite"></i>
+                                        </BtnIconNoBg>
                                     </form>
                                 ) : (
-                                    <form onSubmit={submitEditFavorites}>
+                                    <form onSubmit={(e) => editFavorites(e, user.username)}>
                                         <input type="hidden" name="add_to_favorites" value={listing.id} />
-                                        <BtnIcon>
-                                            <i className="fa-regular fa-star"></i>
-                                        </BtnIcon>
+                                        <BtnIconNoBg>
+                                            <i className="fa-regular fa-heart"></i>
+                                        </BtnIconNoBg>
                                     </form>
                                 )}
                             </header>

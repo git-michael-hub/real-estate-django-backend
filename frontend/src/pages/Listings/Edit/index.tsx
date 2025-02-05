@@ -1,12 +1,6 @@
 import useAuth from "../../../features/auth/hooks/useAuth";
-import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
-import cookieHandler, { Token } from "../../../ts/cookie-handler";
 import { useNavigate } from "react-router-dom";
-import {
-    API_DIRECTORY_LISTINGS,
-    ListingFormMessageStateType,
-    ListingType,
-} from "../../../features/listings/context/ListingsProvider";
+import { ListingFormMessageStateType, ListingType } from "../../../features/listings/context/ListingsProvider";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import useListing from "../../../features/listings/hooks/useListings";
 import HeaderSection from "../New/components/HeaderSection";
@@ -22,14 +16,13 @@ export default function Edit({ listingId }: EditProps) {
     const navigate = useNavigate();
     const [formMessages, setFormMessages] = useState<ListingFormMessageStateType>({});
     const { user } = useAuth();
-    const { listing, setListing, fetchListing } = useListing();
+    const { listing, setListing, fetchListing, editListing } = useListing();
 
     useEffect(() => {
         const init = async () => {
             const listing: ListingType | null | Partial<ListingType> = await fetchListing(`${listingId}`);
             setListing(listing);
         };
-        console.log(listing);
 
         init();
     }, []);
@@ -48,18 +41,12 @@ export default function Edit({ listingId }: EditProps) {
 
     async function submitForm(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        const token: Token = cookieHandler.get("token");
-        if (!token) return null;
 
         const formData = new FormData(e.currentTarget);
         appendImages(formData);
 
-        const headers: HeaderType = { Authorization: `Token ${token}` };
-        const response: APIResponseType = await apiFns.patch(
-            `${API_DIRECTORY_LISTINGS}${listingId}`,
-            formData,
-            headers
-        );
+        const response = await editListing(formData, listingId);
+        if (response === null) return;
         if (response.success) {
             const data: ListingType = response.data;
             navigate(`/listings/${data.id}`);
