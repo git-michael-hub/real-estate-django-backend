@@ -40,9 +40,11 @@ class BuyerDetailSerializer(BuyerAccountDetailSerializer):
         fields = BuyerAccountDetailSerializer.Meta.fields
 
 
-class BuyerListingFavoritesRetrieveSerializer(serializers.Serializer):
-    user = UserDetailSerializer()
-    favorite_listings = ListingDetailSerializer(many=True)
+class BuyerListingFavoritesRetrieveSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BuyerAccount
+        fields = ['favorite_listings']
 
 
 class BuyerListingFavoritesAddRemoveSerializer(serializers.Serializer):
