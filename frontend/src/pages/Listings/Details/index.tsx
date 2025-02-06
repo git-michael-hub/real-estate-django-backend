@@ -9,6 +9,7 @@ import useAuth from "../../../features/auth/hooks/useAuth";
 import useBuyer from "../../../features/buyers/hooks/useBuyers";
 import BtnIconNoBg from "../../../components/Buttons/BtnIconNoBg";
 import "./index.css";
+import NotFound from "../../NotFound";
 
 export default function Details() {
     const [displayImage, setDisplayImage] = useState<string | null>(null);
@@ -144,7 +145,7 @@ export default function Details() {
                         </section>
                     </>
                 ) : (
-                    <div>Listing does not exist.</div>
+                    <NotFound></NotFound>
                 )}
             </div>
         </main>

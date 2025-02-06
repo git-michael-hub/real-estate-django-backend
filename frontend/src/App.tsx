@@ -23,6 +23,8 @@ function App() {
                 {/* </Route> */}
                 <Route path="/agents" element={<Pages.Sellers.List />} />
                 <Route path="/agents/:username" element={<Pages.Sellers.Profile />} />
+
+                <Route path="*" element={<Pages.NotFound />} />
             </Route>
         </Routes>
     );

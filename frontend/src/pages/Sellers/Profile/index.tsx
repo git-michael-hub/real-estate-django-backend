@@ -7,6 +7,7 @@ import { API_DIRECTORY_SELLERS, SellerDetailsType } from "../../../features/sell
 import BtnBasic from "../../../components/Buttons/BtnBasic";
 import useListing from "../../../features/listings/hooks/useListings";
 import PageBtns from "../../../components/PageBtns";
+import NotFound from "../../NotFound";
 
 export default function Profile() {
     const [seller, setSeller] = useState<SellerDetailsType>();
@@ -17,8 +18,12 @@ export default function Profile() {
 
         const fetchSeller = async () => {
             const response: APIResponseType = await apiFns.get(`${API_DIRECTORY_SELLERS}${username}`);
-            const seller: SellerDetailsType = response.data;
-            setSeller(seller);
+            if (response.success) {
+                const seller: SellerDetailsType = response.data;
+                setSeller(seller);
+            } else {
+                setSeller(undefined);
+            }
         };
 
         const fetchListings = async () => {
@@ -90,7 +95,7 @@ export default function Profile() {
                     </div>
                 </div>
             ) : (
-                <></>
+                <NotFound></NotFound>
             )}
         </main>
     );
