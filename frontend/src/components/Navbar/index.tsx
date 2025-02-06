@@ -34,7 +34,7 @@ export default function Navbar() {
                     <Link to={"/"} className="navbar-item">
                         Home
                     </Link>
-                    <Link to={"/"} className="navbar-item">
+                    <Link to={"/about"} className="navbar-item">
                         About Us
                     </Link>
                     <Link to={"/listings/?page=1"} className="navbar-item">
@@ -135,7 +135,7 @@ function NavDropdown({ setIsNavDropdownVisible }: NavDropdownType) {
                 <Link to={"/"}>Home</Link>
             </li>
             <li>
-                <Link to={"/"}>About Us</Link>
+                <Link to={"/about"}>About Us</Link>
             </li>
             <li>
                 <Link to={"/listings/?page=1"}>Listings</Link>

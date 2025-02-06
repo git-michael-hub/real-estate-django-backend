@@ -10,7 +10,6 @@ import PageBtns from "../../../components/PageBtns";
 
 export default function Profile() {
     const [seller, setSeller] = useState<SellerDetailsType>();
-    const [favoriteListings, setFavoriteListings] = useState([]);
     const { listings, previousPageLink, nextPageLink, page, pages, fetchListingsAndUpdateState } = useListing();
 
     useEffect(() => {
@@ -71,14 +70,7 @@ export default function Profile() {
                             <>
                                 <ul>
                                     {listings.map((listing) => {
-                                        return (
-                                            <ListingEntry
-                                                listing={listing}
-                                                key={listing.id}
-                                                favoriteListings={favoriteListings}
-                                                setFavoriteListings={setFavoriteListings}
-                                            />
-                                        );
+                                        return <ListingEntry listing={listing} key={listing.id} />;
                                     })}
                                 </ul>
                                 <PageBtns

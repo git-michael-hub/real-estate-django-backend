@@ -9,6 +9,7 @@ function App() {
         <Routes>
             <Route element={<DefaultLayout />}>
                 <Route path="" element={<Pages.Home />} />
+                <Route path="/about" element={<Pages.About />} />
                 <Route path="/login" element={<Pages.Auth.Login />} />
                 <Route path="/register" element={<Pages.Auth.Register />} />
                 <Route path="/forgot-password" element={<Pages.Auth.ForgotPassword />} />

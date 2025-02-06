@@ -1,0 +1,105 @@
+#about-page section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#about-page .header {
+    background-image: url("/static/images/tierra-mallorca-unsplash.jpg");
+    /* Photo by <a href="https://unsplash.com/@tierramallorca?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Tierra Mallorca</a> on <a href="https://unsplash.com/photos/white-and-red-wooden-house-miniature-on-brown-table-rgJ1J8SDEAY?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
+       */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+    width: 100%;
+    height: 50vh;
+}
+
+#about-page .header > div {
+    width: 1020px;
+    padding: 20px 40px;
+}
+
+#about-page h2 {
+    font-size: 2rem;
+}
+
+#about-page .header > div > p {
+    color: white;
+    font-size: 3rem;
+    line-height: 70px;
+    max-width: 720px;
+    text-align: justify;
+    margin: 0;
+}
+
+@media only screen and (max-width: 780px) {
+    #about-page .header > div > p {
+        font-size: 2.5rem;
+        max-width: 460px;
+        line-height: 60px;
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    #about-page .header > div > p {
+        font-size: 2rem;
+        max-width: 360px;
+        line-height: 55px;
+    }
+}
+
+#about-page .mission > div {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#about-page h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--color-accent-2);
+}
+
+#about-page .img-container {
+    max-width: 500px;
+}
+
+#about-page img {
+    width: 100%;
+}
+
+@media only screen and (max-width: 1020px) {
+    #about-page .mission > div {
+        flex-direction: column-reverse;
+        gap: 20px;
+    }
+
+    #about-page .img-container {
+        max-width: 100%;
+    }
+}
+
+#about-page section > div {
+    max-width: 1020px;
+    padding: 40px;
+}
+
+#about-page section p,
+#about-page section li {
+    text-align: justify;
+    font-size: 1.1rem;
+    line-height: 40px;
+}
+
+#about-page section li {
+    list-style: unset;
+}
+
+#about-page .group-1 {
+    background-color: var(--color-primary);
+}
+
+#about-page .group-2 {
+    background-color: var(--color-secondary);
+}
