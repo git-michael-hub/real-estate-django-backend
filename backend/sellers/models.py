@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_image_file_extension
 from django.db import models
 
-from users.models import EmailValidationRequest
+from users.models import EmailValidationRequest, User
 
 
 def upload_to(instance, filename):

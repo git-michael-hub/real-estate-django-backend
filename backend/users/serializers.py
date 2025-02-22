@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+
+from .models import User
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -15,7 +16,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password']
+        fields = ['email', 'username', 'password', 'first_name', 'last_name']
 
     def validate_password(self, password):
         confirm_password = self.context['request'].POST.get('confirm_password')
@@ -26,6 +27,31 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super(UserCreateSerializer, self).create(validated_data)
+
+
+class UserEmailVerificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email_verification_pin']
+
+    def validate(self, attrs):
+        email = self.context['view'].kwargs['email']
+        pin_code = attrs.get('email_verification_pin')
+        user = User.objects.get(email=email)
+
+        if user is None:
+            raise serializers.ValidationError(
+                'User with email does not exist.')
+
+        if user.is_active == True:
+            raise serializers.ValidationError(
+                'User email is already verified.')
+
+        if user.email_verification_pin != pin_code:
+            raise serializers.ValidationError(
+                'PIN does not match.')
+
+        return attrs
 
 
 # CREATE TEST FOR THIS

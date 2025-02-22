@@ -1,10 +1,9 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.auth.models import User
 from django.db import models
 
 from listings.models import Listing
 
-from users.models import EmailValidationRequest
+from users.models import EmailValidationRequest, User
 
 
 class BuyerEmailValidationRequest(EmailValidationRequest):

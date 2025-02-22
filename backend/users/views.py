@@ -1,5 +1,7 @@
-from django.contrib.auth.models import User
+from random import randint
+
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 
 from rest_framework import generics, authentication, status, permissions
@@ -7,17 +9,71 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-
 from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
 
-from .models import PasswordResetRequest
-from .serializers import EmailSerializer, ResetPasswordSerializer,  UserEmailLoginSerializer, UserDetailSerializer
+from buyers.models import BuyerAccount
+from sellers.models import SellerAccount
+
+from .models import PasswordResetRequest, User
+from .serializers import UserCreateSerializer, UserEmailVerificationSerializer, ResetPasswordSerializer,  UserEmailLoginSerializer, UserDetailSerializer, EmailSerializer
+
+
+class UserCreateView(generics.CreateAPIView):
+    serializer_class = UserCreateSerializer
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+
+        password = request.data['password']
+        pin_code = randint(100000, 999999)
+
+        user = User(email=data['email'],
+                    username=data['username'],
+                    password=make_password(password),
+                    is_active=False,
+                    email_verification_pin=pin_code
+                    )
+        user.save()
+
+        send_mail(
+            "Real Estate System: Email Verification.",
+            f"Your 6-digit One-Time-PIN is: {pin_code}",
+            EMAIL_HOST_USER,
+            [data['email']],
+            fail_silently=False,
+            html_message=f"<p>Your 6-digit One-Time-PIN is: {pin_code}</p>"
+        )
+
+        return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
+
+
+user_create_view = UserCreateView.as_view()
+
+
+class UserEmailVerificationView(generics.UpdateAPIView):
+    serializer_class = UserEmailVerificationSerializer
+    queryset = User.objects.all()
+    lookup_field = 'email'
+
+    def patch(self, request, email):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.get_object()
+        user.email_verification_pin = None
+        user.is_active = True
+        user.save()
+        return Response({'success': ['Your email has been verified.']}, status=status.HTTP_200_OK)
+
+
+user_email_verification_view = UserEmailVerificationView.as_view()
 
 
 class UserLoginView(ObtainAuthToken):
     def post(self, request):
-        serializer = self.get_serializer(data=request.data,
-                                         context={'request': request})
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
@@ -26,16 +82,6 @@ class UserLoginView(ObtainAuthToken):
 
 
 user_login_view = UserLoginView.as_view()
-
-
-class UserEmailLoginView(ObtainAuthToken):
-    def post(self, request):
-        serializer = UserEmailLoginSerializer(
-            data=request.data, context={'request', request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
 
 
 class UserDetailView(generics.GenericAPIView):
@@ -134,13 +180,12 @@ class ResetPasswordView(generics.GenericAPIView):
 password_reset = ResetPasswordView.as_view()
 
 
-############ DEVELOPMENT ONLY ####################
+# class UserEmailLoginView(ObtainAuthToken):
+#     serializer_class = UserEmailLoginSerializer
 
-
-# class UserListView(generics.ListAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserDetailSerializer
-#     authentication_classes = [authentication.TokenAuthentication]
-
-
-# user_list_view = UserListView.as_view()
+#     def post(self, request):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         token, created = Token.objects.get_or_create(user=user)
+#         return Response({'token': token.key})
