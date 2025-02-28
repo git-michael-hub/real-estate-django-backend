@@ -4,7 +4,7 @@ from rest_framework import permissions
 class IsBuyerAccountOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         try:
-            return bool(request.user.buyer_account.id == obj.id)
+            return bool(request.user.buyer_account.pk == obj.id)
         except:
             return False
 

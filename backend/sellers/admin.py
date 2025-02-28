@@ -6,16 +6,16 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
-from .models import SellerEmailValidationRequest, SellerApplication, SellerAccount
+from .models import SellerApplication, SellerAccount
 
 
-admin.site.register(SellerEmailValidationRequest)
 admin.site.register(SellerAccount)
 
 
 @admin.register(SellerApplication)
 class SellerApplicationAdmin(admin.ModelAdmin):
-    list_display = ['email', 'status']
+    list_display = ['seller_account',
+                    'business_name', 'status', 'application_date']
     change_form_template = 'admin/sellers/change_form.html'
 
     csrf_protect_m = method_decorator(csrf_protect)

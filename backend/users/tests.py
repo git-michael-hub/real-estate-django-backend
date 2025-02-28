@@ -1,13 +1,10 @@
-from datetime import date
-
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
-from django.core.management import call_command
 
 from rest_framework.test import APITestCase
 
-# from buyers.models import BuyerAccount
-# from sellers.models import SellerAccount, SellerApplication
+from sellers.models import SellerAccount
+from buyers.models import BuyerAccount
 
 from .models import User, PasswordResetRequest
 
@@ -19,6 +16,8 @@ class TestUserSetUp(APITestCase):
         self.login_url = reverse('login')
         self.logout_url = reverse('logout')
         self.request_password_reset_url = reverse('request-password-reset')
+
+        self.test_user = User.objects.get(pk=10)
 
         self.unregistered_user_data = {
             'username': 'unregistereduser',
@@ -55,18 +54,6 @@ class TestUserSetUp(APITestCase):
         #     'last_name': 'macmacbuyer'
         # }
 
-        # self.registered_seller_data = {
-        #     'email': 'registeredseller@gmail.com',
-        #     'username': 'registeredseller',
-        #     'password': 'testpassword123',
-        #     'first_name': 'maxiseller',
-        #     'last_name': 'macmacseller',
-        #     'address': 'maxiseller address',
-        #     'gender': 'M',
-        #     'birthdate': date(1990, 3, 19),
-        #     'contact_number_1': 111111111,
-        # }
-
         # self.login_data = {
         #     'username': self.user_data['username'],
         #     'password': self.user_data['password']
@@ -77,15 +64,7 @@ class TestUserSetUp(APITestCase):
         #     'password': self.registered_buyer_data['password']
         # }
 
-        # self.registered_seller_login_data = {
-        #     'username': self.registered_seller_data['username'],
-        #     'password': self.registered_seller_data['password']
-        # }
-
         # self.buyer_account = self.create_buyer(self.registered_buyer_data)
-
-        # self.seller_account = self.create_seller(
-        #     self.registered_seller_data)
 
     # def create_buyer(self, buyer_data):
     #     hashed_password = make_password(password=buyer_data['password'])
@@ -99,42 +78,6 @@ class TestUserSetUp(APITestCase):
     #     buyer_account.save()
     #     return buyer_account
 
-    # def create_seller_application(self, user_data):
-    #     seller_application = SellerApplication(
-    #         email=user_data['email'],
-    #         username=user_data['username'],
-    #         password=make_password(user_data['password']),
-    #         first_name=user_data['first_name'],
-    #         last_name=user_data['last_name'],
-    #         address=user_data['address'],
-    #         birthdate=user_data['birthdate'],
-    #         gender=user_data['gender'],
-    #         contact_number_1=user_data['contact_number_1'],
-    #         status='P'
-    #     )
-    #     seller_application.save()
-    #     return seller_application
-
-    # def create_seller(self, user_data):
-    #     application = self.create_seller_application(user_data)
-    #     user = User(email=application.email,
-    #                 username=application.username,
-    #                 password=application.password
-    #                 )
-    #     seller_account = SellerAccount(
-    #         user=user,
-    #         sellerapplication_ptr=application,
-    #         birthdate=application.birthdate,
-    #         application_date=application.application_date,
-    #         contact_number_1=application.contact_number_1
-    #     )
-    #     application.status = 'A'
-    #     user.save()
-    #     seller_account.save()
-    #     application.save()
-
-    #     return seller_account
-
     # create a registered user directly
     def create_registered_user(self, user_data):
         user = User.objects.create(
@@ -142,6 +85,9 @@ class TestUserSetUp(APITestCase):
             username=user_data['username'],
             password=make_password(user_data['password']),
             is_active=True)
+        BuyerAccount.objects.create(user=user)
+        SellerAccount.objects.create(user=user, is_active=False)
+
         return user
 
     # register a user through API
@@ -177,6 +123,7 @@ class TestUserSetUp(APITestCase):
                       'password': self.test_password}
         return self.login_and_get_token(login_data)
 
+    # create an authorization header for requests that require authorization
     def create_auth_header(self, token):
         return {'Authorization': f'Token {token}'}
 
@@ -293,24 +240,21 @@ class TestUserView(TestUserSetUp):
 
     def test_auth_user_can_get_user_data(self):
         # test if authorized user can get their details
-        self.create_registered_user(self.unregistered_user_data)
-        token = self.login_and_get_token(self.unregistered_user_login_data)
+        token = self.login_user_and_get_token(self.test_user)
         res = self.client.get(self.auth_user_url,
-                              self.unregistered_user_data,
                               headers=self.create_auth_header(token)
                               )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['username'],
-                         self.unregistered_user_data['username'])
+                         self.test_user.username)
 
     # -------------------------------------------------------------------------------------------
 
     def test_not_auth_user_cannot_get_user_data(self):
         # test if unauthorized user can get their details
-        self.create_registered_user(self.unregistered_user_data)
+        self.login_user_and_get_token(self.test_user)
         token = 'wrong_token'
         res = self.client.get(self.auth_user_url,
-                              self.unregistered_user_login_data,
                               headers=self.create_auth_header(token)
                               )
         self.assertEqual(res.status_code, 401)
@@ -319,8 +263,7 @@ class TestUserView(TestUserSetUp):
 
     def test_registered_user_can_request_reset_password(self):
         # test request-password-reset
-        self.create_registered_user(self.unregistered_user_data)
-        data = {'email': self.unregistered_user_data['email']}
+        data = {'email': self.test_user.email}
         res = self.client.post(self.request_password_reset_url, data)
         self.assertEqual(res.status_code, 200)
 
@@ -328,7 +271,7 @@ class TestUserView(TestUserSetUp):
 
     def test_not_registered_user_cannot_request_reset_password(self):
         # test request-password-reset with unregistered user
-        data = {'email': 'not_registered_email@gmail.com'}
+        data = {'email': self.unregistered_user_data['email']}
         res = self.client.post(self.request_password_reset_url, data)
         self.assertEqual(res.status_code, 404)
 
@@ -336,20 +279,18 @@ class TestUserView(TestUserSetUp):
 
     def test_user_can_reset_password(self):
         # test password-reset
-        self.create_registered_user(self.unregistered_user_data)
-        data = {'email': self.unregistered_user_data['email']}
+        data = {'email': self.test_user.email}
         self.client.post(self.request_password_reset_url, data)
         token = PasswordResetRequest.objects.get(email=data['email']).token
 
-        res2 = self.client.post(
+        res = self.client.post(
             reverse('password-reset', kwargs={'token': token}), self.reset_password_data)
-        self.assertEqual(res2.status_code, 200)
+        self.assertEqual(res.status_code, 200)
 
     # -------------------------------------------------------------------------------------------
 
     def test_user_cannot_reset_password_with_invalid_data(self):
-        self.create_registered_user(self.unregistered_user_data)
-        data = {'email': self.unregistered_user_data['email']}
+        data = {'email': self.test_user.email}
         self.client.post(self.request_password_reset_url, data)
 
         # test password-reset with wrong token

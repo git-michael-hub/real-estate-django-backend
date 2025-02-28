@@ -1,26 +1,19 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 
-from users.mixins import CreateEmailValidationRequestSerializerMixin, ValidatePinCodeSerializerMixin
-
-from .models import SellerEmailValidationRequest, SellerApplication, SellerAccount
+from .models import SellerApplication, SellerAccount
 
 
-class SellerEmailValidationRequestSerializer(CreateEmailValidationRequestSerializerMixin, serializers.ModelSerializer):
+class SellerApplicationCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SellerEmailValidationRequest
-        fields = '__all__'
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'pin_code': {'write_only': True}
-        }
+        model = SellerApplication
+        fields = ['business_name', 'business_address']
 
-
-class SellerEmailValidationSerializer(ValidatePinCodeSerializerMixin, serializers.Serializer):
-    email = serializers.EmailField()
-    pin_code = serializers.IntegerField()
-
-    class Meta:
-        model = SellerEmailValidationRequest
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if user.seller_account.is_active:
+            raise serializers.ValidationError(
+                'Account already have active seller_account.', status.HTTP_400_BAD_REQUEST)
+        return attrs
 
 
 class SellerApplicationSerializer(serializers.ModelSerializer):
@@ -32,18 +25,14 @@ class SellerApplicationSerializer(serializers.ModelSerializer):
 class SellerAccountDetailUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerAccount
-        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'contact_number_1',
-                  'contact_number_2', 'seller_image_url', 'bio', 'address', 'birthdate', 'gender', 'date_joined']
-        read_only_fields = [
-            'id', 'first_name', 'last_name', 'username', 'email', 'birthdate', 'gender', 'seller_image_url', 'date_joined']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['user', 'business_name', 'business_address', 'contact_number_1', 'contact_number_2',
+                  'description', 'profile_image_path', 'date_approved']
+        read_only_fields = ['user', 'date_approved', 'is_approved']
 
 
 class SellerAccountPartialDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SellerAccount
-        fields = ['id', 'first_name', 'last_name', 'username',
-                  'email', 'contact_number_1', 'contact_number_2', 'seller_image_url']
+        fields = ['user', 'business_name',
+                  'business_address', 'description', 'profile_image_path']

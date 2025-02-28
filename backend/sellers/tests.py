@@ -1,161 +1,297 @@
-from datetime import date
+import datetime
 
 from django.urls import reverse
 
+from users.models import User
 from users.tests import TestUserSetUp
 
-from .models import SellerEmailValidationRequest
+from .models import SellerAccount
 
 
 class TestSellerSetUp(TestUserSetUp):
     def setUp(self):
         super().setUp()
 
-        self.unregistered_seller_data = self.unregistered_user_data
-
-        self.seller_application_form = self.create_seller_application(
-            self.unregistered_seller_data)
-
-        self.seller_validation_url = reverse('seller-validation')
         self.seller_application_create_url = reverse('seller-application')
-        self.approve_seller_application_url = reverse(
-            'admin:sellers_sellerapplication_change', args=(self.seller_application_form.id,))
         self.seller_list_url = reverse('seller-list')
         self.seller_detail_url = reverse(
-            'seller-detail-update', kwargs={'username': self.seller_account.user.username})
+            'seller-detail-update', kwargs={'username': self.test_user.username})
         self.seller_update_url = reverse(
-            'seller-detail-update', kwargs={'username': self.seller_account.user.username})
+            'seller-detail-update', kwargs={'username': self.test_user.username})
+
+        self.seller_application_data = {
+            'business_name': 'New Business',
+            'business_address': 'Area 1, City 1'
+        }
+
+        self.new_test_seller_data = {
+            'business_name': 'New Name',
+            'business_address': 'New Address',
+            'contact_number_1': 00000000000,
+            'contact_number_2': 99999999999,
+            'profile_image_path': '',
+            'description': 'New Description'
+        }
 
     def tearDown(self):
         return super().tearDown()
 
 
 class TestSeller(TestSellerSetUp):
-    def test_user_can_make_seller_validation_request(self):
-        self.unregistered_seller_data['confirm_password'] = self.unregistered_seller_data['password']
-        res = self.client.post(self.seller_validation_url,
-                               self.unregistered_seller_data)
-        self.assertEqual(res.status_code, 201)
 
-    def test_user_cannot_register_with_wrong_pin(self):
-        self.unregistered_seller_data['confirm_password'] = self.unregistered_seller_data['password']
-        res1 = self.client.post(
-            self.seller_validation_url, self.unregistered_seller_data)
-
-        SellerEmailValidationRequest.objects.get(
-            email=res1.data['email'])
-
-        wrong_pin = 100000
-        seller_validation_data = {
-            'email': res1.data['email'], 'pin_code': wrong_pin}
-
-        res2 = self.client.post(
-            self.seller_application_create_url, seller_validation_data)
-        self.assertEqual(res2.status_code, 400)
+    fixtures = ['users.json', 'sellers.json']
 
     def test_user_can_make_seller_application(self):
-        self.unregistered_seller_data['confirm_password'] = self.unregistered_seller_data['password']
+        # test authorized user should be able to create a seller_application
+        self.unregistered_user_data['confirm_password'] = self.unregistered_user_data['password']
+        user = self.create_registered_user(self.unregistered_user_data)
+        token = self.login_user_and_get_token(user)
+        res = self.client.post(
+            self.seller_application_create_url,
+            self.seller_application_data,
+            headers=self.create_auth_header(token)
+        )
+        self.assertEqual(res.status_code, 201)
+
+    # -------------------------------------------------------------------------------------------
+
+    def test_user_cannot_make_seller_application_with_invalid_data(self):
+        # test user should not able to create a seller_application when they submit an invalida data
+        self.unregistered_user_data['confirm_password'] = self.unregistered_user_data['password']
+        user = self.create_registered_user(self.unregistered_user_data)
+        token = self.login_user_and_get_token(user)
+
+        invalid_data_1 = {}
+        invalid_data_2 = {'business_name': 'Business 3'}
+        invalid_data_3 = {'seller_account': 10,
+                          'business_name': 'Business 3',
+                          'business_adress': 'Area 1, City 1'}
+
         res1 = self.client.post(
-            self.seller_validation_url, self.unregistered_seller_data)
-
-        validation_request = SellerEmailValidationRequest.objects.get(
-            email=res1.data['email'])
-        seller_validation_data = {
-            'email': res1.data['email'], 'pin_code': validation_request.pin_code}
-
+            self.seller_application_create_url,
+            invalid_data_1,
+            headers=self.create_auth_header(token)
+        )
         res2 = self.client.post(
-            self.seller_application_create_url, seller_validation_data)
+            self.seller_application_create_url,
+            invalid_data_2,
+            headers=self.create_auth_header(token)
+        )
+        res3 = self.client.post(
+            self.seller_application_create_url,
+            invalid_data_3,
+            headers=self.create_auth_header(token)
+        )
 
-        self.assertEqual(res2.status_code, 201)
+        self.assertEqual(res1.status_code, 400)
+        self.assertEqual(res2.status_code, 400)
+        self.assertEqual(res3.status_code, 400)
+
+    # -------------------------------------------------------------------------------------------
+
+    def test_user_with_active_seller_account_cannot_make_seller_application(self):
+        # test user that is already active should not be able to create a seller_application
+        token = self.login_user_and_get_token(self.test_user)
+        res = self.client.post(
+            self.seller_application_create_url,
+            self.seller_application_data,
+            headers=self.create_auth_header(token)
+        )
+        self.assertEqual(res.status_code, 400)
+
+    # -------------------------------------------------------------------------------------------
+
+    def test_unauthorized_user_cannot_make_seller_application(self):
+        # test unauthorized user should not be able to create a seller_application
+        self.unregistered_user_data['confirm_password'] = self.unregistered_user_data['password']
+        self.create_registered_user(self.unregistered_user_data)
+        token = 'wrong_token'
+        res = self.client.post(
+            self.seller_application_create_url,
+            self.seller_application_data,
+            headers=self.create_auth_header(token)
+        )
+        self.assertEqual(res.status_code, 401)
+
+    # -------------------------------------------------------------------------------------------
 
     def test_user_can_get_seller_list(self):
+        # test user should be able to get list of sellers
         res = self.client.get(self.seller_list_url)
         self.assertEqual(res.status_code, 200)
 
+    # -------------------------------------------------------------------------------------------
+
     def test_user_can_get_seller_details(self):
+        # test user should be able to get seller details
         res = self.client.get(self.seller_detail_url)
         self.assertEqual(res.status_code, 200)
 
-    def test_user_cannot_get_seller_details_with_wrong_input(self):
+    # -------------------------------------------------------------------------------------------
+
+    def test_user_cannot_get_seller_details_with_invalid_data(self):
+        # test user should receive 404 when they use invalid data when requesting
+        # seller_account details
         seller_detail_url = reverse(
-            'seller-detail-update', kwargs={'username': 'wrong_username'})
+            'seller-detail-update',
+            kwargs={'username': 'wrong_username'}
+        )
         res = self.client.get(seller_detail_url)
         self.assertEqual(res.status_code, 404)
 
-    def test_owner_of_seller_account_can_edit_details(self):
-        token = self.login_and_get_token(self.registered_seller_login_data)
-        data = {
-            'first_name': 'new first name',
-            'last_name': 'new last name',
-            'contact_number_1': 222222222,
-            'contact_number_2': 333333333,
-            'birthdate': date(1995, 2, 2),
-            'gender': 'F'
-        }
-        res = self.client.patch(self.seller_update_url, data,
-                                headers=self.create_auth_header(token))
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['contact_number_1'],
-                         data['contact_number_1'])
-        self.assertEqual(res.data['contact_number_2'],
-                         data['contact_number_2'])
+    # -------------------------------------------------------------------------------------------
 
-        # below are non-editable fields
-        self.assertNotEqual(res.data['first_name'], data['first_name'])
-        self.assertNotEqual(res.data['last_name'], data['last_name'])
-        self.assertNotEqual(self.seller_account.birthdate, data['birthdate'])
-        self.assertNotEqual(self.seller_account.gender, data['gender'])
+    def test_owner_of_seller_account_can_edit_details(self):
+        # test user should be able to edit their seller_account details
+        token = self.login_user_and_get_token(self.test_user)
+
+        res = self.client.patch(
+            self.seller_update_url,
+            self.new_test_seller_data,
+            headers=self.create_auth_header(token)
+        )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            res.data['business_name'],
+            self.new_test_seller_data['business_name']
+        )
+        self.assertEqual(
+            res.data['business_address'],
+            self.new_test_seller_data['business_address']
+        )
+        self.assertEqual(
+            res.data['contact_number_1'],
+            self.new_test_seller_data['contact_number_1']
+        )
+        self.assertEqual(
+            res.data['contact_number_2'],
+            self.new_test_seller_data['contact_number_2']
+        )
+        self.assertEqual(
+            res.data['profile_image_path'],
+            None
+        )
+        self.assertEqual(
+            res.data['description'],
+            self.new_test_seller_data['description']
+        )
+
+    # -------------------------------------------------------------------------------------------
+
+    def test_user_cannot_edit_data_that_requires_persmission(self):
+        # test user should not be able to edit 'is_active' and 'date_approved' of seller_account
+
+        token = self.login_user_and_get_token(self.test_user)
+
+        data = {
+            'business_name': 'New Name',
+            'is_active': False,
+            'date_approved': datetime.date(2023, 12, 1)
+        }
+
+        res = self.client.patch(
+            self.seller_update_url,
+            data,
+            headers=self.create_auth_header(token)
+        )
+
+        test_seller = SellerAccount.objects.get(user=self.test_user)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            test_seller.business_name,
+            data['business_name']
+        )
+        self.assertNotEqual(
+            test_seller.is_active,
+            data['is_active']
+        )
+        self.assertNotEqual(
+            test_seller.date_approved.date(),
+            data['date_approved']
+        )
+
+    # -------------------------------------------------------------------------------------------
 
     def test_not_owner_of_seller_account_cannot_edit_details(self):
-        data = {
-            'first_name': 'new first name',
-            'last_name': 'new last name',
-            'contact_number_1': 222222222,
-            'contact_number_2': 333333333,
-            'birthdate': date(1995, 2, 2),
-            'gender': 'F'
-        }
+        # test authorized user should not be able to edit the seller_account details of other users
 
-        # TEST FOR NOT AUTHORIZED USER
-        res = self.client.patch(self.seller_update_url, data)
-        self.assertEqual(res.status_code, 401)
-        self.assertNotEqual(
-            self.seller_account.first_name, data['first_name'])
-        self.assertNotEqual(self.seller_account.last_name, data['last_name'])
-        self.assertNotEqual(self.seller_account.contact_number_1,
-                            data['contact_number_1'])
-        self.assertNotEqual(self.seller_account.contact_number_2,
-                            data['contact_number_2'])
-        self.assertNotEqual(self.seller_account.birthdate, data['birthdate'])
-        self.assertNotEqual(self.seller_account.gender, data['gender'])
+        test_user2 = User.objects.get(pk=11)
 
-        # TEST FOR AUTHORIZED USER BUT NOT OWNER OF ACCOUNT
-        self.create_seller(self.unregistered_user_data)
-        token = self.login_and_get_token(self.unregistered_user_login_data)
-        res = self.client.patch(self.seller_update_url, data,
-                                headers=self.create_auth_header(token))
+        token = self.login_user_and_get_token(test_user2)
+
+        res = self.client.patch(
+            self.seller_update_url,
+            self.new_test_seller_data,
+            headers=self.create_auth_header(token)
+        )
+
+        test_seller = SellerAccount.objects.get(user=self.test_user)
+
         self.assertEqual(res.status_code, 403)
         self.assertNotEqual(
-            self.seller_account.first_name, data['first_name'])
-        self.assertNotEqual(self.seller_account.last_name, data['last_name'])
-        self.assertNotEqual(self.seller_account.contact_number_1,
-                            data['contact_number_1'])
-        self.assertNotEqual(self.seller_account.contact_number_2,
-                            data['contact_number_2'])
-        self.assertNotEqual(self.seller_account.birthdate, data['birthdate'])
-        self.assertNotEqual(self.seller_account.gender, data['gender'])
+            test_seller.business_name,
+            self.new_test_seller_data['business_name']
+        )
+        self.assertNotEqual(
+            test_seller.business_address,
+            self.new_test_seller_data['business_address']
+        )
+        self.assertNotEqual(
+            test_seller.contact_number_1,
+            self.new_test_seller_data['contact_number_1']
+        )
+        self.assertNotEqual(
+            test_seller.contact_number_2,
+            self.new_test_seller_data['contact_number_2']
+        )
+        self.assertNotEqual(
+            test_seller.profile_image_path,
+            self.new_test_seller_data['profile_image_path']
+        )
+        self.assertNotEqual(
+            test_seller.description,
+            self.new_test_seller_data['description']
+        )
 
-    # def test_user_cannot_approve_seller_application(self):
+    # -------------------------------------------------------------------------------------------
 
-    #     User.objects.create_superuser(
-    #         username='superuser', password='secret', email='admin@example.com'
-    #     )
-    #     self.client.login(username='superuser', password='secret')
-    #     print(self.approve_seller_application_url)
-    #     data = self.unregistered_seller_data
-    #     data['_approve_application'] = 'Approved'
+    def test_unauthorized_user_cannot_edit_seller_account_details(self):
+        # test unauthorized user should not be able to edit seller_account details
 
-    #     res = self.client.post(self.approve_seller_application_url, data)
-    #     import pdb
-    #     pdb.set_trace()
-    #     self.assertEqual(res.status_code, 302)
+        token = 'wrong_token'
+
+        res = self.client.patch(
+            self.seller_update_url,
+            self.new_test_seller_data,
+            headers=self.create_auth_header(token)
+        )
+
+        test_seller = SellerAccount.objects.get(user=self.test_user)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertNotEqual(
+            test_seller.business_name,
+            self.new_test_seller_data['business_name']
+        )
+        self.assertNotEqual(
+            test_seller.business_address,
+            self.new_test_seller_data['business_address']
+        )
+        self.assertNotEqual(
+            test_seller.contact_number_1,
+            self.new_test_seller_data['contact_number_1']
+        )
+        self.assertNotEqual(
+            test_seller.contact_number_2,
+            self.new_test_seller_data['contact_number_2']
+        )
+        self.assertNotEqual(
+            test_seller.profile_image_path,
+            self.new_test_seller_data['profile_image_path']
+        )
+        self.assertNotEqual(
+            test_seller.description,
+            self.new_test_seller_data['description']
+        )

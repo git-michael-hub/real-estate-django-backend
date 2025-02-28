@@ -1,30 +1,11 @@
 from rest_framework import serializers
 
 from users.serializers import UserDetailSerializer
-from users.mixins import CreateEmailValidationRequestSerializerMixin, ValidatePinCodeSerializerMixin
 
 from listings.serializers import ListingDetailSerializer
 from listings.validators import listing_id_is_valid
 
-from .models import BuyerAccount, BuyerEmailValidationRequest
-
-
-class BuyerEmailValidationRequestSerializer(CreateEmailValidationRequestSerializerMixin, serializers.ModelSerializer):
-    class Meta:
-        model = BuyerEmailValidationRequest
-        fields = '__all__'
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'pin_code': {'write_only': True}
-        }
-
-
-class BuyerEmailValidationSerializer(ValidatePinCodeSerializerMixin, serializers.Serializer):
-    email = serializers.EmailField()
-    pin_code = serializers.IntegerField()
-
-    class Meta:
-        model = BuyerEmailValidationRequest
+from .models import BuyerAccount
 
 
 class BuyerAccountDetailSerializer(serializers.ModelSerializer):
@@ -40,14 +21,14 @@ class BuyerDetailSerializer(BuyerAccountDetailSerializer):
         fields = BuyerAccountDetailSerializer.Meta.fields
 
 
-class BuyerListingFavoritesRetrieveSerializer(serializers.ModelSerializer):
+class BuyerWishlistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BuyerAccount
-        fields = ['favorite_listings']
+        fields = ['wishlist']
 
 
-class BuyerListingFavoritesAddRemoveSerializer(serializers.Serializer):
+class BuyerWishlistAddRemoveSerializer(serializers.Serializer):
     add_to_favorites = serializers.IntegerField(
         validators=[listing_id_is_valid], required=False)
     remove_from_favorites = serializers.IntegerField(

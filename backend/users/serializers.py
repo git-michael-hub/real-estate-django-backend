@@ -1,11 +1,10 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
-from django.utils.translation import gettext_lazy as _
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator
 
-from .models import User
+from .models import User, PasswordResetRequest
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -21,12 +20,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def validate_password(self, password):
         confirm_password = self.context['request'].POST.get('confirm_password')
         if (password != confirm_password):
-            raise serializers.ValidationError("Password does not match.")
+            raise serializers.ValidationError(
+                "Password does not match.", status.HTTP_400_BAD_REQUEST)
         return password
-
-    def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
-        return super(UserCreateSerializer, self).create(validated_data)
 
 
 class UserEmailVerificationSerializer(serializers.ModelSerializer):
@@ -39,17 +35,17 @@ class UserEmailVerificationSerializer(serializers.ModelSerializer):
         pin_code = attrs.get('email_verification_pin')
         user = User.objects.get(email=email)
 
-        if user is None:
+        if not user:
             raise serializers.ValidationError(
-                'User with email does not exist.')
+                'User with email does not exist.', status.HTTP_404_NOT_FOUND)
 
         if user.is_active == True:
             raise serializers.ValidationError(
-                'User email is already verified.')
+                'User email is already verified.', status.HTTP_400_BAD_REQUEST)
 
         if user.email_verification_pin != pin_code:
             raise serializers.ValidationError(
-                'PIN does not match.')
+                'PIN does not match.', status.HTTP_400_BAD_REQUEST)
 
         return attrs
 
@@ -64,25 +60,25 @@ class UserEmailLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
         user = User.objects.get(email=email)
 
-        if user is not None:
-            username = user.username
-        else:
-            msg = _('Unable to log in with provided credentials.')
-            raise serializers.ValidationError(msg, code='authorization')
+        if not user:
+            raise serializers.ValidationError(
+                'Unable to log in with provided credentials.', status.HTTP_400_BAD_REQUEST)
 
-        if username and password:
+        if email and password:
             user = authenticate(request=self.context.get('request'),
-                                username=username, password=password)
+                                username=user.username,
+                                password=password
+                                )
 
             # The authenticate call simply returns None for is_active=False
             # users. (Assuming the default ModelBackend authentication
             # backend.)
             if not user:
-                msg = _('Unable to log in with provided credentials.')
-                raise serializers.ValidationError(msg, code='authorization')
+                raise serializers.ValidationError(
+                    'Unable to log in with provided credentials.', status.HTTP_400_BAD_REQUEST)
         else:
-            msg = _('Must include "username" and "password".')
-            raise serializers.ValidationError(msg, code='authorization')
+            raise serializers.ValidationError(
+                'Must include "username" and "password" or "email" and "password".', status.HTTP_400_BAD_REQUEST)
 
         attrs['user'] = user
         return attrs
@@ -108,8 +104,26 @@ class UserDetailSerializer(serializers.ModelSerializer):
         return roles
 
 
-class EmailSerializer(serializers.Serializer):
+class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs['email']
+
+        # Check if user with given email exist
+        user = User.objects.filter(email=email).first()
+        if not user:
+            raise serializers.ValidationError(
+                'User with credentials not found', status.HTTP_404_NOT_FOUND)
+
+        # Check if there is already an existing request from user
+        # If request already exist, delete request
+        existing_reset_request = PasswordResetRequest.objects.filter(
+            email=email).first()
+        if existing_reset_request:
+            existing_reset_request.delete()
+
+        return attrs
 
 
 class ResetPasswordSerializer(serializers.Serializer):
@@ -121,7 +135,23 @@ class ResetPasswordSerializer(serializers.Serializer):
     )
     confirm_password = serializers.CharField(write_only=True, required=True)
 
-    def validate(self, data):
-        if data['new_password'] != data['confirm_password']:
-            raise serializers.ValidationError('Password does not match')
-        return data
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError(
+                'Password does not match', status.HTTP_400_BAD_REQUEST)
+
+        # Check if token is valid by checking if reset_request exists
+        token = self.context['view'].kwargs['token']
+        reset_request = PasswordResetRequest.objects.filter(
+            token=token).first()
+        if not reset_request:
+            raise serializers.ValidationError(
+                'Invalid token', status.HTTP_400_BAD_REQUEST)
+
+        # Check if user exist
+        user = User.objects.filter(email=reset_request.email).first()
+        if not user:
+            raise serializers.ValidationError(
+                'User with credentials not found.', status.HTTP_404_NOT_FOUND)
+
+        return attrs

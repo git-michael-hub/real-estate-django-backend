@@ -4,7 +4,7 @@ from rest_framework import permissions
 class IsSellerAccountOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_authenticated:
-            return bool(request.user.seller_account.id == obj.id)
+            return bool(request.user.seller_account.pk == obj.pk)
         return False
 
 
