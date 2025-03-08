@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import validate_image_file_extension
 
+from properties.models import Property
 from sellers.models import SellerAccount
 
 
@@ -11,6 +12,8 @@ class Listing(models.Model):
     PROPERTY_TYPES = [("HL", "House and Lot"), ("CL", "Commercial Lot"),
                       ("RL", "Residential Lot"), ("CO", "Condominium")]
 
+    property = models.ForeignKey(
+        Property, related_name="listings", on_delete=models.CASCADE)
     seller = models.ForeignKey(SellerAccount, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     listing_type = models.CharField(choices=LISTING_TYPES, max_length=20)

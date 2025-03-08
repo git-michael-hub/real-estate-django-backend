@@ -9,16 +9,25 @@ class TestBuyerSetUp(TestListingsSetUp):
     def setUp(self):
         super().setUp()
 
-        self.test_buyer_username = User.objects.get(pk=10).username
-
         self.buyer_detail_url = reverse(
-            'buyer-detail-update', kwargs={'username': self.test_buyer_username})
+            'buyer-detail-update',
+            kwargs={'username': self.test_user.username}
+        )
+
         self.buyer_update_url = reverse(
-            'buyer-detail-update', kwargs={'username': self.test_buyer_username})
-        self.buyer_favorite_listings_detail_url = reverse(
-            'buyer-favorite-listings', kwargs={'username': self.test_buyer_username})
-        self.buyer_favorite_listings_add_remove_url = reverse(
-            'buyer-favorite-listings', kwargs={'username': self.test_buyer_username})
+            'buyer-detail-update',
+            kwargs={'username': self.test_user.username}
+        )
+
+        self.buyer_wishlist_url = reverse(
+            'buyer-wishlist',
+            kwargs={'username': self.test_user.username}
+        )
+
+        self.buyer_wishlist_add_remove_url = reverse(
+            'buyer-wishlist',
+            kwargs={'username': self.test_user.username}
+        )
 
     def tearDown(self):
         return super().tearDown()
@@ -31,7 +40,7 @@ class TestBuyer(TestBuyerSetUp):
         res = self.client.get(self.buyer_detail_url)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['user']['username'],
-                         self.registered_buyer_data['username'])
+                         self.test_user.username)
 
     def test_user_cannot_get_buyer_details_with_wrong_input(self):
         buyer_detail_url = reverse(
@@ -98,14 +107,14 @@ class TestBuyer(TestBuyerSetUp):
 #     def test_owner_can_get_favorites(self):
 #         token = self.login_and_get_token(
 #             self.registered_buyer_login_data)
-#         res = self.client.get(self.buyer_favorite_listings_detail_url,
+#         res = self.client.get(self.buyer_wishlist_url,
 #                               headers={'Authorization': f'Token {token}'})
 #         self.assertEqual(res.status_code, 200)
 
 #     def test_not_owner_cannot_get_favorites(self):
 #         token = self.login_and_get_token(
 #             self.registered_seller_login_data)
-#         res = self.client.get(self.buyer_favorite_listings_detail_url,
+#         res = self.client.get(self.buyer_wishlist_url,
 #                               headers={'Authorization': f'Token {token}'})
 #         self.assertEqual(res.status_code, 403)
 
@@ -116,7 +125,7 @@ class TestBuyer(TestBuyerSetUp):
 #         add_to_favorites = {
 #             'add_to_favorites': self.listing.id
 #         }
-#         res1 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+#         res1 = self.client.patch(self.buyer_wishlist_add_remove_url,
 #                                  add_to_favorites, headers={'Authorization': f'Token {token}'})
 #         self.assertEqual(res1.status_code, 200)
 #         self.assertIn(self.listing.id, get_ids(res1.data['favorite_listings']))
@@ -124,7 +133,7 @@ class TestBuyer(TestBuyerSetUp):
 #         remove_from_favorites = {
 #             'remove_from_favorites': self.listing.id
 #         }
-#         res2 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+#         res2 = self.client.patch(self.buyer_wishlist_add_remove_url,
 #                                  remove_from_favorites, headers={'Authorization': f'Token {token}'})
 #         self.assertEqual(res2.status_code, 200)
 #         self.assertNotIn(self.listing.id,
@@ -137,14 +146,14 @@ class TestBuyer(TestBuyerSetUp):
 #         add_to_favorites = {
 #             'add_to_favorites': self.listing.id
 #         }
-#         res1 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+#         res1 = self.client.patch(self.buyer_wishlist_add_remove_url,
 #                                  add_to_favorites, headers={'Authorization': f'Token {token}'})
 #         self.assertEqual(res1.status_code, 403)
 
 #         remove_from_favorites = {
 #             'remove_from_favorites': self.listing.id
 #         }
-#         res2 = self.client.patch(self.buyer_favorite_listings_add_remove_url,
+#         res2 = self.client.patch(self.buyer_wishlist_add_remove_url,
 #                                  remove_from_favorites, headers={'Authorization': f'Token {token}'})
 #         self.assertEqual(res2.status_code, 403)
 

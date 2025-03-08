@@ -39,45 +39,6 @@ class TestUserSetUp(APITestCase):
 
         self.test_password = 'testpassword123'
 
-        # self.user_data = {
-        #     'email': 'testemail@gmail.com',
-        #     'username': 'testusername',
-        #     'password': 'testpassword123',
-        #     'confirm_password': 'testpassword123'
-        # }
-
-        # self.registered_buyer_data = {
-        #     'email': 'registeredbuyer@gmail.com',
-        #     'username': 'registeredbuyer',
-        #     'password': 'testpassword123',
-        #     'first_name': 'maxibuyer',
-        #     'last_name': 'macmacbuyer'
-        # }
-
-        # self.login_data = {
-        #     'username': self.user_data['username'],
-        #     'password': self.user_data['password']
-        # }
-
-        # self.registered_buyer_login_data = {
-        #     'username': self.registered_buyer_data['username'],
-        #     'password': self.registered_buyer_data['password']
-        # }
-
-        # self.buyer_account = self.create_buyer(self.registered_buyer_data)
-
-    # def create_buyer(self, buyer_data):
-    #     hashed_password = make_password(password=buyer_data['password'])
-    #     user = User(email=buyer_data['email'],
-    #                 username=buyer_data['username'],
-    #                 password=hashed_password)
-    #     user.save()
-    #     buyer_account = BuyerAccount(user=user,
-    #                                  first_name=buyer_data['first_name'],
-    #                                  last_name=buyer_data['last_name'])
-    #     buyer_account.save()
-    #     return buyer_account
-
     # create a registered user directly
     def create_registered_user(self, user_data):
         user = User.objects.create(
@@ -87,7 +48,6 @@ class TestUserSetUp(APITestCase):
             is_active=True)
         BuyerAccount.objects.create(user=user)
         SellerAccount.objects.create(user=user, is_active=False)
-
         return user
 
     # register a user through API
@@ -104,7 +64,7 @@ class TestUserSetUp(APITestCase):
     # same as login(self, login_data) but returns a token
     def login_and_get_token(self, login_data):
         res = self.login(login_data)
-        token = res.data['token']
+        token = res.data.get('token')
         return token
 
     # login using a user object

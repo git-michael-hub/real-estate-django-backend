@@ -7,6 +7,9 @@ class User(AbstractUser):
     email_verification_pin = models.CharField(
         max_length=100, null=True, blank=True)
 
+    def is_seller(self):
+        return self.seller_account.is_active
+
 
 class PasswordResetRequest(models.Model):
     email = models.EmailField()

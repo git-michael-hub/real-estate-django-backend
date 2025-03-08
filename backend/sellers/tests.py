@@ -55,6 +55,19 @@ class TestSeller(TestSellerSetUp):
 
     # -------------------------------------------------------------------------------------------
 
+    def test_user_with_unverified_email_cannot_create_seller_application(self):
+        # test user with an unverified email should not be able to create a seller_applications
+        self.register_user(self.unregistered_user_data)
+        token = self.login_and_get_token(self.unregistered_user_login_data)
+        res = self.client.post(
+            self.seller_application_create_url,
+            self.seller_application_data,
+            headers=self.create_auth_header(token)
+        )
+        self.assertEqual(res.status_code, 401)
+
+    # -------------------------------------------------------------------------------------------
+
     def test_user_cannot_make_seller_application_with_invalid_data(self):
         # test user should not able to create a seller_application when they submit an invalida data
         self.unregistered_user_data['confirm_password'] = self.unregistered_user_data['password']

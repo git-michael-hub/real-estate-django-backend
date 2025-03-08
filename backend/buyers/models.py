@@ -7,7 +7,7 @@ from users.models import User
 
 
 def upload_to(instance, filename):
-    return 'images/%d/buyer_account/' % (instance.id, filename)
+    return 'images/users/%d/buyer_account/' % (instance.id, filename)
 
 
 class BuyerAccount(models.Model):

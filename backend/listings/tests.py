@@ -12,22 +12,8 @@ class TestListingsSetUp(TestUserSetUp):
     def setUp(self):
         super().setUp()
 
-        self.test_listing = {
-            'title': 'test title 1',
-            'description': 'test description 1',
-            'listing_type': 'FS',
-            'property_type': 'HL',
-            'price': 1000000,
-            'property_size': 100,
-            'bedrooms': 2,
-            'bathrooms': 2,
-            'province': 'Province 1',
-            'city': 'City 1',
-            'baranggay': 'Baranggay 1',
-            'street': 'Street 1'
-        }
-
-        self.test_listings = test_listings
+        self.test_listing = Listing.objects.get(pk=1)
+        self.test_listings = Listing.objects.all()
 
         self.listing = self.create_listing(
             self.seller_account, self.test_listing)
