@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'listings',
     'inquiries',
     'buyers',
-    'sellers'
+    'sellers',
+    'agents'
 ]
 
 AUTH_USER_MODEL = 'users.User'
