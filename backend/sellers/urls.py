@@ -1,23 +1,39 @@
 from django.urls import path
-from properties.views import property_list_create_view, property_retrieve_update_destroy_view
-from .views import seller_application_view, seller_detail_update_view, seller_list_view
+
+from properties.views import PropertyListCreateView, PropertyRetrieveUpdateDestroyView
+
+from .views import (
+    SellerAccountRetrieveUpdateView,
+    SellerAccountListView,
+    SellerApplicationListCreateView,
+    SellerApplicationRetrieveView,
+    SellerApplicationCancelView
+)
 
 urlpatterns = [
-    path('', seller_list_view, name='seller-list'),
-
-    path('seller-application',
-         seller_application_view,
-         name='seller-application'),
+    path('', SellerAccountListView.as_view(), name='seller-account-list'),
 
     path('<str:username>',
-         seller_detail_update_view,
-         name='seller-detail-update'),
+         SellerAccountRetrieveUpdateView.as_view(),
+         name='seller-account-retrieve-update'),
+
+    path('<str:username>/applications',
+         SellerApplicationListCreateView.as_view(),
+         name='seller-application-list-create'),
+
+    path('<str:username>/applications/<int:pk>',
+         SellerApplicationRetrieveView.as_view(),
+         name='seller-application-retrieve'),
+
+    path('<str:username>/applications/<int:pk>/cancel',
+         SellerApplicationCancelView.as_view(),
+         name='seller-application-cancel'),
 
     path('<str:username>/properties',
-         property_list_create_view,
+         PropertyListCreateView.as_view(),
          name='seller-property-list-create'),
 
-    path('<str:username>/properties/<int:id>',
-         property_retrieve_update_destroy_view,
+    path('<str:username>/properties/<int:pk>',
+         PropertyRetrieveUpdateDestroyView.as_view(),
          name='seller-property-retrieve-update-destroy'),
 ]

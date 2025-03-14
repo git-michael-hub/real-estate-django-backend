@@ -58,11 +58,12 @@ class Property(models.Model):
 
     is_deleted = models.BooleanField(default=False)
 
-    EDITABLE_FIELDS = {'before_listing': ['property_type', 'province', 'city', 'barangay', 'street',
-                                          'lot_area', 'floor_area', 'num_of_floors', 'bedrooms', 'bathrooms',
-                                          'image1_path', 'image2_path', 'image3_path', 'image4_path', 'image5_path'],
-                       'after_listing': ['image1_path', 'image2_path', 'image3_path', 'image4_path', 'image5_path']
-                       }
+    EDITABLE_FIELDS = {
+        'before_listing': ['property_type', 'province', 'city', 'barangay', 'street',
+                           'lot_area', 'floor_area', 'num_of_floors', 'bedrooms', 'bathrooms',
+                           'image1_path', 'image2_path', 'image3_path', 'image4_path', 'image5_path'],
+        'after_listing': ['image1_path', 'image2_path', 'image3_path', 'image4_path', 'image5_path']
+    }
 
     def has_listings(self):
-        return self.listings.count() > 0
+        return bool(self.listings.first())

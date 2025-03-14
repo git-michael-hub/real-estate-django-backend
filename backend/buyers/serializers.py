@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from users.serializers import UserDetailSerializer
+from users.serializers import UserRetrieveSerializer
 
 from listings.serializers import ListingDetailSerializer
 from listings.validators import listing_id_is_valid
@@ -15,7 +15,7 @@ class BuyerAccountDetailSerializer(serializers.ModelSerializer):
 
 
 class BuyerDetailSerializer(BuyerAccountDetailSerializer):
-    user = UserDetailSerializer()
+    user = UserRetrieveSerializer()
 
     class Meta(BuyerAccountDetailSerializer.Meta):
         fields = BuyerAccountDetailSerializer.Meta.fields

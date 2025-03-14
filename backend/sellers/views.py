@@ -1,53 +1,62 @@
 
-from rest_framework import generics, status, permissions
-from rest_framework.response import Response
+from rest_framework import generics
 
 from users.mixins import RetrieveByUsernameMixin
 
-from .serializers import SellerApplicationCreateSerializer, SellerAccountDetailUpdateSerializer, SellerAccountPartialDetailSerializer
-from .models import SellerApplication, SellerAccount
-from .permissions import IsSellerAccountOwnerOrReadOnly
+from .models import SellerApplication, SellerAccount, SELLER_APP_STATUS
+from .permissions import IsSellerAccountOwnerOrReadOnly, IsSellerApplicationOwner
+from .serializers import (
+    # SellerApplication Serializers
+    SellerApplicationCreateSerializer,
+    SellerApplicationListSerializer,
+    SellerApplicationRetrieveSerializer,
+    SellerApplicationCancelSerializer,
+
+    # SellerAccount Serializers
+    SellerAccountRetrieveSerializer,
+    SellerAccountUpdateSerializer,
+    SellerAccountListSerializer
+)
 
 
-class SellerApplicationCreateView(generics.CreateAPIView):
-    serializer_class = SellerApplicationCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class SellerApplicationListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsSellerApplicationOwner]
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def get_queryset(self):
+        seller_account = self.request.user.seller_account
+        return SellerApplication.objects.filter(seller_account=seller_account)
 
-        data = serializer.validated_data
-        seller_application = SellerApplication(seller_account=request.user.seller_account,
-                                               business_name=data['business_name'],
-                                               business_address=data['business_address'])
-        seller_application.save()
-
-        return Response({'success': ['Application sent!']}, status=status.HTTP_201_CREATED)
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return SellerApplicationCreateSerializer
+        return SellerApplicationListSerializer
 
 
-seller_application_view = SellerApplicationCreateView.as_view()
+class SellerApplicationRetrieveView(generics.RetrieveAPIView):
+    queryset = SellerApplication.objects.all()
+    permission_classes = [IsSellerApplicationOwner]
+    serializer_class = SellerApplicationRetrieveSerializer
+    lookup_field = 'pk'
 
 
-class SellerListView(generics.ListAPIView):
+class SellerApplicationCancelView(generics.UpdateAPIView):
+    queryset = SellerApplication.objects.filter(
+        status=SELLER_APP_STATUS.PENDING)
+    permission_classes = [IsSellerApplicationOwner]
+    serializer_class = SellerApplicationCancelSerializer
+    lookup_field = 'pk'
+
+
+class SellerAccountListView(generics.ListAPIView):
+    queryset = SellerAccount.objects.filter(is_active=True)
+    serializer_class = SellerAccountListSerializer
+
+
+class SellerAccountRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
     queryset = SellerAccount.objects.all()
-    serializer = SellerAccountPartialDetailSerializer
-
-    def list(self, request):
-        sellers = self.get_queryset()
-        serializer = SellerAccountPartialDetailSerializer(
-            sellers, many=True, context={"request": request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-seller_list_view = SellerListView.as_view()
-
-
-class SellerDetailUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
-    queryset = SellerAccount
-    serializer_class = SellerAccountDetailUpdateSerializer
     permission_classes = [IsSellerAccountOwnerOrReadOnly]
-    lookup_field = 'username'
 
-
-seller_detail_update_view = SellerDetailUpdateView.as_view()
+    def get_serializer_class(self):
+        if self.request.method in ['PATCH', 'PUT']:
+            return SellerAccountUpdateSerializer
+        return SellerAccountRetrieveSerializer

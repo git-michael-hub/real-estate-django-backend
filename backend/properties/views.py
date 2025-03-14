@@ -1,14 +1,19 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, status
 from rest_framework.response import Response
 
+from users.permissions import IsSeller
+
 from .models import Property
-from .serializers import PropertyListSerializer, PropertyCreateSerializer, PropertyRetreiveSerializer, PropertyUpdateSerializer
-from .permissions import IsOwner
+from .serializers import (
+    PropertyListSerializer,
+    PropertyCreateSerializer,
+    PropertyRetreiveSerializer,
+    PropertyUpdateSerializer
+)
+from .permissions import IsPropertyOwner
 
 
 class PropertyListCreateView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
-
     def get_queryset(self):
         username = self.kwargs.get('username')
         queryset = Property.objects.filter(
@@ -20,14 +25,16 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             return PropertyCreateSerializer
         return PropertyListSerializer
 
-
-property_list_create_view = PropertyListCreateView.as_view()
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsPropertyOwner(), IsSeller()]
+        return [IsPropertyOwner()]
 
 
 class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Property.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
-    lookup_field = 'id'
+    permission_classes = [IsPropertyOwner]
+    lookup_field = 'pk'
 
     def destroy(self, request, *args, **kwargs):
         property = self.get_object()
@@ -46,6 +53,3 @@ class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == 'PUT' or self.request.method == 'PATCH':
             return PropertyUpdateSerializer
         return super().get_serializer_class()
-
-
-property_retrieve_update_destroy_view = PropertyRetrieveUpdateDestroyView.as_view()

@@ -1,13 +1,13 @@
 from rest_framework import serializers, exceptions
 
 from sellers.models import SellerAccount
-from sellers.serializers import SellerAccountPartialDetailSerializer, SellerAccountDetailUpdateSerializer
+from sellers.serializers import SellerAccountListSerializer, SellerAccountRetrieveSerializer
 
 from .models import Property
 
 
 class PropertyListSerializer(serializers.ModelSerializer):
-    seller_account_details = SellerAccountPartialDetailSerializer(
+    seller_account_details = SellerAccountListSerializer(
         source='seller_account', read_only=True)
 
     class Meta:
@@ -18,10 +18,10 @@ class PropertyListSerializer(serializers.ModelSerializer):
 class PropertyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
-        exclude = ['is_deleted']
+        exclude = ['seller_account', 'is_deleted']
 
     def create(self, validated_data):
-        seller_account_id = validated_data.pop('seller_account')
+        seller_account = self.context['request'].user.seller_account
         image1_path = validated_data.pop('image1_path', None)
         image2_path = validated_data.pop('image2_path', None)
         image3_path = validated_data.pop('image3_path', None)
@@ -29,7 +29,7 @@ class PropertyCreateSerializer(serializers.ModelSerializer):
         image5_path = validated_data.pop('image5_path', None)
 
         validated_data['seller_account'] = SellerAccount.objects.get(
-            pk=seller_account_id)
+            pk=seller_account.pk)
         property = Property.objects.create(**validated_data)
 
         if image1_path:
@@ -48,7 +48,7 @@ class PropertyCreateSerializer(serializers.ModelSerializer):
 
 
 class PropertyRetreiveSerializer(serializers.ModelSerializer):
-    seller_account_details = SellerAccountDetailUpdateSerializer(
+    seller_account_details = SellerAccountRetrieveSerializer(
         source='seller_account')
 
     class Meta:

@@ -2,14 +2,14 @@ from rest_framework import serializers
 
 from .models import Listing
 
-from sellers.serializers import SellerAccountPartialDetailSerializer, SellerAccountDetailUpdateSerializer
+from sellers.serializers import SellerAccountListSerializer, SellerAccountRetrieveSerializer
 
 
 class ListingSerializer(serializers.ModelSerializer):
 
     listing_type_display = serializers.SerializerMethodField()
     property_type_display = serializers.SerializerMethodField()
-    seller_details = SellerAccountPartialDetailSerializer(
+    seller_details = SellerAccountListSerializer(
         source='seller', required=False)
     is_available = serializers.BooleanField(required=True)
 
@@ -38,7 +38,7 @@ class ListingSerializer(serializers.ModelSerializer):
 
 
 class ListingDetailSerializer(ListingSerializer):
-    seller = SellerAccountDetailUpdateSerializer()
+    seller = SellerAccountRetrieveSerializer()
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields

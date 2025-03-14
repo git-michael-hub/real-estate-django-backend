@@ -1,25 +1,29 @@
 from django.urls import path
-from .views import user_create_view, user_email_verification_view, user_login_view, user_detail_view, user_logout_view, password_reset, request_password_reset
+from .views import (
+    UserCreateView,
+    UserEmailVerificationView,
+    UserLoginView,
+    UserRetrieveView,
+    UserLogoutView,
+    ResetPasswordView,
+    PasswordResetRequestView,
+)
 
 urlpatterns = [
-    path('register', user_create_view, name='register'),
+    path('user', UserRetrieveView.as_view(), name='user'),
+    path('register', UserCreateView.as_view(), name='register'),
+    path('login', UserLoginView.as_view(), name='login'),
+    path('logout', UserLogoutView.as_view(), name='logout'),
 
-    path('email-verification/<str:email>',
-         user_email_verification_view,
-         name='email-verification'
-         ),
-
-    path('auth-user', user_detail_view, name='auth-user'),
-    path('login', user_login_view, name='login'),
-    path('logout', user_logout_view, name='logout'),
+    path('verify-email/<str:email>',
+         UserEmailVerificationView.as_view(),
+         name='verify-email'),
 
     path('request-password-reset',
-         request_password_reset,
-         name='request-password-reset'
-         ),
+         PasswordResetRequestView.as_view(),
+         name='request-password-reset'),
 
-    path('password-reset/<str:token>',
-         password_reset,
-         name='password-reset'
-         ),
+    path('reset-password/<str:token>',
+         ResetPasswordView.as_view(),
+         name='reset-password'),
 ]

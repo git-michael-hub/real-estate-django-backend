@@ -1,8 +1,5 @@
 import datetime
-from io import BytesIO
-from PIL import Image
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from sellers.tests import TestSellerSetUp
@@ -26,7 +23,7 @@ class TestPropertySetUp(TestSellerSetUp):
             'seller-property-retrieve-update-destroy',
             kwargs={
                 'username': self.test_user.username,
-                'id': self.test_property.pk
+                'pk': self.test_property.pk
             }
         )
 
@@ -55,25 +52,6 @@ class TestPropertySetUp(TestSellerSetUp):
             "image5_path": self.generate_test_image()
         }
 
-    def generate_test_image(self):
-        image_io = BytesIO()
-
-        image = Image.new(
-            "RGB",
-            (100, 100),
-            color=(255, 0, 0)
-        )
-
-        image.save(image_io, format="JPEG")
-
-        image_file = SimpleUploadedFile(
-            "test.jpg",
-            image_io.getvalue(),
-            content_type="image/jpeg"
-        )
-
-        return image_file
-
     def tearDown(self):
         return super().tearDown()
 
@@ -98,9 +76,9 @@ class TestProperty(TestPropertySetUp):
     # -------------------------------------------------------------------------------------------
 
     def test_seller_cannot_create_property_with_invalid_data(self):
-        # test seller should be able to create a property with an invalid data
+        # test seller should not be able to create a property with an invalid data
         token = self.login_user_and_get_token(self.test_user)
-        self.new_property_data.pop('seller_account')
+        self.new_property_data['property_type'] = 0
         res = self.client.post(
             self.property_create_url,
             self.new_property_data,
@@ -153,7 +131,7 @@ class TestProperty(TestPropertySetUp):
         user2 = User.objects.get(pk=11)
         property_retrieve_url = reverse(
             'seller-property-retrieve-update-destroy',
-            kwargs={'username': user2.username, 'id': self.test_property.pk}
+            kwargs={'username': user2.username, 'pk': self.test_property.pk}
         )
         res = self.client.get(
             property_retrieve_url,
@@ -175,7 +153,7 @@ class TestProperty(TestPropertySetUp):
         self.new_property_data['property_type'] = 'CO'
         property_update_url = reverse(
             'seller-property-retrieve-update-destroy',
-            kwargs={'username': self.test_user.username, 'id': 12}
+            kwargs={'username': self.test_user.username, 'pk': 12}
         )
         res = self.client.patch(property_update_url,
                                 self.new_property_data,
@@ -237,7 +215,7 @@ class TestProperty(TestPropertySetUp):
         token = self.login_user_and_get_token(self.test_user)
         property_update_url = reverse(
             'seller-property-retrieve-update-destroy',
-            kwargs={'username': self.test_user.username, 'id': 12}
+            kwargs={'username': self.test_user.username, 'pk': 12}
         )
         non_editable_data = {'seller_account': 2,
                              'created_at': datetime.date(2023, 12, 1)
@@ -307,7 +285,7 @@ class TestProperty(TestPropertySetUp):
         property = Property.objects.get(pk=12)
         property_delete_url = reverse(
             'seller-property-retrieve-update-destroy',
-            kwargs={'username': self.test_user.username, 'id': property.pk}
+            kwargs={'username': self.test_user.username, 'pk': property.pk}
         )
         res = self.client.delete(
             property_delete_url, headers=self.create_auth_header(token))
@@ -343,7 +321,7 @@ class TestProperty(TestPropertySetUp):
         property_of_user2 = user2.seller_account.properties.all()[0]
         property_delete_url = reverse(
             'seller-property-retrieve-update-destroy',
-            kwargs={'username': user2.username, 'id': property_of_user2.id}
+            kwargs={'username': user2.username, 'pk': property_of_user2.id}
         )
         res = self.client.delete(property_delete_url,
                                  headers=self.create_auth_header(token))

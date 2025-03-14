@@ -1,79 +1,46 @@
-from random import randint
-
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 
-from rest_framework import generics, authentication, status, permissions
+from rest_framework import generics, status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-from config.settings import CORS_ALLOWED_ORIGINS, EMAIL_HOST_USER
-
-from buyers.models import BuyerAccount
-from sellers.models import SellerAccount
+from config import settings
 
 from .models import PasswordResetRequest, User
-from .serializers import UserCreateSerializer, UserEmailVerificationSerializer, ResetPasswordSerializer, UserDetailSerializer, PasswordResetRequestSerializer
+from .serializers import (
+    UserCreateSerializer,
+    UserEmailVerificationSerializer,
+    UserRetrieveSerializer,
+    ResetPasswordSerializer,
+    PasswordResetRequestSerializer
+)
 
 
 class UserCreateView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        data = serializer.validated_data
-
-        pin_code = randint(100000, 999999)
-
-        user = User(email=data['email'],
-                    username=data['username'],
-                    password=make_password(data['password']),
-                    is_active=False,
-                    email_verification_pin=pin_code
-                    )
-        user.save()
-
-        buyer_account = BuyerAccount(user=user)
-        buyer_account.save()
-
-        seller_account = SellerAccount(user=user)
-        seller_account.save()
+    def perform_create(self, serializer):
+        user = serializer.save()
+        email_subject = "Real Estate System: Email Verification."
+        email_message = f"Your 6-digit One-Time-PIN is: {user.email_verification_pin}"
+        email_html_message = f"<p>Your 6-digit One-Time-PIN is: {user.email_verification_pin}</p>"
 
         send_mail(
-            "Real Estate System: Email Verification.",
-            f"Your 6-digit One-Time-PIN is: {pin_code}",
-            EMAIL_HOST_USER,
-            [data['email']],
+            email_subject,
+            email_message,
+            settings.EMAIL_HOST_USER,
+            [user.email],
             fail_silently=False,
-            html_message=f"<p>Your 6-digit One-Time-PIN is: {pin_code}</p>"
+            html_message=email_html_message
         )
-
-        return Response({'success': ['Registration complete!']}, status=status.HTTP_201_CREATED)
-
-
-user_create_view = UserCreateView.as_view()
 
 
 class UserEmailVerificationView(generics.UpdateAPIView):
-    serializer_class = UserEmailVerificationSerializer
     queryset = User.objects.all()
+    serializer_class = UserEmailVerificationSerializer
     lookup_field = 'email'
-
-    def patch(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = self.get_object()
-        user.email_verification_pin = None
-        user.is_active = True
-        user.save()
-        return Response({'success': ['Your email has been verified.']}, status=status.HTTP_200_OK)
-
-
-user_email_verification_view = UserEmailVerificationView.as_view()
 
 
 class UserLoginView(ObtainAuthToken):
@@ -82,88 +49,60 @@ class UserLoginView(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        user_data = UserDetailSerializer(user)
-        return Response({'token': token.key, 'user': user_data.data})
+        user_serializer = UserRetrieveSerializer(user)
+        return Response({'token': token.key, 'user': user_serializer.data}, status=status.HTTP_200_OK)
 
 
-user_login_view = UserLoginView.as_view()
+class UserRetrieveView(generics.RetrieveAPIView):
+    serializer_class = UserRetrieveSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-
-class UserDetailView(generics.GenericAPIView):
-    serializer_class = UserDetailSerializer
-    authentication_classes = [authentication.TokenAuthentication]
-
-    def get(self, request):
-        user = Token.objects.get(key=request.auth).user
-        serializer = self.get_serializer(user)
-        return Response(serializer.data)
-
-
-user_detail_view = UserDetailView.as_view()
+    def get_object(self):
+        user = Token.objects.get(key=self.request.auth).user
+        return user
 
 
 class UserLogoutView(generics.GenericAPIView):
-    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         request.user.auth_token.delete()
-        return Response({'success': ['Logout successful.']})
+        return Response({'success': ['Logout successful.']}, status=status.HTTP_200_OK)
 
 
-user_logout_view = UserLogoutView.as_view()
-
-
-class PasswordResetRequestView(generics.GenericAPIView):
+class PasswordResetRequestView(generics.CreateAPIView):
     serializer_class = PasswordResetRequestSerializer
-    permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        reset_url = f"{settings.CORS_ALLOWED_ORIGINS[0]}/reset-password/{instance.token}"
+        email_subject = "Real Estate System: Request for password reset."
+        email_message = f"Copy and paste the provided link to reset your password {reset_url}"
+        email_html_message = f"<a href={reset_url}>Click the provided link to reset your password.</a>"
 
-        email = serializer.validated_data['email']
-        user = User.objects.get(email=email)
-
-        token = PasswordResetTokenGenerator().make_token(user)
-        reset_request = PasswordResetRequest(email=email, token=token)
-        reset_request.save()
-        reset_url = f"{CORS_ALLOWED_ORIGINS[0]}/password-reset/{token}"
         send_mail(
-            "Real Estate System: Request for password reset.",
-            f"Copy and paste the provided link to reset your password {reset_url}",
-            EMAIL_HOST_USER,
-            [email],
+            email_subject,
+            email_message,
+            settings.EMAIL_HOST_USER,
+            [instance.user.email],
             fail_silently=False,
-            html_message=f"<p>Click the provided link to reset your password <a href={reset_url}>{reset_url}</a></p>"
+            html_message=email_html_message
         )
 
-        return Response({'success': ['We have sent you a link to reset your password']}, status=status.HTTP_200_OK)
 
-
-request_password_reset = PasswordResetRequestView.as_view()
-
-
-class ResetPasswordView(generics.GenericAPIView):
+class ResetPasswordView(generics.UpdateAPIView):
+    queryset = User.objects.all()
     serializer_class = ResetPasswordSerializer
 
-    def post(self, request, token):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def get_object(self):
+        token = self.kwargs.get('token')
+        obj = get_object_or_404(self.get_queryset(),
+                                password_reset_requests__token=token)
+        return obj
 
-        reset_request = PasswordResetRequest.objects.filter(
-            token=token).first()
-        new_password = serializer.validated_data['new_password']
-
-        user = User.objects.filter(email=reset_request.email).first()
-        user.set_password(new_password)
-        user.save()
-        reset_request.delete()
-
-        return Response({'success': ['Password updated']}, status=status.HTTP_200_OK)
-
-
-password_reset = ResetPasswordView.as_view()
+    def perform_update(self, serializer):
+        user = serializer.save()
+        PasswordResetRequest.objects.filter(user=user).delete()
 
 
 # class UserEmailLoginView(ObtainAuthToken):

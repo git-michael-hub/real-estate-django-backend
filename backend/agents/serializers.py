@@ -1,8 +1,9 @@
-import datetime
+from django.db import transaction
+from django.utils import timezone
 
-from rest_framework import serializers, status, exceptions
+from rest_framework import serializers
 
-from .models import AgentAccount, AgentApplication
+from .models import AgentAccount, AgentApplication, AGENT_APP_STATUS
 
 
 class AgentApplicationCreateSerialier(serializers.ModelSerializer):
@@ -11,26 +12,27 @@ class AgentApplicationCreateSerialier(serializers.ModelSerializer):
         fields = ['agent_name', 'license_number', 'license_document_path']
 
     def validate(self, attrs):
-        user = self.context['request'].user
-        if user.agent_account.is_active:
+        agent_account = self.context['request'].user.agent_account
+        if agent_account.is_active:
             raise serializers.ValidationError(
-                'Account already have an active agent_account.', status.HTTP_400_BAD_REQUEST)
-
-        if user.agent_account.has_active_applications():
-            user.agent_account.cancel_active_applications()
+                'Account already have an active Agent account.')
 
         return attrs
 
     def create(self, validated_data):
-        user = self.context.get('request').user
-        validated_data['user'] = user
-        return AgentApplication.objects.create(**validated_data)
+        with transaction.atomic():
+            agent_account = self.context['request'].user.agent_account
+            agent_account.cancel_active_applications()
+            agent_application = AgentApplication.objects.create(
+                agent_account=agent_account, **validated_data)
+
+        return agent_application
 
 
 class AgentApplicationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = AgentApplication
-        fields = ['id', 'status', 'application_date']
+        fields = ['id', 'agent_name', 'status', 'application_date']
 
 
 class AgentApplicationRetrieveSerializer(serializers.ModelSerializer):
@@ -45,18 +47,15 @@ class AgentApplicationCancelSerializer(serializers.ModelSerializer):
         fields = ['status']
 
     def validate(self, attrs):
-        if attrs.get('status') in ['A', 'R', 'P']:
-            raise exceptions.PermissionDenied(
-                'Only Admin is allowed to update Agent Application.', status.HTTP_403_FORBIDDEN)
-        if attrs.get('status') != 'C':
-            raise serializers.ValidationError(
-                'Invalid data.', status.HTTP_400_BAD_REQUEST)
+        if attrs.get('status') != AGENT_APP_STATUS.CANCELLED:
+            raise serializers.ValidationError('Invalid data.')
+
         return attrs
 
     def update(self, instance, validated_data):
         instance.is_active = False
-        instance.status = 'C'
-        instance.date_reviewed = datetime.datetime.now()
+        instance.status = AGENT_APP_STATUS.CANCELLED
+        instance.date_reviewed = timezone.now()
         instance.save()
         return instance
 
@@ -64,7 +63,7 @@ class AgentApplicationCancelSerializer(serializers.ModelSerializer):
 class AgentAccountListSerializer(serializers.ModelSerializer):
     class Meta:
         model = AgentAccount
-        fields = '__all__'
+        fields = ['pk', 'agent_name', 'bio', 'profile_image_path']
 
 
 class AgentAccountUpdateSerializer(serializers.ModelSerializer):

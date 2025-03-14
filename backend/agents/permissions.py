@@ -1,10 +1,15 @@
-from rest_framework import permissions
+from users.permissions import IsAccountOwner, IsAccountOwnerOrReadOnly
 
 
-class IsAgentAccountOwner(permissions.BasePermission):
-
+class IsAgentAccountOwner(IsAccountOwner):
     def has_object_permission(self, request, view, obj):
-        try:
-            return bool(request.user.agent_account.pk == obj.pk)
-        except:
-            return False
+        return bool(request.user.agent_account.pk == obj.pk)
+
+
+class IsAgentAccountOwnerOrReadOnly(IsAccountOwnerOrReadOnly, IsAgentAccountOwner):
+    pass
+
+
+class IsAgentApplicationOwner(IsAccountOwner):
+    def has_object_permission(self, request, view, obj):
+        return bool(request.user.agent_account.pk == obj.agent_account.pk)
