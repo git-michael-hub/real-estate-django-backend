@@ -1,13 +1,19 @@
 from rest_framework import generics
 
 from users.mixins import RetrieveByUsernameMixin
+from users.permissions import IsAccountOwner
 
-from .models import BuyerAccount
-from .serializers import BuyerAccountRetrieveSerializer, BuyerAccountUpdateSerializer, BuyerWishlistSerializer
-from .permissions import IsBuyerAccountOwnerOrReadOnly, IsBuyerAccountOwner
+from .models import BuyerAccount, WishlistEntry
+from .permissions import IsBuyerAccountOwnerOrReadOnly, IsWishlistEntryOwner
+from .serializers import (
+    BuyerAccountRetrieveSerializer,
+    BuyerAccountUpdateSerializer,
+    WishlistEntryCreateSerializer,
+    WishlistEntryListSerializer
+)
 
 
-class BuyerRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
+class BuyerAccountRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
     queryset = BuyerAccount.objects.all()
     permission_classes = [IsBuyerAccountOwnerOrReadOnly]
     lookup_field = 'username'
@@ -18,8 +24,22 @@ class BuyerRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAP
         return BuyerAccountRetrieveSerializer
 
 
-class BuyerWishlistRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
-    queryset = BuyerAccount.objects.all()
-    serializer_class = BuyerWishlistSerializer
-    permission_classes = [IsBuyerAccountOwner]
-    lookup_field = 'username'
+class WishlistEntryListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAccountOwner]
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        queryset = WishlistEntry.objects.filter(
+            buyer_account__user__username=username)
+        return queryset
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return WishlistEntryCreateSerializer
+        return WishlistEntryListSerializer
+
+
+class WishlistEntryDestroyView(generics.DestroyAPIView):
+    queryset = WishlistEntry.objects.all()
+    permission_classes = [IsWishlistEntryOwner]
+    lookup_field = 'pk'

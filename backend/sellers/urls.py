@@ -36,4 +36,8 @@ urlpatterns = [
     path('<str:username>/properties/<int:pk>',
          PropertyRetrieveUpdateDestroyView.as_view(),
          name='seller-property-retrieve-update-destroy'),
+
+    #     path('<str:username>/properties/<int:pk>/add-remove-agent',
+    #          PropertyRetrieveUpdateDestroyView.as_view(),
+    #          name='seller-property-retrieve-update-destroy'),
 ]

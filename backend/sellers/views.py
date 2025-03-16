@@ -33,28 +33,36 @@ class SellerApplicationListCreateView(generics.ListCreateAPIView):
 
 
 class SellerApplicationRetrieveView(generics.RetrieveAPIView):
-    queryset = SellerApplication.objects.all()
     permission_classes = [IsSellerApplicationOwner]
     serializer_class = SellerApplicationRetrieveSerializer
     lookup_field = 'pk'
 
+    def get_queryset(self):
+        return SellerApplication.objects.all()
+
 
 class SellerApplicationCancelView(generics.UpdateAPIView):
-    queryset = SellerApplication.objects.filter(
-        status=SELLER_APP_STATUS.PENDING)
     permission_classes = [IsSellerApplicationOwner]
     serializer_class = SellerApplicationCancelSerializer
     lookup_field = 'pk'
 
+    def get_queryset(self):
+        return SellerApplication.objects.filter(
+            status=SELLER_APP_STATUS.PENDING)
+
 
 class SellerAccountListView(generics.ListAPIView):
-    queryset = SellerAccount.objects.filter(is_active=True)
     serializer_class = SellerAccountListSerializer
+
+    def get_queryset(self):
+        return SellerAccount.objects.filter(is_active=True)
 
 
 class SellerAccountRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
-    queryset = SellerAccount.objects.all()
     permission_classes = [IsSellerAccountOwnerOrReadOnly]
+
+    def get_queryset(self):
+        return SellerAccount.objects.all()
 
     def get_serializer_class(self):
         if self.request.method in ['PATCH', 'PUT']:

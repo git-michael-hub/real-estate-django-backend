@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -17,7 +19,8 @@ class PropertyListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         username = self.kwargs.get('username')
         queryset = Property.objects.filter(
-            seller_account__user__username=username)
+            seller_account__user__username=username,
+            is_deleted=False)
         return queryset
 
     def get_serializer_class(self):
@@ -32,9 +35,11 @@ class PropertyListCreateView(generics.ListCreateAPIView):
 
 
 class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Property.objects.all()
     permission_classes = [IsPropertyOwner]
     lookup_field = 'pk'
+
+    def get_queryset(self):
+        return Property.objects.filter(is_deleted=False)
 
     def destroy(self, request, *args, **kwargs):
         property = self.get_object()
@@ -50,6 +55,6 @@ class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return PropertyRetreiveSerializer
-        if self.request.method == 'PUT' or self.request.method == 'PATCH':
+        if self.request.method in ['PUT', 'PATCH']:
             return PropertyUpdateSerializer
         return super().get_serializer_class()

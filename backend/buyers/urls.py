@@ -1,12 +1,16 @@
 from django.urls import path
-from .views import BuyerRetrieveUpdateView, BuyerWishlistRetrieveUpdateView
+from .views import BuyerAccountRetrieveUpdateView, WishlistEntryListCreateView, WishlistEntryDestroyView
 
 urlpatterns = [
     path('<str:username>',
-         BuyerRetrieveUpdateView.as_view(),
+         BuyerAccountRetrieveUpdateView.as_view(),
          name='buyer-retrieve-update'),
 
     path('<str:username>/wishlist',
-         BuyerWishlistRetrieveUpdateView.as_view(),
-         name='buyer-wishlist')
+         WishlistEntryListCreateView.as_view(),
+         name='wishlist-entry-list-create'),
+
+    path('<str:username>/wishlist/<int:pk>',
+         WishlistEntryDestroyView.as_view(),
+         name='wishlist-entry-destroy')
 ]

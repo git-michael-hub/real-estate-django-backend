@@ -32,27 +32,35 @@ class AgentApplicationListCreateView(generics.ListCreateAPIView):
 
 
 class AgentApplicationRetrieveView(generics.RetrieveAPIView):
-    queryset = AgentApplication.objects.all()
     permission_classes = [IsAgentApplicationOwner]
     serializer_class = AgentApplicationRetrieveSerializer
     lookup_field = 'pk'
 
+    def get_queryset(self):
+        return AgentApplication.objects.all()
+
 
 class AgentApplicationCancelView(generics.UpdateAPIView):
-    queryset = AgentApplication.objects.filter(status=AGENT_APP_STATUS.PENDING)
     permission_classes = [IsAgentApplicationOwner]
     serializer_class = AgentApplicationCancelSerializer
     lookup_field = 'pk'
 
+    def get_queryset(self):
+        return AgentApplication.objects.filter(status=AGENT_APP_STATUS.PENDING)
+
 
 class AgentAccountListView(generics.ListAPIView):
-    queryset = AgentAccount.objects.filter(is_active=True)
     serializer_class = AgentAccountListSerializer
+
+    def get_queryset(self):
+        return AgentAccount.objects.filter(is_active=True)
 
 
 class AgentAccountRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
-    queryset = AgentAccount.objects.filter(is_active=True)
     permission_classes = [IsAgentAccountOwnerOrReadOnly]
+
+    def get_queryset(self):
+        return AgentAccount.objects.filter(is_active=True)
 
     def get_serializer_class(self):
         if self.request.method in ['PATCH', 'PUT']:

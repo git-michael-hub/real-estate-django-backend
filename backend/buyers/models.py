@@ -16,4 +16,10 @@ class BuyerAccount(models.Model):
     profile_image_path = models.ImageField(
         upload_to=upload_to, validators=[validate_image_file_extension], blank=True, null=True)
     bio = models.CharField(max_length=500, blank=True)
-    wishlist = models.ManyToManyField(Listing)
+
+
+class WishlistEntry(models.Model):
+    buyer_account = models.ForeignKey(
+        BuyerAccount, related_name='wishlist', on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)

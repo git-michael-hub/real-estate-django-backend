@@ -9,3 +9,9 @@ class IsBuyerAccountOwner(IsAccountOwner):
 
 class IsBuyerAccountOwnerOrReadOnly(IsAccountOwnerOrReadOnly, IsBuyerAccountOwner):
     pass
+
+
+class IsWishlistEntryOwner(IsAccountOwner):
+    def has_object_permission(self, request, view, obj):
+        return (request.user.is_authenticated and
+                request.user.buyer_account.pk == obj.buyer_account.pk)

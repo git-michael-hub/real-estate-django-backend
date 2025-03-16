@@ -38,9 +38,11 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class UserEmailVerificationView(generics.UpdateAPIView):
-    queryset = User.objects.all()
     serializer_class = UserEmailVerificationSerializer
     lookup_field = 'email'
+
+    def get_queryset(self):
+        return User.objects.all()
 
 
 class UserLoginView(ObtainAuthToken):
@@ -91,8 +93,10 @@ class PasswordResetRequestView(generics.CreateAPIView):
 
 
 class ResetPasswordView(generics.UpdateAPIView):
-    queryset = User.objects.all()
     serializer_class = ResetPasswordSerializer
+
+    def get_queryset(self):
+        return User.objects.all()
 
     def get_object(self):
         token = self.kwargs.get('token')
