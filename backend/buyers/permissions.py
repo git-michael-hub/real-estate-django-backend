@@ -1,16 +1,11 @@
-from rest_framework import permissions
+from users.permissions import IsAccountOwner, IsAccountOwnerOrReadOnly
 
 
-class IsBuyerAccountOwner(permissions.BasePermission):
+class IsBuyerAccountOwner(IsAccountOwner):
     def has_object_permission(self, request, view, obj):
-        try:
-            return bool(request.user.buyer_account.pk == obj.id)
-        except:
-            return False
+        return (request.user.is_authenticated and
+                request.user.buyer_account.pk == obj.pk)
 
 
-class IsBuyerAccountOwnerOrReadOnly(IsBuyerAccountOwner):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return super().has_object_permission(request, view, obj)
+class IsBuyerAccountOwnerOrReadOnly(IsAccountOwnerOrReadOnly, IsBuyerAccountOwner):
+    pass

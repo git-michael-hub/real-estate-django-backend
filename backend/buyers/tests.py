@@ -1,21 +1,16 @@
 from django.urls import reverse
 
-from listings.tests import TestListingsSetUp
+from users.tests import TestUserSetUp
 
-from users.models import User
+from listings.models import Listing
 
 
-class TestBuyerSetUp(TestListingsSetUp):
+class TestBuyerSetUp(TestUserSetUp):
     def setUp(self):
         super().setUp()
 
-        self.buyer_detail_url = reverse(
-            'buyer-detail-update',
-            kwargs={'username': self.test_user.username}
-        )
-
-        self.buyer_update_url = reverse(
-            'buyer-detail-update',
+        self.buyer_retrieve_update_url = reverse(
+            'buyer-retrieve-update',
             kwargs={'username': self.test_user.username}
         )
 
@@ -24,142 +19,212 @@ class TestBuyerSetUp(TestListingsSetUp):
             kwargs={'username': self.test_user.username}
         )
 
-        self.buyer_wishlist_add_remove_url = reverse(
-            'buyer-wishlist',
-            kwargs={'username': self.test_user.username}
-        )
+        self.test_listing = Listing.objects.get(pk=1)
+
+    def get_ids_from_list_or_queryset(self, items):
+        """
+        Takes in a queryset or list of objects / dicts. 
+        Returns a list of ids.
+        Raises an error if an item doesn't have an id.
+        """
+        ids = []
+        for item in items:
+            id_value = None
+
+            if isinstance(item, dict):
+                id_value = item.get('id')
+            else:
+                id_value = getattr(item, 'id', None)
+
+            if id_value is None:
+                raise AttributeError(
+                    f'Item {item} has no "id" attribute in {items}.')
+
+            ids.append(id_value)
+
+        return ids
 
     def tearDown(self):
         return super().tearDown()
 
 
 class TestBuyer(TestBuyerSetUp):
-    fixtures = ['users.json', 'buyers.json']
+    fixtures = ['users.json', 'buyers.json', 'sellers.json', 'agents.json',
+                'properties.json', 'listings.json']
 
-    def test_user_can_get_buyer_details(self):
-        res = self.client.get(self.buyer_detail_url)
+    def test_owner_of_buyer_account_can_get_full_details(self):
+        token = self.login_user_and_get_token(self.test_user)
+        res = self.client.get(self.buyer_retrieve_update_url,
+                              headers=self.create_auth_header(token))
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['user']['username'],
-                         self.test_user.username)
+        self.assertIn('user', res.data)
+        self.assertIn('bio', res.data)
+        self.assertIn('wishlist', res.data)
+        self.assertIn('username', res.data['user'])
+        self.assertIn('email', res.data['user'])
+        self.assertIn('first_name', res.data['user'])
+        self.assertIn('last_name', res.data['user'])
+        self.assertIn('date_joined', res.data['user'])
+
+    def test_not_owner_of_buyer_account_can_get_partial_details(self):
+        token = self.login_user_and_get_token(self.new_user)
+        res = self.client.get(self.buyer_retrieve_update_url,
+                              headers=self.create_auth_header(token))
+        self.assertEqual(res.status_code, 200)
+        self.assertIn('user', res.data)
+        self.assertIn('bio', res.data)
+        self.assertIn('username', res.data['user'])
+        self.assertIn('email', res.data['user'])
+        self.assertIn('first_name', res.data['user'])
+        self.assertIn('last_name', res.data['user'])
+        self.assertIn('date_joined', res.data['user'])
+        self.assertNotIn('wishlist', res.data)
+
+    def test_unauthorized_user_can_get_partial_details_of_buyer_account(self):
+        res = self.client.get(self.buyer_retrieve_update_url)
+        self.assertEqual(res.status_code, 200)
+        self.assertIn('user', res.data)
+        self.assertIn('bio', res.data)
+        self.assertIn('username', res.data['user'])
+        self.assertIn('email', res.data['user'])
+        self.assertIn('first_name', res.data['user'])
+        self.assertIn('last_name', res.data['user'])
+        self.assertIn('date_joined', res.data['user'])
+        self.assertNotIn('wishlist', res.data)
 
     def test_user_cannot_get_buyer_details_with_wrong_input(self):
-        buyer_detail_url = reverse(
-            'buyer-detail-update', kwargs={'username': 'wrong_username'})
-        res = self.client.get(buyer_detail_url)
+        buyer_retrieve_update_url = reverse(
+            'buyer-retrieve-update', kwargs={'username': 'wrong_username'})
+        res = self.client.get(buyer_retrieve_update_url)
         self.assertEqual(res.status_code, 404)
 
-#     def test_owner_of_buyer_account_can_edit_details(self):
-#         token = self.login_and_get_token(self.registered_buyer_login_data)
-#         data = {
-#             'first_name': 'new first name',
-#             'last_name': 'new last name',
-#             'bio': 'new bio',
-#             'contact_number_1': 222222222,
-#             'contact_number_2': 333333333,
-#         }
-#         res = self.client.patch(self.buyer_update_url, data,
-#                                 headers=self.create_auth_header(token))
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(res.data['first_name'], data['first_name'])
-#         self.assertEqual(res.data['last_name'], data['last_name'])
-#         self.assertEqual(res.data['bio'], data['bio'])
-#         self.assertEqual(res.data['contact_number_1'],
-#                          data['contact_number_1'])
-#         self.assertEqual(res.data['contact_number_2'],
-#                          data['contact_number_2'])
+    def test_owner_of_buyer_account_can_edit_details(self):
+        token = self.login_user_and_get_token(self.test_user)
+        data = {
+            'bio': 'new bio',
+            'profile_image_path': self.generate_test_image(),
+        }
+        res = self.client.patch(self.buyer_retrieve_update_url,
+                                data,
+                                headers=self.create_auth_header(token))
 
-#     def test_not_owner_of_buyer_account_cannot_edit_details(self):
-#         data = {
-#             'first_name': 'new first name',
-#             'last_name': 'new last name',
-#             'bio': 'new bio',
-#             'contact_number_1': 222222222,
-#             'contact_number_2': 333333333,
-#         }
+        self.test_user.refresh_from_db()
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['bio'], self.test_user.buyer_account.bio)
 
-#         # TEST FOR NOT AUTHORIZED USER
-#         res = self.client.patch(self.buyer_update_url, data)
-#         self.assertEqual(res.status_code, 401)
-#         self.assertNotEqual(
-#             self.buyer_account.first_name, data['first_name'])
-#         self.assertNotEqual(self.buyer_account.last_name, data['last_name'])
-#         self.assertNotEqual(self.buyer_account.bio, data['bio'])
-#         self.assertNotEqual(self.buyer_account.contact_number_1,
-#                             data['contact_number_1'])
-#         self.assertNotEqual(self.buyer_account.contact_number_2,
-#                             data['contact_number_2'])
+    def test_not_owner_of_buyer_account_cannot_edit_details(self):
+        data = {'bio': 'new bio',
+                'profile_image_path': ""}
 
-#         # TEST FOR AUTHORIZED USER BUT NOT OWNER OF ACCOUNT
-#         self.create_buyer(self.unregistered_user_data)
-#         token = self.login_and_get_token(self.unregistered_user_login_data)
-#         res = self.client.patch(self.buyer_update_url, data,
-#                                 headers=self.create_auth_header(token))
-#         self.assertEqual(res.status_code, 403)
-#         self.assertNotEqual(
-#             self.buyer_account.first_name, data['first_name'])
-#         self.assertNotEqual(self.buyer_account.last_name, data['last_name'])
-#         self.assertNotEqual(self.buyer_account.bio, data['bio'])
-#         self.assertNotEqual(self.buyer_account.contact_number_1,
-#                             data['contact_number_1'])
-#         self.assertNotEqual(self.buyer_account.contact_number_2,
-#                             data['contact_number_2'])
+        token = self.login_user_and_get_token(self.new_user)
+        res = self.client.patch(self.buyer_retrieve_update_url,
+                                data,
+                                headers=self.create_auth_header(token))
 
-#     def test_owner_can_get_favorites(self):
-#         token = self.login_and_get_token(
-#             self.registered_buyer_login_data)
-#         res = self.client.get(self.buyer_wishlist_url,
-#                               headers={'Authorization': f'Token {token}'})
-#         self.assertEqual(res.status_code, 200)
+        self.test_user.refresh_from_db()
+        self.assertEqual(res.status_code, 403)
+        self.assertNotEqual(data['bio'],
+                            self.test_user.buyer_account.bio)
+        self.assertNotEqual(bool(data['profile_image_path']),
+                            self.test_user.buyer_account.profile_image_path)
 
-#     def test_not_owner_cannot_get_favorites(self):
-#         token = self.login_and_get_token(
-#             self.registered_seller_login_data)
-#         res = self.client.get(self.buyer_wishlist_url,
-#                               headers={'Authorization': f'Token {token}'})
-#         self.assertEqual(res.status_code, 403)
+    def test_unauthorized_user_cannot_edit_details_of_buyer_account(self):
+        data = {'bio': 'new bio',
+                'profile_image_path': ""}
 
-#     def test_owner_can_add_and_remove_favorites(self):
-#         token = self.login_and_get_token(
-#             self.registered_buyer_login_data)
+        res = self.client.patch(self.buyer_retrieve_update_url, data)
 
-#         add_to_favorites = {
-#             'add_to_favorites': self.listing.id
-#         }
-#         res1 = self.client.patch(self.buyer_wishlist_add_remove_url,
-#                                  add_to_favorites, headers={'Authorization': f'Token {token}'})
-#         self.assertEqual(res1.status_code, 200)
-#         self.assertIn(self.listing.id, get_ids(res1.data['favorite_listings']))
+        self.test_user.refresh_from_db()
+        self.assertEqual(res.status_code, 401)
+        self.assertNotEqual(data['bio'],
+                            self.test_user.buyer_account.bio)
+        self.assertNotEqual(bool(data['profile_image_path']),
+                            self.test_user.buyer_account.profile_image_path)
 
-#         remove_from_favorites = {
-#             'remove_from_favorites': self.listing.id
-#         }
-#         res2 = self.client.patch(self.buyer_wishlist_add_remove_url,
-#                                  remove_from_favorites, headers={'Authorization': f'Token {token}'})
-#         self.assertEqual(res2.status_code, 200)
-#         self.assertNotIn(self.listing.id,
-#                          get_ids(res2.data['favorite_listings']))
+    def test_owner_can_get_wishlist(self):
+        token = self.login_user_and_get_token(self.test_user)
+        res = self.client.get(self.buyer_wishlist_url,
+                              headers=self.create_auth_header(token))
+        self.assertEqual(res.status_code, 200)
+        # self.assertIn('wishlist', res.data)
 
-#     def test_not_owner_cannot_edit_favorites(self):
-#         token = self.login_and_get_token(
-#             self.registered_seller_login_data)
+    def test_not_owner_cannot_get_wishlist(self):
+        token = self.login_user_and_get_token(self.new_user)
+        res = self.client.get(self.buyer_wishlist_url,
+                              headers=self.create_auth_header(token))
+        self.assertEqual(res.status_code, 403)
 
-#         add_to_favorites = {
-#             'add_to_favorites': self.listing.id
-#         }
-#         res1 = self.client.patch(self.buyer_wishlist_add_remove_url,
-#                                  add_to_favorites, headers={'Authorization': f'Token {token}'})
-#         self.assertEqual(res1.status_code, 403)
+    def test_unauthorized_user_cannot_get_wishlist(self):
+        token = 'wrong_token'
+        res = self.client.get(self.buyer_wishlist_url,
+                              headers=self.create_auth_header(token))
+        self.assertEqual(res.status_code, 401)
 
-#         remove_from_favorites = {
-#             'remove_from_favorites': self.listing.id
-#         }
-#         res2 = self.client.patch(self.buyer_wishlist_add_remove_url,
-#                                  remove_from_favorites, headers={'Authorization': f'Token {token}'})
-#         self.assertEqual(res2.status_code, 403)
+    def test_owner_can_edit_wishlist(self):
+        token = self.login_user_and_get_token(self.test_user)
 
+        data = {'add_listing': self.test_listing.pk}
+        res1 = self.client.patch(self.buyer_wishlist_url,
+                                 data,
+                                 headers=self.create_auth_header(token))
 
-# def get_ids(list):
-#     ids = []
-#     for item in list:
-#         ids.append(item['id'])
-#     return ids
+        self.test_user.refresh_from_db()
+        self.assertEqual(res1.status_code, 200)
+        self.assertIn(self.test_listing.pk,
+                      self.get_ids_from_list_or_queryset(
+                          self.test_user.buyer_account.wishlist.all()))
+
+        data = {'remove_listing': self.test_listing.pk}
+        res2 = self.client.patch(self.buyer_wishlist_url,
+                                 data,
+                                 headers=self.create_auth_header(token))
+
+        self.test_user.refresh_from_db()
+        self.assertEqual(res2.status_code, 200)
+        self.assertNotIn(self.test_listing.pk,
+                         self.get_ids_from_list_or_queryset(
+                             self.test_user.buyer_account.wishlist.all()))
+
+    def test_not_owner_cannot_edit_wishlist_of_others(self):
+        token = self.login_user_and_get_token(self.new_user)
+
+        data = {'add_listing': self.test_listing.pk}
+        res1 = self.client.patch(self.buyer_wishlist_url,
+                                 data,
+                                 headers=self.create_auth_header(token))
+
+        self.test_user.refresh_from_db()
+        self.assertEqual(res1.status_code, 403)
+        self.assertNotIn(self.test_listing.pk,
+                         self.get_ids_from_list_or_queryset(
+                             self.test_user.buyer_account.wishlist.all()))
+
+        data = {'remove_listing': self.test_listing.pk}
+        res2 = self.client.patch(self.buyer_wishlist_url,
+                                 data,
+                                 headers=self.create_auth_header(token))
+
+        self.test_user.refresh_from_db()
+        self.assertEqual(res2.status_code, 403)
+
+    def test_unauthorized_user_cannot_edit_wishlist(self):
+        token = 'wrong_token'
+
+        data = {'add_listing': self.test_listing.pk}
+        res1 = self.client.patch(self.buyer_wishlist_url,
+                                 data,
+                                 headers=self.create_auth_header(token))
+
+        self.test_user.refresh_from_db()
+        self.assertEqual(res1.status_code, 401)
+        self.assertNotIn(self.test_listing.pk,
+                         self.get_ids_from_list_or_queryset(
+                             self.test_user.buyer_account.wishlist.all()))
+
+        data = {'remove_listing': self.test_listing.pk}
+        res2 = self.client.patch(self.buyer_wishlist_url,
+                                 data,
+                                 headers=self.create_auth_header(token))
+
+        self.test_user.refresh_from_db()
+        self.assertEqual(res2.status_code, 401)

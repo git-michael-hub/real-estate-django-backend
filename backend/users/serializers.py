@@ -110,7 +110,7 @@ class UserEmailLoginSerializer(serializers.Serializer):
         return attrs
 
 
-class UserRetrieveSerializer(serializers.ModelSerializer):
+class AuthUserRetrieveSerializer(serializers.ModelSerializer):
     roles = serializers.SerializerMethodField()
 
     class Meta:
@@ -124,6 +124,13 @@ class UserRetrieveSerializer(serializers.ModelSerializer):
         if instance.is_agent:
             roles.append('agent')
         return roles
+
+
+class UserRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email',
+                  'first_name', 'last_name', 'date_joined']
 
 
 class PasswordResetRequestSerializer(serializers.ModelSerializer):

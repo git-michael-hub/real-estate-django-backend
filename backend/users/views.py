@@ -12,7 +12,7 @@ from .models import PasswordResetRequest, User
 from .serializers import (
     UserCreateSerializer,
     UserEmailVerificationSerializer,
-    UserRetrieveSerializer,
+    AuthUserRetrieveSerializer,
     ResetPasswordSerializer,
     PasswordResetRequestSerializer
 )
@@ -49,12 +49,12 @@ class UserLoginView(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        user_serializer = UserRetrieveSerializer(user)
+        user_serializer = AuthUserRetrieveSerializer(user)
         return Response({'token': token.key, 'user': user_serializer.data}, status=status.HTTP_200_OK)
 
 
 class UserRetrieveView(generics.RetrieveAPIView):
-    serializer_class = UserRetrieveSerializer
+    serializer_class = AuthUserRetrieveSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):

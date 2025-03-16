@@ -3,7 +3,8 @@ from users.permissions import IsAccountOwner, IsAccountOwnerOrReadOnly
 
 class IsAgentAccountOwner(IsAccountOwner):
     def has_object_permission(self, request, view, obj):
-        return bool(request.user.agent_account.pk == obj.pk)
+        return (request.user.is_authenticated and
+                request.user.agent_account.pk == obj.pk)
 
 
 class IsAgentAccountOwnerOrReadOnly(IsAccountOwnerOrReadOnly, IsAgentAccountOwner):
@@ -12,4 +13,5 @@ class IsAgentAccountOwnerOrReadOnly(IsAccountOwnerOrReadOnly, IsAgentAccountOwne
 
 class IsAgentApplicationOwner(IsAccountOwner):
     def has_object_permission(self, request, view, obj):
-        return bool(request.user.agent_account.pk == obj.agent_account.pk)
+        return (request.user.is_authenticated and
+                request.user.agent_account.pk == obj.agent_account.pk)
