@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'inquiries',
     'buyers',
     'sellers',
-    'agents'
+    'agents',
+    'property_agent_assignments'
 ]
 
 AUTH_USER_MODEL = 'users.User'

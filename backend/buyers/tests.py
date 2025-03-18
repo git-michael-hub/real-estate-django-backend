@@ -100,18 +100,21 @@ class TestBuyer(TestBuyerSetUp):
 
     def test_user_can_get_wishlist(self):
         token = self.login_user_and_get_token(self.test_user)
+        self.create_test_wishlist_entry()
         res = self.client.get(self.wishlist_list_create_url,
                               headers=self.create_auth_header(token))
         self.assertEqual(res.status_code, 200)
 
     def test_user_cannot_get_others_wishlist(self):
         token = self.login_user_and_get_token(self.new_user)
+        self.create_test_wishlist_entry()
         res = self.client.get(self.wishlist_list_create_url,
                               headers=self.create_auth_header(token))
         self.assertEqual(res.status_code, 403)
 
     def test_unauthorized_user_cannot_get_wishlist(self):
         token = 'wrong_token'
+        self.create_test_wishlist_entry()
         res = self.client.get(self.wishlist_list_create_url,
                               headers=self.create_auth_header(token))
         self.assertEqual(res.status_code, 401)

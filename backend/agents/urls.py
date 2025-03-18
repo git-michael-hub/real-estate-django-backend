@@ -1,4 +1,7 @@
 from django.urls import path
+
+from property_agent_assignments.views import AssignedPropertyListView, AssignedPropertyRetrieveView
+
 from .views import (
     AgentAccountListView,
     AgentAccountRetrieveUpdateView,
@@ -24,5 +27,13 @@ urlpatterns = [
 
     path('<str:username>/applications/<int:pk>/cancel',
          AgentApplicationCancelView.as_view(),
-         name='agent-application-cancel')
+         name='agent-application-cancel'),
+
+    path('<str:username>/property-agent-assignments',
+         AssignedPropertyListView.as_view(),
+         name='assigned-property-list'),
+
+    path('<str:username>/property-agent-assignments/<int:pk>',
+         AssignedPropertyRetrieveView.as_view(),
+         name='assigned-property-retrieve')
 ]

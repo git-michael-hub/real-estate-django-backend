@@ -2,6 +2,7 @@ from django.core.validators import validate_image_file_extension
 from django.db import models
 
 from sellers.models import SellerAccount
+from agents.models import AgentAccount
 
 
 def upload_to(instance, filename):

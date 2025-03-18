@@ -30,7 +30,8 @@ class WishlistEntryListSerializer(serializers.ModelSerializer):
     listing = ListingSerializer()
 
     class Meta:
-        model = ['listing', 'date_added']
+        model = WishlistEntry
+        fields = ['listing', 'date_added']
 
 
 class BuyerAccountRetrieveSerializer(serializers.ModelSerializer):
