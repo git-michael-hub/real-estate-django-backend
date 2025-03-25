@@ -1,62 +1,44 @@
 from rest_framework import serializers
 
-from .models import Listing
+from agents.serializers import AgentAccountListSerializer
 
-from sellers.serializers import SellerAccountListSerializer, SellerAccountRetrieveSerializer
+from properties.models import Property, PROPERTY_TYPE
+from properties.serializers import PropertyListSerializer
+
+from .models import Listing, LISTING_STATUS, LISTING_TYPE, SORT_OPTIONS
 
 
-class ListingSerializer(serializers.ModelSerializer):
-
+class ListingListSerializer(serializers.ModelSerializer):
     listing_type_display = serializers.SerializerMethodField()
-    property_type_display = serializers.SerializerMethodField()
-    seller_details = SellerAccountListSerializer(
-        source='seller', required=False)
-    is_available = serializers.BooleanField(required=True)
+    property = PropertyListSerializer()
+    agent_account = AgentAccountListSerializer(allow_null=True)
 
     class Meta:
         model = Listing
         fields = '__all__'
 
-    def validate(self, data):
-        property_type = data.get('property_type')
-        bedrooms = data.get('bedrooms')
-        bathrooms = data.get('bathrooms')
-        if (property_type != 'CO' and property_type != 'HL'):
-            if (bedrooms != None):
-                raise serializers.ValidationError(
-                    "Only property_type 'House and Lot' and 'Condominuim' can contain value in 'bedrooms' field.")
-            if (bathrooms != None):
-                raise serializers.ValidationError(
-                    "Only property_type 'House and Lot' and 'Condominuim' can contain value in 'bathrooms' field.")
-        return data
-
     def get_listing_type_display(self, obj):
         return obj.get_listing_type_display()
 
-    def get_property_type_display(self, obj):
-        return obj.get_property_type_display()
 
-
-class ListingDetailSerializer(ListingSerializer):
-    seller = SellerAccountRetrieveSerializer()
-
-    class Meta(ListingSerializer.Meta):
-        fields = ListingSerializer.Meta.fields
-        read_only_fields = ['seller']
+class ListingRetrieveSerializer(ListingListSerializer):
+    class Meta(ListingListSerializer.Meta):
+        fields = ListingListSerializer.Meta.fields
 
 
 class ListingQuerySerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=100, required=False)
     listing_type = serializers.ChoiceField(
-        choices=Listing.LISTING_TYPES, required=False)
+        choices=LISTING_TYPE.CHOICES, required=False)
     property_type = serializers.ChoiceField(
-        choices=Listing.PROPERTY_TYPES, required=False)
+        choices=PROPERTY_TYPE.CHOICES, required=False)
     province = serializers.CharField(max_length=100, required=False)
     city = serializers.CharField(max_length=100, required=False)
     min_price = serializers.IntegerField(required=False)
     max_price = serializers.IntegerField(required=False)
     min_area = serializers.IntegerField(required=False)
     max_area = serializers.IntegerField(required=False)
+    sort_by = serializers.ChoiceField(
+        choices=SORT_OPTIONS.CHOICES, required=False)
 
     def validate(self, data):
         max_price = data.get('max_price')
@@ -72,3 +54,45 @@ class ListingQuerySerializer(serializers.Serializer):
                 "Max Area should be greater than or equal to Min Area.")
 
         return data
+
+
+class SellerListingCreateSerializer(serializers.ModelSerializer):
+    property = serializers.PrimaryKeyRelatedField(
+        queryset=Property.objects.all(), required=True)
+
+    class Meta:
+        model = Listing
+        fields = '__all__'
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        property_instance = attrs.get('property')
+
+        if not property_instance.can_list_this_property(user):
+            raise serializers.ValidationError(
+                'User is not an allowed to create listing for this property.')
+
+        return attrs
+
+
+class AgentListingCreateSerializer(SellerListingCreateSerializer):
+    class Meta(SellerListingCreateSerializer.Meta):
+        fields = SellerListingCreateSerializer.Meta.fields
+
+    def validate(self, attrs):
+        agent_account = self.context['request'].user.agent_account
+        attrs['agent_account'] = agent_account
+        return super().validate(attrs)
+
+
+class ListingUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Listing
+        fields = ['title', 'price', 'description']
+
+    def validate(self, attrs):
+        if self.instance.status != LISTING_STATUS.ACTIVE:
+            raise serializers.ValidationError(
+                f"Listing with status '{self.instance.status}' is not editable.")
+
+        return attrs

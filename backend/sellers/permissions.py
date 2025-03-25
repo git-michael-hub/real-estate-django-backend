@@ -1,4 +1,12 @@
+from rest_framework import permissions
+
 from users.permissions import IsAccountOwner, IsAccountOwnerOrReadOnly
+
+
+class IsSeller(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (request.user.is_authenticated and
+                request.user.is_seller())
 
 
 class IsSellerAccountOwner(IsAccountOwner):

@@ -2,7 +2,34 @@ from django.core.validators import validate_image_file_extension
 from django.db import models
 
 from sellers.models import SellerAccount
-from agents.models import AgentAccount
+
+
+class PROPERTY_TYPE:
+    HOUSE_AND_LOT = 'HL'
+    COMMERCIAL_LOT = 'CL'
+    RESIDENTAIL_LOT = 'RL'
+    CONDOMINIUM = 'CO'
+
+    CHOICES = [
+        (HOUSE_AND_LOT, 'House and Lot'),
+        (COMMERCIAL_LOT, 'Commercial Lot'),
+        (RESIDENTAIL_LOT, 'Residentail Lot'),
+        (CONDOMINIUM, 'Condominium')
+    ]
+
+
+class PROPERTY_STATUS:
+    READY_FOR_LISTING = 'R'
+    LISTED = 'L'
+    OFFER_ACCEPTED = 'OA'
+    SOLD = 'S'
+
+    CHOICES = [
+        (READY_FOR_LISTING, 'Ready for Listing'),
+        (LISTED, 'Listed'),
+        (OFFER_ACCEPTED, 'Offer Accepted'),
+        (SOLD, 'Sold')
+    ]
 
 
 def upload_to(instance, filename):
@@ -10,12 +37,11 @@ def upload_to(instance, filename):
 
 
 class Property(models.Model):
-    PROPERTY_TYPES = [("HL", "House and Lot"), ("CL", "Commercial Lot"),
-                      ("RL", "Residential Lot"), ("CO", "Condominium")]
 
     seller_account = models.ForeignKey(
         SellerAccount, related_name='properties', on_delete=models.CASCADE)
-    property_type = models.CharField(choices=PROPERTY_TYPES, max_length=20)
+    property_type = models.CharField(
+        choices=PROPERTY_TYPE.CHOICES, max_length=20)
     province = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     barangay = models.CharField(max_length=100)
@@ -57,6 +83,12 @@ class Property(models.Model):
         validators=[validate_image_file_extension]
     )
 
+    status = models.CharField(
+        max_length=100,
+        choices=PROPERTY_STATUS.CHOICES,
+        default=PROPERTY_STATUS.READY_FOR_LISTING
+    )
+
     is_deleted = models.BooleanField(default=False)
 
     EDITABLE_FIELDS = {
@@ -66,5 +98,12 @@ class Property(models.Model):
         'after_listing': ['image1_path', 'image2_path', 'image3_path', 'image4_path', 'image5_path']
     }
 
-    def has_listings(self):
-        return bool(self.listings.first())
+    def is_property_agent(self, agent_account):
+        return self.assigned_agents.filter(agent=agent_account).exists()
+
+    def is_property_seller(self, seller_account):
+        return self.seller_account == seller_account
+
+    def can_list_this_property(self, user):
+        return (self.is_property_agent(agent_account=user.agent_account) or
+                self.is_property_seller(seller_account=user.seller_account))

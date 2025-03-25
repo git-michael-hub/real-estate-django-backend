@@ -1,9 +1,11 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from users.permissions import IsSeller
+from sellers.permissions import IsSeller
 
-from .models import Property
+from users.permissions import IsAccountOwner
+
+from .models import Property, PROPERTY_STATUS
 from .serializers import (
     PropertyListSerializer,
     PropertyCreateSerializer,
@@ -16,9 +18,9 @@ from .permissions import IsPropertyOwner
 
 class PropertyListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
-        username = self.kwargs.get('username')
+        seller_account = self.request.user.seller_account
         queryset = Property.objects.filter(
-            seller_account__user__username=username,
+            seller_account=seller_account,
             is_deleted=False)
         return queryset
 
@@ -29,7 +31,7 @@ class PropertyListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [IsPropertyOwner(), IsSeller()]
+            return [IsAccountOwner(), IsSeller()]
         return [IsPropertyOwner()]
 
 
@@ -42,8 +44,9 @@ class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         property = self.get_object()
-        if property.has_listings():
-            return Response({"error": "You cannot delete a property with active listings."}, status=status.HTTP_400_BAD_REQUEST)
+        if property.status in [PROPERTY_STATUS.LISTED, PROPERTY_STATUS.OFFER_ACCEPTED]:
+            return Response({"error": "You cannot delete a property with active listings or with accepted offer."},
+                            status=status.HTTP_400_BAD_REQUEST)
         self.perform_destroy(property)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -1,10 +1,7 @@
-from django.shortcuts import get_object_or_404
-
 from rest_framework import serializers
 
 from listings.models import Listing
-from listings.serializers import ListingSerializer
-from listings.validators import listing_id_is_valid
+from listings.serializers import ListingListSerializer
 
 from users.serializers import UserRetrieveSerializer
 
@@ -27,7 +24,7 @@ class WishlistEntryCreateSerializer(serializers.ModelSerializer):
 
 
 class WishlistEntryListSerializer(serializers.ModelSerializer):
-    listing = ListingSerializer()
+    listing = ListingListSerializer()
 
     class Meta:
         model = WishlistEntry

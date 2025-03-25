@@ -3,10 +3,9 @@ from rest_framework import permissions
 
 class IsAccountOwner(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            username = view.kwargs.get('username')
-            return bool(request.user.username == username)
-        return False
+        username = view.kwargs.get('username')
+        return (request.user.is_authenticated and
+                request.user.username == username)
 
 
 class IsAccountOwnerOrReadOnly(IsAccountOwner):
@@ -19,24 +18,3 @@ class IsAccountOwnerOrReadOnly(IsAccountOwner):
         if request.method in permissions.SAFE_METHODS:
             return True
         return super().has_object_permission(request, view, obj)
-
-
-class IsSeller(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return request.user.is_seller()
-        return False
-
-
-class IsAgent(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return request.user.is_agent()
-        return False
-
-
-class IsSellerOrAgent(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return bool(request.user.is_seller() or request.user.is_agent())
-        return False

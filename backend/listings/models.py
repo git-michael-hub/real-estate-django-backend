@@ -1,52 +1,78 @@
 from django.db import models
-from django.core.validators import validate_image_file_extension
 
 from properties.models import Property
 from sellers.models import SellerAccount
+from agents.models import AgentAccount
+
+
+class LISTING_STATUS:
+    ACTIVE = 'A'
+    HOLD = 'H'
+    SOLD = 'S'
+    CANCELLED = 'C'
+    REMOVED = 'R'
+
+    CHOICES = [
+        (ACTIVE, 'Active'),
+        (HOLD, 'On Hold'),
+        (SOLD, 'Sold'),
+        (CANCELLED, 'Cancelled'),
+        (REMOVED, 'Removed')
+    ]
+
+    def get_dict():
+        return dict(LISTING_STATUS.CHOICES)
+
+
+class LISTING_TYPE:
+    FOR_SALE = 'FS'
+    FOR_RENT = 'FR'
+    FORECLOSURE = 'FC'
+
+    CHOICES = [
+        (FOR_SALE, 'For Sale'),
+        (FOR_RENT, 'For Rent'),
+        (FORECLOSURE, 'Foreclosure')
+    ]
+
+
+class SORT_OPTIONS:
+    A_TO_Z = 'ATZ'
+    Z_TO_A = 'ZTA'
+    OLD_TO_NEW = 'OTN'
+    NEW_TO_OLD = 'NTO'
+
+    CHOICES = [
+        (A_TO_Z, 'title'),
+        (Z_TO_A, '-title'),
+        (OLD_TO_NEW, 'created_at'),
+        (NEW_TO_OLD, '-created_at')
+    ]
+
+    def get(choice, default='-created_at'):
+        return dict(SORT_OPTIONS.CHOICES).get(choice, default)
 
 
 class Listing(models.Model):
-    LISTING_TYPES = [("FS", "For Sale"), ("FR", "For Rent"),
-                     ("FC", "Foreclosure")]
 
-    PROPERTY_TYPES = [("HL", "House and Lot"), ("CL", "Commercial Lot"),
-                      ("RL", "Residential Lot"), ("CO", "Condominium")]
+    property = models.ForeignKey(Property,
+                                 related_name="listings",
+                                 on_delete=models.CASCADE)
 
-    property = models.ForeignKey(
-        Property, related_name="listings", on_delete=models.CASCADE)
-    seller = models.ForeignKey(SellerAccount, on_delete=models.CASCADE)
+    agent_account = models.ForeignKey(AgentAccount,
+                                      related_name='listings',
+                                      blank=True,
+                                      null=True,
+                                      on_delete=models.CASCADE)
+
+    listing_type = models.CharField(choices=LISTING_TYPE.CHOICES,
+                                    max_length=20)
+
     title = models.CharField(max_length=100)
-    listing_type = models.CharField(choices=LISTING_TYPES, max_length=20)
-    property_type = models.CharField(choices=PROPERTY_TYPES, max_length=20)
     price = models.PositiveIntegerField()
-    image1 = models.ImageField(blank=True, null=True,
-                               upload_to='images/listings/', validators=[validate_image_file_extension])
-    image2 = models.ImageField(blank=True, null=True,
-                               upload_to='images/listings/', validators=[validate_image_file_extension])
-    image3 = models.ImageField(blank=True, null=True,
-                               upload_to='images/listings/', validators=[validate_image_file_extension])
-    image4 = models.ImageField(blank=True, null=True,
-                               upload_to='images/listings/', validators=[validate_image_file_extension])
-    image5 = models.ImageField(blank=True, null=True,
-                               upload_to='images/listings/', validators=[validate_image_file_extension])
-
-    property_size = models.PositiveIntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
-    is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Only for House and Lot and Condominuim property types
-    bedrooms = models.PositiveIntegerField(blank=True, null=True)
-    bathrooms = models.PositiveIntegerField(blank=True, null=True)
-
-    # For listing location
-    province = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    baranggay = models.CharField(max_length=100)
-    street = models.CharField(max_length=100)
-
-    def get_location(self):
-        return f"{self.province}, {self.city}, {self.baranggay}, {self.street}"
-
-    def __str__(self):
-        return self.title
+    status = models.CharField(max_length=100,
+                              choices=LISTING_STATUS.CHOICES,
+                              default=LISTING_STATUS.ACTIVE)

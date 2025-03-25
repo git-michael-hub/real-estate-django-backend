@@ -108,7 +108,7 @@ class TestSeller(TestSellerSetUp):
         )
         self.assertEqual(res.status_code, 403)
 
-    def test_unauthorized_user_cannot_get_seller_application(self):
+    def test_unauthenticated_user_cannot_get_seller_application(self):
         # Test unauthorized user should not be able get seller_application details.
         res = self.client.get(self.seller_application_retrieve_url)
         self.assertEqual(res.status_code, 401)
@@ -255,7 +255,7 @@ class TestSeller(TestSellerSetUp):
         )
         self.assertEqual(res.status_code, 400)
 
-    def test_unauthorized_user_cannot_create_seller_application(self):
+    def test_unauthenticated_user_cannot_create_seller_application(self):
         # Test unauthorized user should not be able to create a seller_application
         token = 'invalid_token'
         res = self.client.post(
@@ -391,7 +391,7 @@ class TestSeller(TestSellerSetUp):
             self.new_test_seller_data['description']
         )
 
-    def test_unauthorized_user_cannot_edit_seller_account_details(self):
+    def test_unauthenticated_user_cannot_edit_seller_account_details(self):
         # Test unauthorized user should not be able to edit seller_account details
         token = 'invalid_token'
 

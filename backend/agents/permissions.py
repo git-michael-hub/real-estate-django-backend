@@ -1,4 +1,11 @@
+from rest_framework import permissions
 from users.permissions import IsAccountOwner, IsAccountOwnerOrReadOnly
+
+
+class IsAgent(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (request.user.is_authenticated and
+                request.user.is_agent())
 
 
 class IsAgentAccountOwner(IsAccountOwner):
