@@ -1,7 +1,7 @@
 from django.db import models
 
 from properties.models import Property
-from sellers.models import SellerAccount
+
 from agents.models import AgentAccount
 
 

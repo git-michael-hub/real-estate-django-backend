@@ -44,7 +44,7 @@ class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         property = self.get_object()
-        if property.status in [PROPERTY_STATUS.LISTED, PROPERTY_STATUS.OFFER_ACCEPTED]:
+        if property.status in [PROPERTY_STATUS.LISTED, PROPERTY_STATUS.HOLD]:
             return Response({"error": "You cannot delete a property with active listings or with accepted offer."},
                             status=status.HTTP_400_BAD_REQUEST)
         self.perform_destroy(property)

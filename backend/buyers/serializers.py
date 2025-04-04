@@ -43,3 +43,11 @@ class BuyerAccountUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuyerAccount
         exclude = ['user']
+
+
+class BuyerAccountListSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer()
+
+    class Meta:
+        model = BuyerAccount
+        fields = ['user']

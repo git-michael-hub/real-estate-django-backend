@@ -108,7 +108,7 @@ class PropertyUpdateSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError(
                         f"Field '{field}' is not editable when property is listed.")
 
-        if self.instance.status in [PROPERTY_STATUS.OFFER_ACCEPTED, PROPERTY_STATUS.SOLD]:
+        if self.instance.status in [PROPERTY_STATUS.HOLD, PROPERTY_STATUS.SOLD]:
             raise serializers.ValidationError(
                 f"Property with status '{PROPERTY_STATUS.CHOICES[self.instance.status][1]}' is not editable.")
 

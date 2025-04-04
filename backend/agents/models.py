@@ -46,6 +46,9 @@ class AgentAccount(models.Model):
     is_active = models.BooleanField(default=False)
     date_approved = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        return self.agent_name
+
     def has_active_application(self):
         for application in self.agent_applications.all():
             if application.is_active:

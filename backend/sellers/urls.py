@@ -6,6 +6,8 @@ from property_agent_assignments.views import AssignedAgentListCreateView, Assign
 
 from listings.views import SellerListingListCreateView, SellerListingRetrieveDestroyView
 
+from offers.views import SellerOfferListCreateView, SellerOfferRetrieveUpdateView
+
 from .views import (
     SellerAccountRetrieveUpdateView,
     SellerAccountListView,
@@ -57,4 +59,11 @@ urlpatterns = [
          SellerListingRetrieveDestroyView.as_view(),
          name='seller-listing-retrieve-destory'),
 
+    path('<str:username>/offers',
+         SellerOfferListCreateView.as_view(),
+         name='seller-offer-list-create'),
+
+    path('<str:username>/offers/<int:pk>',
+         SellerOfferRetrieveUpdateView.as_view(),
+         name='seller-offer-retrieve-update')
 ]

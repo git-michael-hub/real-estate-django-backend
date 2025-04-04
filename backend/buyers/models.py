@@ -17,6 +17,9 @@ class BuyerAccount(models.Model):
         upload_to=upload_to, validators=[validate_image_file_extension], blank=True, null=True)
     bio = models.CharField(max_length=500, blank=True)
 
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
 
 class WishlistEntry(models.Model):
     buyer_account = models.ForeignKey(

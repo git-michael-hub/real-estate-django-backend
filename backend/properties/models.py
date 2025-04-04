@@ -21,13 +21,13 @@ class PROPERTY_TYPE:
 class PROPERTY_STATUS:
     READY_FOR_LISTING = 'R'
     LISTED = 'L'
-    OFFER_ACCEPTED = 'OA'
+    HOLD = 'H'
     SOLD = 'S'
 
     CHOICES = [
         (READY_FOR_LISTING, 'Ready for Listing'),
         (LISTED, 'Listed'),
-        (OFFER_ACCEPTED, 'Offer Accepted'),
+        (HOLD, 'On Hold'),
         (SOLD, 'Sold')
     ]
 
@@ -107,3 +107,15 @@ class Property(models.Model):
     def can_list_this_property(self, user):
         return (self.is_property_agent(agent_account=user.agent_account) or
                 self.is_property_seller(seller_account=user.seller_account))
+
+    def update_all_listing_status(self, status, excluded_listing_pk=None):
+        if excluded_listing_pk is None:
+            self.listings.all().update(status=status)
+            return
+
+        if isinstance(excluded_listing_pk, int):
+            self.listings.exclude(pk=excluded_listing_pk).update(status=status)
+            return
+
+        raise TypeError(
+            f"Expected excluded_listing_pk to be of type 'None' or 'int' but got '{type(excluded_listing_pk).__name__}'")

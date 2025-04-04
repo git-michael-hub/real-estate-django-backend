@@ -46,6 +46,9 @@ class SellerAccount(models.Model):
     is_active = models.BooleanField(default=False)
     date_approved = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        return self.business_name
+
     def has_active_application(self):
         for application in self.seller_applications.all():
             if application.is_active:

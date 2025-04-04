@@ -8,15 +8,12 @@ from sellers.permissions import IsSeller
 
 from users.permissions import IsAccountOwner
 
-from properties.models import PROPERTY_TYPE
-
-from .models import Listing, LISTING_TYPE, LISTING_STATUS, SORT_OPTIONS
-from .mixins import ListingDestroyMixin
+from .models import Listing, LISTING_STATUS
+from .mixins import ListingDestroyMixin, ListingQueryFiltersMixin
 from .permissions import IsListingPropertySeller, IsListingAgent
 from .pagination import ListingPagination
 from .serializers import (
     ListingListSerializer,
-    ListingQuerySerializer,
     ListingRetrieveSerializer,
     ListingUpdateSerializer,
     SellerListingCreateSerializer,
@@ -24,49 +21,14 @@ from .serializers import (
 )
 
 
-class ListingSearchView(generics.ListAPIView):
+class ListingSearchView(ListingQueryFiltersMixin, generics.ListAPIView):
     serializer_class = ListingListSerializer
     pagination_class = ListingPagination
 
     def get_queryset(self):
-        query_serializer = ListingQuerySerializer(data=self.request.GET)
-        query_serializer.is_valid(raise_exception=True)
-        validated_data = query_serializer.validated_data
-
-        property_type = validated_data.get('property_type')
-        listing_type = validated_data.get('listing_type')
-        province = validated_data.get('province')
-        city = validated_data.get('city')
-        min_price = validated_data.get('min_price', 0)
-        max_price = validated_data.get('max_price')
-        min_area = validated_data.get('min_area', 0)
-        max_area = validated_data.get('max_area')
-        sort_by = validated_data.get('sort_by')
-
         listings = Listing.objects.all()
         filters = Q(status=LISTING_STATUS.ACTIVE)
-
-        if property_type in dict(PROPERTY_TYPE.CHOICES):
-            filters &= Q(property__property_type=property_type)
-        if listing_type in dict(LISTING_TYPE.CHOICES):
-            filters &= Q(listing_type=listing_type)
-        if province:
-            filters &= Q(property__province__icontains=province)
-        if city:
-            filters &= Q(property__city__icontains=city)
-        if max_price is not None:
-            filters &= Q(price__lte=max_price)
-        if min_price is not None:
-            filters &= Q(price__gte=min_price)
-        if max_area is not None:
-            filters &= Q(property__lot_area__lte=max_area)
-        if min_area is not None:
-            filters &= Q(property__lot_area__gte=min_area)
-
-        listings = listings.filter(filters)
-        listings = listings.order_by(SORT_OPTIONS.get(sort_by))
-
-        return listings
+        return self.filter_by_default_queries(listings, filters)
 
 
 class ListingRetrieveView(generics.RetrieveAPIView):

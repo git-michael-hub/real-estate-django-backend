@@ -147,7 +147,7 @@ class TestListingsSetUp(TestPropertyAgentAssignmentSetUp):
         return super().tearDown()
 
 
-class TestListingsView(TestListingsSetUp):
+class TestListings(TestListingsSetUp):
 
     fixtures = ['users.json',
                 'sellers.json',
