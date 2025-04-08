@@ -6,6 +6,8 @@ from listings.views import AgentListingListCreateView, AgentListingRetrieveUpdat
 
 from offers.views import AgentOfferListCreateView, AgentOfferRetrieveUpdateView
 
+from transactions.views import AgentTransactionListView, AgentTransactionRetrieveUpdateView
+
 from .views import (
     AgentAccountListView,
     AgentAccountRetrieveUpdateView,
@@ -55,5 +57,13 @@ urlpatterns = [
 
     path('<str:username>/offers/<int:pk>',
          AgentOfferRetrieveUpdateView.as_view(),
-         name='agent-offer-retrieve-update')
+         name='agent-offer-retrieve-update'),
+
+    path('<str:username>/transactions',
+         AgentTransactionListView.as_view(),
+         name='agent-transaction-list'),
+
+    path('<str:username>/transactions/<int:pk>',
+         AgentTransactionRetrieveUpdateView.as_view(),
+         name='agent-transaction-retrieve-update')
 ]

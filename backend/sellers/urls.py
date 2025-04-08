@@ -8,6 +8,8 @@ from listings.views import SellerListingListCreateView, SellerListingRetrieveDes
 
 from offers.views import SellerOfferListCreateView, SellerOfferRetrieveUpdateView
 
+from transactions.views import SellerTransactionListView, SellerTransactionRetrieveUpdateView
+
 from .views import (
     SellerAccountRetrieveUpdateView,
     SellerAccountListView,
@@ -65,5 +67,13 @@ urlpatterns = [
 
     path('<str:username>/offers/<int:pk>',
          SellerOfferRetrieveUpdateView.as_view(),
-         name='seller-offer-retrieve-update')
+         name='seller-offer-retrieve-update'),
+
+    path('<str:username>/transactions',
+         SellerTransactionListView.as_view(),
+         name='seller-transaction-list'),
+
+    path('<str:username>/transactions/<int:pk>',
+         SellerTransactionRetrieveUpdateView.as_view(),
+         name='seller-transaction-retrieve-update')
 ]

@@ -136,6 +136,9 @@ class OfferUpdateSerializerMixin:
                 instance.listing.property.update_all_listing_status(
                     status=LISTING_STATUS.HOLD)
 
+                from transactions.models import Transaction
+                Transaction.objects.create(offer=instance)
+
         return instance
 
 

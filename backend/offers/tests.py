@@ -67,7 +67,7 @@ class TestOffersSetUp(TestListingsSetUp):
             'agent-offer-retrieve-update', kwargs={'username': self.agent.user.username, 'pk': self.agent_offer.pk}
         )
 
-        self.ACCOUNT_URL_MAP = (
+        self.ACCOUNT_TYPE_MAPS = (
             {
                 'account': self.buyer,
                 'offer': self.buyer_offer,
@@ -93,7 +93,7 @@ class TestOffersSetUp(TestListingsSetUp):
 
         self.INVALID_TOKEN = 'INVALID_TOKEN'
 
-    def create_retrieve_update_url(self, account_type, username, offer_pk):
+    def create_offer_retrieve_update_url(self, account_type, username, offer_pk):
         account_types = {'buyer': 'buyer-offer-retrieve-update',
                          'seller': 'seller-offer-retrieve-update',
                          'agent': 'agent-offer-retrieve-update'}
@@ -105,6 +105,29 @@ class TestOffersSetUp(TestListingsSetUp):
         url = reverse(account_types[account_type],
                       kwargs={'username': username, 'pk': offer_pk})
         return url
+
+    def fully_approve_offer(self, offer):
+        ACCOUNT_TYPE_MAPS = (
+            {'account-type': 'buyer', 'offer-response': 'buyer_offer_response'},
+            {'account-type': 'seller', 'offer-response': 'seller_offer_response'},
+            {'account-type': 'agent', 'offer-response': 'agent_offer_response'},
+        )
+
+        for account_type_map in ACCOUNT_TYPE_MAPS:
+            account_attr_name = f"{account_type_map['account-type']}_account"
+            offer_response_attr_name = f"{account_type_map['offer-response']}"
+
+            account = getattr(offer, account_attr_name, None)
+            offer_response = getattr(offer, offer_response_attr_name, None)
+
+            if offer_response not in (OFFER_RESPONSE.ACCEPT, None):
+                token = self.login_user_and_get_token(account.user)
+                data = {account_type_map['offer-response']: OFFER_RESPONSE.ACCEPT}
+                self.client.patch(self.create_offer_retrieve_update_url(account_type_map['account-type'],
+                                                                        account.user.username,
+                                                                        offer.pk),
+                                  data=data,
+                                  headers=self.create_auth_header(token))
 
     def tearDown(self):
         return super().tearDown()
@@ -122,7 +145,7 @@ class TestOffers(TestOffersSetUp):
                 'offers.json']
 
     def test_users_can_create_offer(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             token = self.login_user_and_get_token(account_type['account'].user)
             res = self.client.post(account_type['offer-list-create'],
                                    data=self.offer_data,
@@ -131,7 +154,7 @@ class TestOffers(TestOffersSetUp):
 
     def test_users_cannot_create_offer_with_invalid_data(self):
         self.offer_data['listing'] = 999
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             token = self.login_user_and_get_token(account_type['account'].user)
             res = self.client.post(account_type['offer-list-create'],
                                    data=self.offer_data,
@@ -140,7 +163,7 @@ class TestOffers(TestOffersSetUp):
 
     def test_agents_and_sellers_cannot_create_offer_with_listings_theyre_not_part_of(self):
         self.offer_data['listing'] = self.listing2.pk
-        for account_type in self.ACCOUNT_URL_MAP[1:]:
+        for account_type in self.ACCOUNT_TYPE_MAPS[1:]:
             token = self.login_user_and_get_token(account_type['account'].user)
             res = self.client.post(account_type['offer-list-create'],
                                    data=self.offer_data,
@@ -148,14 +171,14 @@ class TestOffers(TestOffersSetUp):
             self.assertEqual(res.status_code, 403)
 
     def test_unauthenticated_users_cannot_create_offer(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             res = self.client.post(account_type['offer-list-create'],
                                    data=self.offer_data,
                                    headers=self.create_auth_header(self.INVALID_TOKEN))
             self.assertEqual(res.status_code, 401)
 
     def test_users_can_get_offers(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             token = self.login_user_and_get_token(account_type['account'].user)
             res = self.client.get(account_type['offer-list-create'],
                                   headers=self.create_auth_header(token))
@@ -166,19 +189,19 @@ class TestOffers(TestOffersSetUp):
                                     Q(seller_account=self.seller) |
                                     Q(agent_account=self.agent)).first()
         token = self.login_user_and_get_token(user)
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             res = self.client.get(account_type['offer-list-create'],
                                   headers=self.create_auth_header(token))
             self.assertEqual(res.status_code, 403)
 
     def test_unauthenticated_users_cannot_get_offers(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             res = self.client.get(account_type['offer-list-create'],
                                   headers=self.create_auth_header(self.INVALID_TOKEN))
             self.assertEqual(res.status_code, 401)
 
     def test_users_can_retrieve_offer(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             token = self.login_user_and_get_token(account_type['account'].user)
             res = self.client.get(account_type['offer-retrieve-update'],
                                   headers=self.create_auth_header(token))
@@ -191,15 +214,15 @@ class TestOffers(TestOffersSetUp):
         ACCOUNT_URL_MAP = (
             {
                 'account': self.buyer,
-                'url': self.create_retrieve_update_url('buyer', self.buyer.user.username, offer.pk)
+                'url': self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer.pk)
             },
             {
                 'account': self.seller,
-                'url': self.create_retrieve_update_url('seller', self.seller.user.username, offer.pk)
+                'url': self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer.pk)
             },
             {
                 'account': self.agent,
-                'url': self.create_retrieve_update_url('agent', self.agent.user.username, offer.pk)
+                'url': self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer.pk)
             }
         )
 
@@ -210,13 +233,13 @@ class TestOffers(TestOffersSetUp):
             self.assertEqual(res.status_code, 404)
 
     def test_unauthenticated_users_cannot_retrieve_offer(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             res = self.client.get(account_type['offer-retrieve-update'],
                                   headers=self.create_auth_header(self.INVALID_TOKEN))
             self.assertEqual(res.status_code, 401)
 
     def test_users_can_cancel_offer_they_created(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             data = {account_type['offer-response']: OFFER_RESPONSE.CANCEL}
             token = self.login_user_and_get_token(account_type['account'].user)
             self.client.patch(account_type['offer-retrieve-update'],
@@ -232,7 +255,7 @@ class TestOffers(TestOffersSetUp):
                              OFFER_RESPONSE.CANCEL)
 
     def test_unauthenticated_users_cannot_cancel_offer(self):
-        for account_type in self.ACCOUNT_URL_MAP:
+        for account_type in self.ACCOUNT_TYPE_MAPS:
             data = {account_type['offer-response']: OFFER_RESPONSE.CANCEL}
             res = self.client.patch(account_type['offer-retrieve-update'],
                                     data=data,
@@ -265,19 +288,19 @@ class TestOffers(TestOffersSetUp):
         ACCOUNT_URL_MAP = (
             {
                 'account': self.buyer,
-                'url': self.create_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
+                'url': self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
                 'offer': offer1,
                 'offer-response': 'buyer_offer_response'
             },
             {
                 'account': self.seller,
-                'url': self.create_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
+                'url': self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
                 'offer': offer2,
                 'offer-response': 'seller_offer_response'
             },
             {
                 'account': self.agent,
-                'url': self.create_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
+                'url': self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
                 'offer': offer3,
                 'offer-response': 'agent_offer_response'
             }
@@ -314,19 +337,19 @@ class TestOffers(TestOffersSetUp):
         ACCOUNT_URL_MAP = (
             {
                 'account': self.buyer,
-                'url': self.create_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
+                'url': self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
                 'offer': offer1,
                 'offer-response': 'buyer_offer_response'
             },
             {
                 'account': self.seller,
-                'url': self.create_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
+                'url': self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
                 'offer': offer2,
                 'offer-response': 'seller_offer_response'
             },
             {
                 'account': self.agent,
-                'url': self.create_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
+                'url': self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
                 'offer': offer3,
                 'offer-response': 'agent_offer_response'
             }
@@ -365,19 +388,19 @@ class TestOffers(TestOffersSetUp):
 
         data = {'buyer_offer_response': OFFER_RESPONSE.ACCEPT}
         token = self.login_user_and_get_token(self.buyer.user)
-        res1 = self.client.patch(self.create_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
+        res1 = self.client.patch(self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
                                  data=data,
                                  headers=self.create_auth_header(token))
 
         data = {'seller_offer_response': OFFER_RESPONSE.ACCEPT}
         token = self.login_user_and_get_token(self.seller.user)
-        res2 = self.client.patch(self.create_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
+        res2 = self.client.patch(self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
                                  data=data,
                                  headers=self.create_auth_header(token))
 
         data = {'agent_offer_response': OFFER_RESPONSE.ACCEPT}
         token = self.login_user_and_get_token(self.agent.user)
-        res3 = self.client.patch(self.create_retrieve_update_url('agent', self.agent.user.username, offer2.pk),
+        res3 = self.client.patch(self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer2.pk),
                                  data=data,
                                  headers=self.create_auth_header(token))
 
@@ -411,19 +434,19 @@ class TestOffers(TestOffersSetUp):
         ACCOUNT_URL_MAP = (
             {
                 'account': self.buyer,
-                'url': self.create_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
+                'url': self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
                 'offer': offer1,
                 'offer-response': 'buyer_offer_response'
             },
             {
                 'account': self.seller,
-                'url': self.create_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
+                'url': self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
                 'offer': offer2,
                 'offer-response': 'seller_offer_response'
             },
             {
                 'account': self.agent,
-                'url': self.create_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
+                'url': self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
                 'offer': offer3,
                 'offer-response': 'agent_offer_response'
             }
@@ -484,9 +507,9 @@ class TestOffers(TestOffersSetUp):
             data = {account_type['offer-response']: OFFER_RESPONSE.REJECT}
             token = self.login_user_and_get_token(account_type['account'].user)
             offer = Offer.objects.filter(account_type['filter']).first()
-            res = self.client.patch(self.create_retrieve_update_url(account_type['str_type'],
-                                                                    account_type['account'].user.username,
-                                                                    offer.pk),
+            res = self.client.patch(self.create_offer_retrieve_update_url(account_type['str_type'],
+                                                                          account_type['account'].user.username,
+                                                                          offer.pk),
                                     data=data,
                                     headers=self.create_auth_header(token))
             offer.refresh_from_db()
@@ -512,19 +535,19 @@ class TestOffers(TestOffersSetUp):
         ACCOUNT_URL_MAP = (
             {
                 'account': self.buyer,
-                'url': self.create_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
+                'url': self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
                 'offer': offer1,
                 'offer-response': 'buyer_offer_response'
             },
             {
                 'account': self.seller,
-                'url': self.create_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
+                'url': self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
                 'offer': offer2,
                 'offer-response': 'seller_offer_response'
             },
             {
                 'account': self.agent,
-                'url': self.create_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
+                'url': self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
                 'offer': offer3,
                 'offer-response': 'agent_offer_response'
             }
@@ -565,19 +588,19 @@ class TestOffers(TestOffersSetUp):
         ACCOUNT_URL_MAP = (
             {
                 'account': self.buyer,
-                'url': self.create_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
+                'url': self.create_offer_retrieve_update_url('buyer', self.buyer.user.username, offer1.pk),
                 'offer': offer1,
                 'offer-response': 'buyer_offer_response'
             },
             {
                 'account': self.seller,
-                'url': self.create_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
+                'url': self.create_offer_retrieve_update_url('seller', self.seller.user.username, offer2.pk),
                 'offer': offer2,
                 'offer-response': 'seller_offer_response'
             },
             {
                 'account': self.agent,
-                'url': self.create_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
+                'url': self.create_offer_retrieve_update_url('agent', self.agent.user.username, offer3.pk),
                 'offer': offer3,
                 'offer-response': 'agent_offer_response'
             }

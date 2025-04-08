@@ -2,6 +2,8 @@ from django.urls import path
 
 from offers.views import BuyerOfferListCreateView, BuyerOfferRetrieveUpdateView
 
+from transactions.views import BuyerTransactionListView, BuyerTransactionRetrieveUpdateView
+
 from .views import BuyerAccountRetrieveUpdateView, WishlistEntryListCreateView, WishlistEntryDestroyView
 
 urlpatterns = [
@@ -23,5 +25,13 @@ urlpatterns = [
 
     path('<str:username>/offers/<int:pk>',
          BuyerOfferRetrieveUpdateView.as_view(),
-         name='buyer-offer-retrieve-update')
+         name='buyer-offer-retrieve-update'),
+
+    path('<str:username>/transactions',
+         BuyerTransactionListView.as_view(),
+         name='buyer-transaction-list'),
+
+    path('<str:username>/transactions/<int:pk>',
+         BuyerTransactionRetrieveUpdateView.as_view(),
+         name='buyer-transaction-retrieve-update')
 ]
