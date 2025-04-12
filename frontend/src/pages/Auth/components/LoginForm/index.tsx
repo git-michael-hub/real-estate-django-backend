@@ -1,22 +1,22 @@
 import useAuth from "../../../../features/auth/hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
-import "./index.css";
 import { useState } from "react";
-import { FormMessageStateType } from "../../../../features/auth/context/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import FormBasic from "../../../../components/Forms/FormBasic";
+import { AuthFormMessageType } from "../../../../types/types";
+import "./index.css";
 
 export default function LoginForm() {
-    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
+    const [formMessages, setFormMessages] = useState<AuthFormMessageType>({});
     const navigate = useNavigate();
     const { login } = useAuth();
 
     async function onSubmitForm(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
-        const messages: FormMessageStateType = await login(formData);
+        const messages: AuthFormMessageType = await login(formData);
         if (messages.success) {
             navigate("/");
         }

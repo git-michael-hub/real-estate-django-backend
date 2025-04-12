@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import helperFn from "../../../ts/helper";
+import helperFn from "../../../utils/form-functions";
 import { ListingType } from "../../../features/listings/context/ListingsProvider";
 import ContactForm from "../components/ContactForm";
 import Tag from "../../../components/Tag";

@@ -1,21 +1,21 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import useAuth from "../../../../features/auth/hooks/useAuth";
+import { AuthFormMessageType } from "../../../../types/types";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
-import "./index.css";
-import { FormMessageStateType } from "../../../../features/auth/context/AuthProvider";
-import { useState } from "react";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
-import { Link } from "react-router-dom";
 import FormBasic from "../../../../components/Forms/FormBasic";
+import "./index.css";
 
 export default function ForgotPasswordForm() {
-    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
+    const [formMessages, setFormMessages] = useState<AuthFormMessageType>({});
     const { requestResetPassword } = useAuth();
 
     async function onSubmitRequest(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
-        const messages: FormMessageStateType = await requestResetPassword(formData);
+        const messages: AuthFormMessageType = await requestResetPassword(formData);
         setFormMessages(messages);
     }
 
@@ -46,7 +46,7 @@ export default function ForgotPasswordForm() {
             </div>
 
             <div>
-                <BtnBasicActive>
+                <BtnBasicActive type="submit">
                     <span>Submit Request</span>
                 </BtnBasicActive>
             </div>

@@ -36,6 +36,6 @@ const insertComma = (num: number) => {
     return numStringWithComma;
 };
 
-const helperFn = { combineFormData, extractDataFromForm, appendDataToForm, insertComma };
+const formFns = { combineFormData, extractDataFromForm, appendDataToForm, insertComma };
 
-export default helperFn;
+export default formFns;

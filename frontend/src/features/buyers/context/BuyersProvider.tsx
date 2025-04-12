@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
-import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
-import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
+import cookieHandler, { Token } from "../../../utils/cookie-handler";
 
 export const API_DIRECTORY_BUYERS = "api/buyers/";
 
@@ -15,7 +15,7 @@ export const BuyersProvider = ({ children }: ChildrenType) => {
 
         try {
             const response: APIResponseType | undefined = await apiFns.get(
-                API_DIRECTORY_BUYERS + `${username}/favorite-listings`,
+                API_DIRECTORY_BUYERS + `${username}/wishlist`,
                 headers
             );
             if (response.success) {

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useNavigate, NavigateFunction } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../../../features/auth/hooks/useAuth";
-import ResetPasswordForm from "../components/ResetPasswordForm";
+import EmailVerificationForm from "../components/EmailVerificationForm";
 import "./index.css";
 
-export default function ResetPassword() {
+export default function EmailVerification() {
     const navigate: NavigateFunction = useNavigate();
     const { user } = useAuth();
 
@@ -13,8 +13,8 @@ export default function ResetPassword() {
     }, []);
 
     return (
-        <main id="reset-password-page">
-            <ResetPasswordForm></ResetPasswordForm>
+        <main id="email-verification-page">
+            <EmailVerificationForm></EmailVerificationForm>
         </main>
     );
 }

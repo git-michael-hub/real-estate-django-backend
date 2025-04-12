@@ -12,17 +12,18 @@ function App() {
                 <Route path="/about" element={<Pages.About />} />
                 <Route path="/login" element={<Pages.Auth.Login />} />
                 <Route path="/register" element={<Pages.Auth.Register />} />
+                <Route path="/email-verification/:email" element={<Pages.Auth.EmailVerification />} />
                 <Route path="/forgot-password" element={<Pages.Auth.ForgotPassword />} />
-                <Route path="/password-reset/:token" element={<Pages.Auth.ResetPassword />} />
-                <Route path="/unauthorized" element={<Pages.Auth.Unauthorized />} />
-                <Route path="/listings" element={<Pages.Listings.List />} />
-                <Route path="/listings/:id" element={<Pages.Listings.Details />} />
-                <Route path="/listings/manage" element={<Pages.Listings.Manage />} />
+                <Route path="/reset-password/:token" element={<Pages.Auth.ResetPassword />} />
+                {/* <Route path="/unauthorized" element={<Pages.Auth.Unauthorized />} /> */}
+                {/* <Route path="/listings" element={<Pages.Listings.List />} /> */}
+                {/* <Route path="/listings/:id" element={<Pages.Listings.Details />} /> */}
+                {/* <Route path="/listings/manage" element={<Pages.Listings.Manage />} /> */}
                 {/* <Route element={<RequireAuth roles={["seller"]} />}> */}
-                <Route path="/listings/new" element={<Pages.Listings.New />} />
+                {/* <Route path="/listings/new" element={<Pages.Listings.New />} /> */}
                 {/* </Route> */}
-                <Route path="/agents" element={<Pages.Sellers.List />} />
-                <Route path="/agents/:username" element={<Pages.Sellers.Profile />} />
+                {/* <Route path="/agents" element={<Pages.Sellers.List />} /> */}
+                {/* <Route path="/agents/:username" element={<Pages.Sellers.Profile />} /> */}
 
                 <Route path="*" element={<Pages.NotFound />} />
             </Route>

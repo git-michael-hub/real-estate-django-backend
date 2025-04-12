@@ -1,0 +1,23 @@
+#email-verification-form {
+    max-width: 720px;
+    min-width: 450px;
+    padding: 20px;
+}
+
+#email-verification-form p {
+    color: #788593;
+}
+
+#email-verification-form > div {
+    margin: 15px;
+}
+
+#email-verification-form button {
+    margin-top: 32px;
+}
+
+#email-verification-form .login-link {
+    display: flex;
+    justify-content: center;
+    font-size: 0.8rem;
+}

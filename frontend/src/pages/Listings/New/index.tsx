@@ -1,6 +1,6 @@
 import useAuth from "../../../features/auth/hooks/useAuth";
-import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
-import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
+import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { useNavigate } from "react-router-dom";
 import {
     API_DIRECTORY_LISTINGS,

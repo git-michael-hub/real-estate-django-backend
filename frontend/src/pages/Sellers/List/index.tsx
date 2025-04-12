@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiFns, APIResponseType } from "../../../ts/api-service";
+import { apiFns, APIResponseType } from "../../../utils/api-service";
 import { API_DIRECTORY_SELLERS, SellerType } from "../../../features/sellers/context/SellersProvider";
 import "./index.css";
 import { Link } from "react-router-dom";

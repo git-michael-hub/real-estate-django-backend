@@ -63,7 +63,7 @@ class OfferRetrieveSerializer(OfferGetCreatedByMixin, serializers.ModelSerialize
 
     class Meta:
         model = Offer
-        fields = '__all__'
+        exclude = ['created_by_id', 'created_by_type']
 
 
 class BuyerOfferUpdateSerializer(OfferUpdateSerializerMixin, serializers.ModelSerializer):

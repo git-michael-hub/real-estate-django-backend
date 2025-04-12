@@ -11,4 +11,6 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(PasswordResetRequest)
 class PasswordResetRequestAdmin(admin.ModelAdmin):
-    fields = ('email', 'token', 'created_at')
+    list_display = ('user', 'token', 'created_at')
+    fields = ('user', 'token', 'created_at')
+    readonly_fields = ('user', 'token', 'created_at')

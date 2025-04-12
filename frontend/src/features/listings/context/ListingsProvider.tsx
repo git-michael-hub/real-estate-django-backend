@@ -1,7 +1,35 @@
 import { createContext, useState } from "react";
 import { SellerType } from "../../sellers/context/SellersProvider";
-import { apiFns, APIResponseType, HeaderType } from "../../../ts/api-service";
-import cookieHandler, { Token } from "../../../ts/cookie-handler";
+import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
+import cookieHandler, { Token } from "../../../utils/cookie-handler";
+
+export type SellerAccountType = {};
+
+export type PropertyType = {
+    property_type: "HL" | "CO" | "RL" | "CL";
+    property_type_display: string;
+    seller_account: SellerAccountType;
+    province: string;
+    city: string;
+    barangay: string;
+    street: string;
+    lot_area: number | null;
+    floor_area: number | null;
+    num_of_floors: number | null;
+    bedrooms: number | null;
+    bathrooms: number | null;
+    date_created: Date;
+    // status:
+};
+
+export type AgentAccountType = {};
+
+export type ListingListType = {
+    listing_type: "FS" | "FR" | "FC";
+    listing_type_display: string;
+    property: PropertyType;
+    agent_account: AgentAccountType;
+};
 
 export type ListingType = {
     id: number;
@@ -10,7 +38,7 @@ export type ListingType = {
     title: string;
     listing_type: "FS" | "FR" | "FC";
     listing_type_display: string;
-    property_type: "HL" | "CO" | "RL" | "CL";
+    property: "HL" | "CO" | "RL" | "CL";
     property_type_display: string;
     price: number;
     image1?: string | File | null;
@@ -18,6 +46,7 @@ export type ListingType = {
     image3?: string | File | null;
     image4?: string | File | null;
     image5?: string | File | null;
+    status: "A";
     property_size: number;
     description: string;
     is_available: boolean;

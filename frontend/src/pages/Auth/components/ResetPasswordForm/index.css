@@ -1,8 +1,10 @@
 #reset-password-form {
-    max-width: 400px;
-    padding: 20px;
-    border: 1px solid gray;
-    border-radius: 10px;
+    min-width: 300px;
+    padding: 30px;
+}
+
+#reset-password-form h2 {
+    margin-top: 0;
 }
 
 #reset-password-form > div {

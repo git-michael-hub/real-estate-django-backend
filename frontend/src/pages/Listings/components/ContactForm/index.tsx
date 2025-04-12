@@ -4,7 +4,7 @@ import InputBasic from "../../../../components/Forms/InputBasic";
 import TextAreaBasic from "../../../../components/Forms/TextAreaBasic";
 import { ListingType } from "../../../../features/listings/context/ListingsProvider";
 import { SellerType, SellerDetailsType } from "../../../../features/sellers/context/SellersProvider";
-import { apiFns, APIResponseType } from "../../../../ts/api-service";
+import { apiFns, APIResponseType } from "../../../../utils/api-service";
 import "./index.css";
 import Message from "../../../../components/Message";
 import { useState } from "react";

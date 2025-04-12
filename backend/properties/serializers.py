@@ -75,15 +75,9 @@ class PropertyCreateSerializer(serializers.ModelSerializer):
 
 class PropertyRetreiveSerializer(PropertyListSerializer):
     seller_account = SellerAccountRetrieveSerializer()
-    listings = serializers.SerializerMethodField()
 
     class Meta(PropertyListSerializer.Meta):
         exclude = PropertyListSerializer.Meta.exclude
-
-    def get_listings(self, obj):
-        from listings.serializers import ListingListSerializer
-        listings = obj.listings.all()
-        return ListingListSerializer(listings, many=True).data
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

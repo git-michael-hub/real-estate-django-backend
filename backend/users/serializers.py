@@ -144,11 +144,12 @@ class PasswordResetRequestSerializer(serializers.ModelSerializer):
         """
         Ensures that a user exists for the given email.
         """
-        user = User.objects.filter(email=attrs.get('email')).first()
+        user = User.objects.filter(email=attrs.pop('email')).first()
         if not user:
             raise serializers.ValidationError(
                 'User with credentials not found')
 
+        attrs['user'] = user
         return attrs
 
     def create(self, validated_data):
@@ -159,7 +160,7 @@ class PasswordResetRequestSerializer(serializers.ModelSerializer):
         - Returns the new request object.
         """
         with transaction.atomic():
-            user = User.objects.filter(email=validated_data['email']).first()
+            user = validated_data['user']
             PasswordResetRequest.objects.filter(user=user).delete()
             token = PasswordResetTokenGenerator().make_token(user)
             reset_request = PasswordResetRequest.objects.create(

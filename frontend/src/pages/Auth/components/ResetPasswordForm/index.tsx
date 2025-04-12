@@ -2,13 +2,14 @@ import { Link, useParams } from "react-router-dom";
 import useAuth from "../../../../features/auth/hooks/useAuth";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
-import "./index.css";
 import { useState } from "react";
-import { FormMessageStateType } from "../../../../features/auth/context/AuthProvider";
+import { AuthFormMessageType } from "../../../../types/types";
+import FormBasic from "../../../../components/Forms/FormBasic";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
+import "./index.css";
 
 export default function ResetPasswordForm() {
-    const [formMessages, setFormMessages] = useState<FormMessageStateType>({});
+    const [formMessages, setFormMessages] = useState<AuthFormMessageType>({});
     const { resetPassword } = useAuth();
     const { token } = useParams();
 
@@ -16,20 +17,24 @@ export default function ResetPasswordForm() {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
         if (token) {
-            const messages: FormMessageStateType = await resetPassword(formData, token);
+            const messages: AuthFormMessageType = await resetPassword(formData, token);
             setFormMessages(messages);
         }
     }
 
     return (
-        <form onSubmit={onSubmitPassword} id="reset-password-form">
+        <FormBasic onSubmit={onSubmitPassword} id="reset-password-form">
+            <h2>Reset Password</h2>
+
             {formMessages.success ? <Message type="success">{formMessages.success[0]}</Message> : <></>}
+
+            {formMessages.error ? <Message type="error">{formMessages.error[0]}</Message> : <></>}
 
             {formMessages.non_field_errors ? <Message type="error">{formMessages.non_field_errors[0]}</Message> : <></>}
 
-            <InputWithLabel inputProps={{ name: "new_password", type: "password" }}>Password</InputWithLabel>
+            <InputWithLabel inputProps={{ name: "password", type: "password" }}>Password</InputWithLabel>
 
-            {formMessages.new_password ? <Message type="error">{formMessages.new_password[0]}</Message> : <></>}
+            {formMessages.password ? <Message type="error">{formMessages.password[0]}</Message> : <></>}
 
             <InputWithLabel inputProps={{ name: "confirm_password", type: "password" }}>
                 Confirm Password
@@ -46,6 +51,6 @@ export default function ResetPasswordForm() {
             <div className="login-link">
                 <Link to={"/login"}>Back to Sign In</Link>
             </div>
-        </form>
+        </FormBasic>
     );
 }

@@ -1,165 +1,103 @@
 import { createContext, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { apiFns, HeaderType } from "../../../ts/api-service";
-import cookieHandler, { Token } from "../../../ts/cookie-handler";
-import { APIResponseType } from "../../../ts/api-service";
-
-export type UserType = {
-    id: number;
-    username: string;
-    email: string;
-    roles: string[];
-};
-
-export type UserStateType = UserType | null;
-
-export type FormMessageStateType = {
-    success?: string[];
-    error?: string[];
-    username?: string[];
-    email?: string[];
-    first_name?: string[];
-    last_name?: string[];
-    password?: string[];
-    non_field_errors?: string[];
-    new_password?: string[];
-    confirm_password?: string[];
-    pin_code?: string[];
-};
-
-export const API_DIRECTORY_USERS = "api/users/";
+import { apiFns, HeaderType } from "../../../utils/api-service";
+import cookieHandler, { Token } from "../../../utils/cookie-handler";
+import { APIResponseType } from "../../../utils/api-service";
+import { AuthUserType, AuthFormMessageType } from "../../../types/types";
+import { API_URLS } from "../../../urls/api-urls";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => {
-    const [user, setUser] = useState<UserStateType>(null);
+    const [user, setUser] = useState<AuthUserType | null>(null);
     const [isReady, setIsReady] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
     // Runs everytime the page refreshes then runs fetchAuthUser.
-    // use and isReady state is then updated using setUser.
+    // user and isReady state is then updated using setUser.
     useEffect(() => {
         if (!user) {
             fetchAuthUser()
-                .then((user: UserStateType) => setUser(user))
+                .then((user: AuthUserType | null) => setUser(user))
                 .then(() => setIsReady(true)); // makes sure user state is mounted first
         }
     }, []);
 
-    const processForm = async (
-        endpoint: string,
-        formData: FormData,
-        successString: string = "Success.",
-        headers?: HeaderType
-    ): Promise<{ message: FormMessageStateType; data?: any }> => {
-        try {
-            const response: APIResponseType = await apiFns.post(endpoint, formData, headers);
-            if (response.success) {
-                const successMessage: FormMessageStateType = { success: [successString] };
-                return { message: successMessage, data: response.data };
-            } else {
-                const errorMessages: FormMessageStateType = response.data;
-                return { message: errorMessages };
-            }
-        } catch (error: unknown) {
-            console.log(
-                `An error occurred at function ${processForm.caller.name}() inside AuthProvider.tsx. \n${error}`
-            );
-            const errorMessage: FormMessageStateType = { error: [`An error occurred.`] };
-            return { message: errorMessage };
-        }
-    };
-
     // Fetch authenticated user from backend.
     // Returns null if there is currently no authenticated user.
-    const fetchAuthUser = async (): Promise<UserStateType> => {
+    const fetchAuthUser = async (): Promise<AuthUserType | null> => {
         const token: Token = cookieHandler.get("token");
         if (!token) return null;
 
-        try {
-            const headers: HeaderType = { Authorization: `Token ${token}` };
-            const response: APIResponseType = await apiFns.get(`${API_DIRECTORY_USERS}auth-user`, headers);
-            if (!response.success) return null;
-            const user: UserStateType = response.data;
-            return user;
-        } catch (error: unknown) {
-            console.log(`An error occurred at function ${fetchAuthUser.name}() inside AuthProvider.tsx. \n${error}`);
-            return null;
-        }
+        const headers: HeaderType = { Authorization: `Token ${token}` };
+        const response: APIResponseType = await apiFns.get(API_URLS.AUTH.USER(), headers);
+        if (!response.success) return null;
+
+        const user: AuthUserType = response.data;
+        return user;
     };
 
-    const login = async (formData: FormData): Promise<FormMessageStateType> => {
-        const { message, data } = await processForm(`${API_DIRECTORY_USERS}login`, formData, "Login success!");
-        if (message.success) {
-            const token: Token = data.token;
-            const user: UserType = data.user;
-            cookieHandler.set("token", token);
-            setUser(user);
-        }
-        return message;
+    const login = async (formData: FormData): Promise<AuthFormMessageType> => {
+        const response = await apiFns.post(API_URLS.AUTH.LOGIN(), formData);
+        if (!response.success) return response.err_message as AuthFormMessageType;
+
+        const token: Token = response.data.token;
+        const user: AuthUserType = response.data.user;
+        const success_message: AuthFormMessageType = { success: ["Successfully logged in!"] };
+        cookieHandler.set("token", token);
+        setUser(user);
+        return success_message;
     };
 
-    const requestEmailValidation = async (
-        endpoint: "buyers/email-validation" | "sellers/email-validation",
-        formData: FormData
-    ): Promise<FormMessageStateType> => {
-        const { message } = await processForm(endpoint, formData, "We have sent a 6-digit PIN to your email.");
-        return message;
+    const register = async (formData: FormData): Promise<AuthFormMessageType> => {
+        const response: APIResponseType = await apiFns.post(API_URLS.AUTH.REGISTER(), formData);
+        if (!response.success) return response.err_message as AuthFormMessageType;
+        const success_message: AuthFormMessageType = { success: ["We have sent a 6-digit PIN to your email."] };
+        return success_message;
     };
 
-    const register = async (
-        endpoint: "buyers/register" | "sellers/register",
-        formData: FormData
-    ): Promise<FormMessageStateType> => {
-        const { message } = await processForm(endpoint, formData, "Registration complete!");
-        return message;
+    const verifyEmail = async (email: string, formData: FormData): Promise<AuthFormMessageType> => {
+        const response: APIResponseType = await apiFns.patch(API_URLS.AUTH.VERIFY_EMAIL(email), formData);
+        if (!response.success) return response.err_message as AuthFormMessageType;
+        const success_message: AuthFormMessageType = { success: ["Email verification complete."] };
+        return success_message;
     };
 
-    const logout = async (): Promise<FormMessageStateType> => {
+    const logout = async (): Promise<AuthFormMessageType> => {
         const formData: FormData = new FormData();
         const token: Token = cookieHandler.get("token");
         const headers: HeaderType = { Authorization: `Token ${token}` };
-        const { message } = await processForm(
-            `${API_DIRECTORY_USERS}logout`,
-            formData,
-            "Successfully logged out.",
-            headers
-        );
-        if (message.success) {
-            cookieHandler.delete("token");
-            setUser(null);
-            navigate("/login");
-        }
-        return message;
+        const response = await apiFns.post(API_URLS.AUTH.LOGOUT(), formData, headers);
+        if (!response.success) return response.err_message as AuthFormMessageType;
+        const success_message: AuthFormMessageType = { success: ["Successfully logged out!"] };
+        cookieHandler.delete("token");
+        setUser(null);
+        navigate("/login");
+        return success_message;
     };
 
-    const requestResetPassword = async (formData: FormData): Promise<FormMessageStateType> => {
-        const { message } = await processForm(
-            `${API_DIRECTORY_USERS}request-password-reset`,
-            formData,
-            "We have sent a link to your email address."
-        );
-        return message;
+    const requestResetPassword = async (formData: FormData): Promise<AuthFormMessageType> => {
+        const response: APIResponseType = await apiFns.post(API_URLS.AUTH.REQUEST_PASSWORD_RESET(), formData);
+        if (!response.success) return response.err_message as AuthFormMessageType;
+        const success_message: AuthFormMessageType = { success: ["We have sent a link to your email address."] };
+        return success_message;
     };
 
-    const resetPassword = async (formData: FormData, resetToken: string): Promise<FormMessageStateType> => {
-        try {
-            const response: APIResponseType = await apiFns.post(
-                `${API_DIRECTORY_USERS}password-reset/${resetToken}`,
-                formData
-            );
-            const messages = response.data;
-            return messages;
-        } catch (error) {
-            console.log(`An error occurred at function ${resetPassword.name}() inside AuthProvider.tsx. \n${error}`);
-            const messages = { error: [`An error occurred.`] };
-            return messages;
-        }
+    const resetPassword = async (formData: FormData, resetToken: string): Promise<AuthFormMessageType> => {
+        const response: APIResponseType = await apiFns.patch(API_URLS.AUTH.RESET_PASSWORD(resetToken), formData);
+        if (!response.success) return response.err_message as AuthFormMessageType;
+        const success_message: AuthFormMessageType = { success: ["Password reset successful!"] };
+        return success_message;
     };
 
     const isSeller = (): boolean => {
         if (!user) return false;
         return user.roles.includes("seller");
+    };
+
+    const isAgent = (): boolean => {
+        if (!user) return false;
+        return user.roles.includes("agent");
     };
 
     return (
@@ -169,12 +107,13 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 setUser,
                 fetchAuthUser,
                 login,
-                requestEmailValidation,
+                verifyEmail,
                 register,
                 logout,
                 requestResetPassword,
                 resetPassword,
                 isSeller,
+                isAgent,
             }}
         >
             {isReady ? children : null}
@@ -183,19 +122,17 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 };
 
 export type AuthContextType = {
-    user: UserStateType;
-    setUser: React.Dispatch<React.SetStateAction<UserStateType>>;
-    fetchAuthUser: () => Promise<UserStateType>;
-    login: (formData: FormData) => Promise<FormMessageStateType>;
-    requestEmailValidation: (
-        endpoint: "buyers/email-validation" | "sellers/email-validation",
-        formData: FormData
-    ) => Promise<FormMessageStateType>;
-    register: (endpoint: "buyers/register" | "sellers/register", formData: FormData) => Promise<FormMessageStateType>;
-    logout: () => Promise<FormMessageStateType>;
-    requestResetPassword: (formData: FormData) => Promise<FormMessageStateType>;
-    resetPassword: (formData: FormData, resetToken: string) => Promise<FormMessageStateType>;
+    user: AuthUserType | null;
+    setUser: React.Dispatch<React.SetStateAction<AuthUserType | null>>;
+    fetchAuthUser: () => Promise<AuthUserType | null>;
+    login: (formData: FormData) => Promise<AuthFormMessageType>;
+    verifyEmail: (email: string, formData: FormData) => Promise<AuthFormMessageType>;
+    register: (formData: FormData) => Promise<AuthFormMessageType>;
+    logout: () => Promise<AuthFormMessageType>;
+    requestResetPassword: (formData: FormData) => Promise<AuthFormMessageType>;
+    resetPassword: (formData: FormData, resetToken: string) => Promise<AuthFormMessageType>;
     isSeller: () => boolean;
+    isAgent: () => boolean;
 };
 
 // Initial state of the AuthContext
@@ -204,12 +141,13 @@ const initAuthContextState: AuthContextType = {
     setUser: () => {},
     fetchAuthUser: () => Promise.resolve(null),
     login: () => Promise.resolve({}),
-    requestEmailValidation: () => Promise.resolve({}),
+    verifyEmail: () => Promise.resolve({}),
     register: () => Promise.resolve({}),
     logout: () => Promise.resolve({}),
     requestResetPassword: () => Promise.resolve({}),
     resetPassword: () => Promise.resolve({}),
     isSeller: () => false,
+    isAgent: () => false,
 };
 
 const AuthContext = createContext<AuthContextType>(initAuthContextState);

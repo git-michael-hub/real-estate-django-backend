@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../../../features/auth/hooks/useAuth";
-import helperFn from "../../../../ts/helper";
+import helperFn from "../../../../utils/form-functions";
 import { ListingType } from "../../../../features/listings/context/ListingsProvider";
 import BtnIconNoBg from "../../../../components/Buttons/BtnIconNoBg";
 import "./index.css";
@@ -14,9 +14,11 @@ export default function ListingEntry({ listing }: ListingEntryPropType) {
     const { user } = useAuth();
     const { favoriteListings, editFavorites } = useBuyer();
 
+    console.log(listing.status);
+
     return (
         <>
-            {listing.is_available ? (
+            {listing.status === "A" ? (
                 <>
                     <li key={listing.id} className="listing-entry">
                         {listing.image1 ? (

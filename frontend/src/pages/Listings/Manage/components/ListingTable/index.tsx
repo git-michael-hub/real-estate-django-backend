@@ -3,8 +3,8 @@ import BtnBasicActive from "../../../../../components/Buttons/BtnBasicActive";
 import useListing from "../../../../../features/listings/hooks/useListings";
 import PageBtns from "../../../../../components/PageBtns";
 import "./index.css";
-import cookieHandler, { Token } from "../../../../../ts/cookie-handler";
-import { apiFns, APIResponseType, HeaderType } from "../../../../../ts/api-service";
+import cookieHandler, { Token } from "../../../../../utils/cookie-handler";
+import { apiFns, APIResponseType, HeaderType } from "../../../../../utils/api-service";
 import { API_DIRECTORY_LISTINGS } from "../../../../../features/listings/context/ListingsProvider";
 
 type ListingTableProps = {
