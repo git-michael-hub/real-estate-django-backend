@@ -4,8 +4,6 @@ import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { API_URLS } from "../../../urls/api-urls";
 import { WishlistType, WishlistEntryType } from "../../../types/types";
 
-export const API_DIRECTORY_BUYERS = "api/buyers/";
-
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const BuyersProvider = ({ children }: ChildrenType) => {
