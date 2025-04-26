@@ -74,14 +74,16 @@ export type SellerApplicationType = BaseSellerApplicationType & {
 
 export type BaseAgentAccountType = {
     pk: number;
+    user: UserType;
     agent_name: string;
     bio: string;
     profile_image_path: string;
 };
 
 export type AgentAccountType = BaseAgentAccountType & {
-    user: number;
     is_active: boolean;
+    contact_number_1?: string;
+    contact_number_2?: string;
     date_approved?: Date;
 };
 
@@ -147,6 +149,7 @@ export type ListingTypeType = "FS" | "FR" | "FC";
 export type ListingStatusType = "A" | "H" | "S" | "C" | "R";
 
 export type BaseListingType = {
+    id: number;
     listing_type: ListingTypeType;
     listing_type_display: string;
     property: BasePropertyType;
@@ -159,6 +162,14 @@ export type BaseListingType = {
 };
 
 export type ListingType = BaseListingType;
+
+export type WishlistEntryType = {
+    pk: number;
+    listing: BaseListingType;
+    date_added: Date;
+};
+
+export type WishlistType = WishlistEntryType[];
 
 export type CreatedByType = {
     type: AccountType;

@@ -1,64 +1,8 @@
 import { createContext, useState } from "react";
-import { SellerType } from "../../sellers/context/SellersProvider";
 import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
-
-export type SellerAccountType = {};
-
-export type PropertyType = {
-    property_type: "HL" | "CO" | "RL" | "CL";
-    property_type_display: string;
-    seller_account: SellerAccountType;
-    province: string;
-    city: string;
-    barangay: string;
-    street: string;
-    lot_area: number | null;
-    floor_area: number | null;
-    num_of_floors: number | null;
-    bedrooms: number | null;
-    bathrooms: number | null;
-    date_created: Date;
-    // status:
-};
-
-export type AgentAccountType = {};
-
-export type ListingListType = {
-    listing_type: "FS" | "FR" | "FC";
-    listing_type_display: string;
-    property: PropertyType;
-    agent_account: AgentAccountType;
-};
-
-export type ListingType = {
-    id: number;
-    seller: number;
-    seller_details: SellerType;
-    title: string;
-    listing_type: "FS" | "FR" | "FC";
-    listing_type_display: string;
-    property: "HL" | "CO" | "RL" | "CL";
-    property_type_display: string;
-    price: number;
-    image1?: string | File | null;
-    image2?: string | File | null;
-    image3?: string | File | null;
-    image4?: string | File | null;
-    image5?: string | File | null;
-    status: "A";
-    property_size: number;
-    description: string;
-    is_available: boolean;
-    created_at: Date;
-    bedrooms?: number;
-    bathrooms?: number;
-    province: string;
-    city: string;
-    baranggay: string;
-    street: string;
-    DELETED?: boolean;
-};
+import { BaseListingType, ListingType } from "../../../types/types";
+import { API_URLS } from "../../../urls/api-urls";
 
 export type PaginatedListingsType = {
     count: number;
@@ -67,7 +11,7 @@ export type PaginatedListingsType = {
         previous: string | null;
     };
     pages: number;
-    results: ListingType[];
+    results: BaseListingType[];
 };
 
 export type ListingFormMessageStateType = {
@@ -77,12 +21,14 @@ export type ListingFormMessageStateType = {
     listing_type?: string[];
     property_type?: string[];
     price?: string[];
-    image1?: string[];
-    image2?: string[];
-    image3?: string[];
-    image4?: string[];
-    image5?: string[];
-    property_size?: string[];
+    image1_path?: string[];
+    image2_path?: string[];
+    image3_path?: string[];
+    image4_path?: string[];
+    image5_path?: string[];
+    lot_area?: string[];
+    floor_area?: string[];
+    num_of_floors?: string[];
     description?: string[];
     bedrooms?: string[];
     bathrooms?: string[];
@@ -97,7 +43,7 @@ export const API_DIRECTORY_LISTINGS = "api/listings/";
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const ListingProvider = ({ children }: ChildrenType): React.ReactElement => {
-    const [listing, setListing] = useState<ListingType | Partial<ListingType> | null>(null);
+    const [listing, setListing] = useState<ListingType | null>(null);
     const [listings, setListings] = useState<ListingType[]>([]);
     const [page, setPage] = useState<number>(1);
     const [pages, setPages] = useState<number>(1);
@@ -106,33 +52,18 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
 
     // GET 1 SPECIFIC LISTING
     const fetchListing = async (listingId: string | number): Promise<ListingType | null> => {
-        try {
-            const response: APIResponseType = await apiFns.get(`${API_DIRECTORY_LISTINGS}${listingId}`);
-
-            if (response.success) return response.data;
-            return null;
-        } catch {
-            return null;
-        }
+        const response: APIResponseType = await apiFns.get(API_URLS.LISTING.RETRIEVE(listingId));
+        if (response.success) return response.data;
+        console.log(response.err_messages);
+        return null;
     };
 
     // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS
-    const fetchListings = async (searchParams: string): Promise<PaginatedListingsType | null> => {
-        try {
-            const token: Token = cookieHandler.get("token");
-            let response: APIResponseType | undefined;
-            if (token) {
-                const headers: HeaderType = { Authorization: `Token ${token}` };
-                response = await apiFns.get(`${API_DIRECTORY_LISTINGS}${searchParams}`, headers);
-            } else {
-                response = await apiFns.get(`${API_DIRECTORY_LISTINGS}${searchParams}`);
-            }
-
-            if (response.success) return response.data;
-            return null;
-        } catch {
-            return null;
-        }
+    const fetchListings = async (searchParams?: string): Promise<PaginatedListingsType | null> => {
+        const response: APIResponseType = await apiFns.get(API_URLS.LISTING.SEARCH(searchParams));
+        if (response.success) return response.data;
+        console.log(response.err_messages);
+        return null;
     };
 
     // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS AND UPDATE STATE
@@ -205,8 +136,8 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
 };
 
 export type ListingContextType = {
-    listing: ListingType | Partial<ListingType> | null;
-    setListing: React.Dispatch<React.SetStateAction<ListingType | Partial<ListingType> | null>>;
+    listing: ListingType | null;
+    setListing: React.Dispatch<React.SetStateAction<ListingType | null>>;
     listings: ListingType[];
     setListings: React.Dispatch<React.SetStateAction<ListingType[]>>;
     fetchListing: (path: string) => Promise<ListingType | null>;

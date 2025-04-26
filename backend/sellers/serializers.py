@@ -1,7 +1,9 @@
 from django.db import transaction
 from django.utils import timezone
 
-from rest_framework import serializers, status
+from rest_framework import serializers
+
+from users.serializers import UserRetrieveSerializer
 
 from .models import SellerApplication, SellerAccount, SELLER_APP_STATUS
 
@@ -68,12 +70,16 @@ class SellerAccountUpdateSerializer(serializers.ModelSerializer):
 
 
 class SellerAccountRetrieveSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer()
+
     class Meta:
         model = SellerAccount
         fields = '__all__'
 
 
 class SellerAccountListSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer()
+
     class Meta:
         model = SellerAccount
         fields = ['user', 'business_name',

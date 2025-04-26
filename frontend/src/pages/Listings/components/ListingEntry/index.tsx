@@ -1,30 +1,24 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../../../features/auth/hooks/useAuth";
+import useBuyer from "../../../../features/buyers/hooks/useBuyers";
+import { BaseListingType } from "../../../../types/types";
 import helperFn from "../../../../utils/form-functions";
-import { ListingType } from "../../../../features/listings/context/ListingsProvider";
 import BtnIconNoBg from "../../../../components/Buttons/BtnIconNoBg";
 import "./index.css";
-import useBuyer from "../../../../features/buyers/hooks/useBuyers";
 
-type ListingEntryPropType = {
-    listing: ListingType;
-};
-
-export default function ListingEntry({ listing }: ListingEntryPropType) {
+export default function ListingEntry({ listing }: { listing: BaseListingType }) {
     const { user } = useAuth();
-    const { favoriteListings, editFavorites } = useBuyer();
-
-    console.log(listing.status);
+    const { wishlistIds, addToWishlist, removeFromWishlist } = useBuyer();
 
     return (
         <>
             {listing.status === "A" ? (
                 <>
                     <li key={listing.id} className="listing-entry">
-                        {listing.image1 ? (
+                        {listing.property.image1_path ? (
                             <div className="listing-image-container">
                                 <Link to={`/listings/${listing.id}`}>
-                                    <img src={listing.image1 as string} alt="" className="listing-image" />
+                                    <img src={listing.property.image1_path} alt="" className="listing-image" />
                                 </Link>
                             </div>
                         ) : (
@@ -54,16 +48,23 @@ export default function ListingEntry({ listing }: ListingEntryPropType) {
                                 </h3>
                                 {!user ? (
                                     <></>
-                                ) : favoriteListings.includes(listing.id) ? (
-                                    <form onSubmit={(e) => editFavorites(e, user.username)}>
-                                        <input type="hidden" name="remove_from_favorites" value={listing.id} />
+                                ) : wishlistIds.includes(listing.id) ? (
+                                    <form
+                                        onSubmit={(e) => {
+                                            removeFromWishlist(e, user.username, listing.id);
+                                        }}
+                                    >
                                         <BtnIconNoBg>
                                             <i className="fa-solid fa-heart favorite"></i>
                                         </BtnIconNoBg>
                                     </form>
                                 ) : (
-                                    <form onSubmit={(e) => editFavorites(e, user.username)}>
-                                        <input type="hidden" name="add_to_favorites" value={listing.id} />
+                                    <form
+                                        onSubmit={(e) => {
+                                            addToWishlist(e, user.username, listing.id);
+                                        }}
+                                    >
+                                        <input type="hidden" name="listing" value={listing.id} />
                                         <BtnIconNoBg>
                                             <i className="fa-regular fa-heart"></i>
                                         </BtnIconNoBg>
@@ -74,38 +75,42 @@ export default function ListingEntry({ listing }: ListingEntryPropType) {
                                 <b className="listing-listing-type">{listing.listing_type_display}</b>
                             </div>
                             <div>
-                                <em className="listing-property-type">({listing.property_type_display})</em>
+                                <em className="listing-property-type">({listing.property.property_type_display})</em>
                             </div>
                             <address>
                                 <i className="fa-solid fa-location-dot"></i>{" "}
-                                {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
+                                {`${listing.property.street}, ${listing.property.barangay}, ${listing.property.city}, ${listing.property.province}`}
                             </address>
                             <div className="listing-info">
-                                {listing.bedrooms ? (
+                                {listing.property.bedrooms ? (
                                     <span>
-                                        <i className="fa-solid fa-bed"></i> {listing.bedrooms.toString()}
+                                        <i className="fa-solid fa-bed"></i> {listing.property.bedrooms.toString()}
                                     </span>
                                 ) : (
                                     <></>
                                 )}
-                                {listing.bathrooms ? (
+                                {listing.property.bathrooms ? (
                                     <span>
-                                        <i className="fa-solid fa-shower"></i> {listing.bathrooms.toString()}
+                                        <i className="fa-solid fa-shower"></i> {listing.property.bathrooms.toString()}
                                     </span>
                                 ) : (
                                     <></>
                                 )}
                                 <span>
-                                    <i className="fa-solid fa-expand"></i> {listing.property_size.toString()} sqm
+                                    <i className="fa-solid fa-expand"></i> {listing.property.lot_area?.toString()} sqm
                                 </span>
                             </div>
                             <div className="listing-seller-and-price">
-                                <div>
-                                    <img src={listing.seller_details.seller_image_url} alt="" />
-                                    <Link to={`/agents/@${listing.seller_details.username}`}>
-                                        {listing.seller_details.first_name} {listing.seller_details.last_name}
-                                    </Link>
-                                </div>
+                                {listing.agent_account ? (
+                                    <div>
+                                        <img src={listing.agent_account.profile_image_path} alt="" />
+                                        <Link to={`/agents/@${listing.agent_account.user.username}`}>
+                                            {listing.agent_account.agent_name}
+                                        </Link>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
                                 {listing.listing_type === "FR" ? (
                                     <b>Php {helperFn.insertComma(listing.price)} / mo. </b>
                                 ) : (

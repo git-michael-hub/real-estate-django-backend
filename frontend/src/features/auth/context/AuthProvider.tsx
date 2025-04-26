@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
     };
 
     const login = async (formData: FormData): Promise<AuthFormMessageType> => {
-        const response = await apiFns.post(API_URLS.AUTH.LOGIN(), formData);
-        if (!response.success) return response.err_message as AuthFormMessageType;
+        const response: APIResponseType = await apiFns.post(API_URLS.AUTH.LOGIN(), formData);
+        if (!response.success) return response.err_messages as AuthFormMessageType;
 
         const token: Token = response.data.token;
         const user: AuthUserType = response.data.user;
@@ -51,14 +51,14 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
     const register = async (formData: FormData): Promise<AuthFormMessageType> => {
         const response: APIResponseType = await apiFns.post(API_URLS.AUTH.REGISTER(), formData);
-        if (!response.success) return response.err_message as AuthFormMessageType;
+        if (!response.success) return response.err_messages as AuthFormMessageType;
         const success_message: AuthFormMessageType = { success: ["We have sent a 6-digit PIN to your email."] };
         return success_message;
     };
 
     const verifyEmail = async (email: string, formData: FormData): Promise<AuthFormMessageType> => {
         const response: APIResponseType = await apiFns.patch(API_URLS.AUTH.VERIFY_EMAIL(email), formData);
-        if (!response.success) return response.err_message as AuthFormMessageType;
+        if (!response.success) return response.err_messages as AuthFormMessageType;
         const success_message: AuthFormMessageType = { success: ["Email verification complete."] };
         return success_message;
     };
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         const token: Token = cookieHandler.get("token");
         const headers: HeaderType = { Authorization: `Token ${token}` };
         const response = await apiFns.post(API_URLS.AUTH.LOGOUT(), formData, headers);
-        if (!response.success) return response.err_message as AuthFormMessageType;
+        if (!response.success) return response.err_messages as AuthFormMessageType;
         const success_message: AuthFormMessageType = { success: ["Successfully logged out!"] };
         cookieHandler.delete("token");
         setUser(null);
@@ -78,14 +78,14 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
 
     const requestResetPassword = async (formData: FormData): Promise<AuthFormMessageType> => {
         const response: APIResponseType = await apiFns.post(API_URLS.AUTH.REQUEST_PASSWORD_RESET(), formData);
-        if (!response.success) return response.err_message as AuthFormMessageType;
+        if (!response.success) return response.err_messages as AuthFormMessageType;
         const success_message: AuthFormMessageType = { success: ["We have sent a link to your email address."] };
         return success_message;
     };
 
     const resetPassword = async (formData: FormData, resetToken: string): Promise<AuthFormMessageType> => {
         const response: APIResponseType = await apiFns.patch(API_URLS.AUTH.RESET_PASSWORD(resetToken), formData);
-        if (!response.success) return response.err_message as AuthFormMessageType;
+        if (!response.success) return response.err_messages as AuthFormMessageType;
         const success_message: AuthFormMessageType = { success: ["Password reset successful!"] };
         return success_message;
     };

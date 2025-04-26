@@ -3,6 +3,8 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
+from users.serializers import UserRetrieveSerializer
+
 from .models import AgentAccount, AgentApplication, AGENT_APP_STATUS
 
 
@@ -61,9 +63,11 @@ class AgentApplicationCancelSerializer(serializers.ModelSerializer):
 
 
 class AgentAccountListSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer()
+
     class Meta:
         model = AgentAccount
-        fields = ['pk', 'agent_name', 'bio', 'profile_image_path']
+        fields = ['pk', 'user', 'agent_name', 'bio', 'profile_image_path']
 
 
 class AgentAccountUpdateSerializer(serializers.ModelSerializer):
@@ -73,6 +77,12 @@ class AgentAccountUpdateSerializer(serializers.ModelSerializer):
 
 
 class AgentAccountRetrieveSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer()
+    pk = serializers.SerializerMethodField()
+
     class Meta:
         model = AgentAccount
         fields = '__all__'
+
+    def get_pk(self, obj):
+        return obj.pk

@@ -1,10 +1,12 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Pages from "./pages";
 // import RequireAuth from "./features/auth/components/RequireAuth/RequireAuth";
 import DefaultLayout from "./layouts/DefaultLayout";
 import "./App.css";
 
 function App() {
+    const location = useLocation();
+
     return (
         <Routes>
             <Route element={<DefaultLayout />}>
@@ -16,8 +18,8 @@ function App() {
                 <Route path="/forgot-password" element={<Pages.Auth.ForgotPassword />} />
                 <Route path="/reset-password/:token" element={<Pages.Auth.ResetPassword />} />
                 {/* <Route path="/unauthorized" element={<Pages.Auth.Unauthorized />} /> */}
-                {/* <Route path="/listings" element={<Pages.Listings.List />} /> */}
-                {/* <Route path="/listings/:id" element={<Pages.Listings.Details />} /> */}
+                <Route path="/listings" element={<Pages.Listings.List key={location.search} />} />
+                <Route path="/listings/:id" element={<Pages.Listings.Details />} />
                 {/* <Route path="/listings/manage" element={<Pages.Listings.Manage />} /> */}
                 {/* <Route element={<RequireAuth roles={["seller"]} />}> */}
                 {/* <Route path="/listings/new" element={<Pages.Listings.New />} /> */}

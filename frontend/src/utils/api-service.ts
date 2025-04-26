@@ -11,21 +11,25 @@ export type PayloadType = {
 
 export type APIResponseType = {
     success: boolean;
-    err_message?: Record<string, string[]>;
+    err_messages?: Record<string, string[]>;
     data?: any;
 };
 
 const processResponse = async (api_url: string, payload: PayloadType): Promise<APIResponseType> => {
     try {
         const response: Response = await fetch(api_url, payload);
-        const data: any = await response.json();
         if (response.status === 204) return { success: response.ok };
-        else if (response.ok) return { success: response.ok, data: data };
-        else return { success: false, err_message: data };
+        else if (response.ok) {
+            const data: any = await response.json();
+            return { success: response.ok, data: data };
+        } else {
+            const data: any = await response.json();
+            return { success: false, err_messages: data };
+        }
     } catch (error) {
         console.log(error);
-        const errorMessage: Record<string, string[]> = { error: [`An error occurred.`] };
-        return { success: false, err_message: errorMessage };
+        const errorMessage: { error: string[] } = { error: [`An error occurred.`] };
+        return { success: false, err_messages: errorMessage };
     }
 };
 

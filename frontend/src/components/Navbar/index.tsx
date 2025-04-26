@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useAuth from "../../features/auth/hooks/useAuth";
 import ListDropDown from "../List/ListDropDown";
-import { FormMessageStateType } from "../../features/auth/context/AuthProvider";
+import { AuthFormMessageType } from "../../types/types";
 import BtnIconRound from "../Buttons/BtnIconRound";
 
 import "./index.css";
@@ -102,7 +102,7 @@ function UserMenuDropdown({ setIsUserMenuDropdownVisible }: UserMenuDropdownType
     const { user, logout } = useAuth();
 
     async function onClickLogout(): Promise<void> {
-        const messages: FormMessageStateType = await logout();
+        const messages: AuthFormMessageType = await logout();
         if (messages.success) navigate("/login");
         console.log(messages);
     }

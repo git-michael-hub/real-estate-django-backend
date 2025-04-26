@@ -43,6 +43,8 @@ class AgentAccount(models.Model):
         blank=True,
         null=True
     )
+    contact_number_1 = models.BigIntegerField(blank=True, null=True)
+    contact_number_2 = models.BigIntegerField(blank=True, null=True)
     is_active = models.BooleanField(default=False)
     date_approved = models.DateTimeField(blank=True, null=True)
 

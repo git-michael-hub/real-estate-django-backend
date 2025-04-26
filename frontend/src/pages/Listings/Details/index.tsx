@@ -1,28 +1,28 @@
 import { useEffect, useState } from "react";
-import helperFn from "../../../utils/form-functions";
-import { ListingType } from "../../../features/listings/context/ListingsProvider";
-import ContactForm from "../components/ContactForm";
-import Tag from "../../../components/Tag";
 import useListing from "../../../features/listings/hooks/useListings";
-import { SellerDetailsType, SellerType } from "../../../features/sellers/context/SellersProvider";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import useBuyer from "../../../features/buyers/hooks/useBuyers";
-import BtnIconNoBg from "../../../components/Buttons/BtnIconNoBg";
-import "./index.css";
+import { ListingType } from "../../../types/types";
+import helperFn from "../../../utils/form-functions";
 import NotFound from "../../NotFound";
+import BtnIconNoBg from "../../../components/Buttons/BtnIconNoBg";
+import ContactForm from "../components/ContactForm";
+import Tag from "../../../components/Tag";
+import "./index.css";
 
 export default function Details() {
     const [displayImage, setDisplayImage] = useState<string | null>(null);
     const { listing, setListing, fetchListing } = useListing();
     const { user } = useAuth();
-    const { favoriteListings, editFavorites } = useBuyer();
+    const { wishlistIds, fetchWishlist, addToWishlist, removeFromWishlist } = useBuyer();
 
     useEffect(() => {
         const initState = async () => {
             const listing_id = window.location.pathname.slice(10);
             const listing: ListingType | null = await fetchListing(listing_id);
             setListing(listing);
-            if (listing?.image1) setDisplayImage(listing.image1 as string);
+            if (listing?.property.image1_path) setDisplayImage(listing.property.image1_path);
+            if (user) await fetchWishlist(user.username);
         };
         initState();
     }, []);
@@ -45,24 +45,31 @@ export default function Details() {
                                     {listing.listing_type === "FR" ? <>/ mo.</> : <></>}
                                 </b>{" "}
                                 <Tag className="tag-1">{listing.listing_type_display}</Tag>{" "}
-                                <Tag className="tag-2">{listing.property_type_display}</Tag>
+                                <Tag className="tag-2">{listing.property.property_type_display}</Tag>
                             </div>
                             <address>
                                 <i className="fa-solid fa-location-dot"></i>{" "}
-                                {`${listing.street}, ${listing.baranggay}, ${listing.city}, ${listing.province}`}
+                                {`${listing.property.street}, ${listing.property.barangay}, ${listing.property.city}, ${listing.property.province}`}
                             </address>
                             {!user ? (
                                 <></>
-                            ) : favoriteListings.includes(listing.id) ? (
-                                <form onSubmit={(e) => editFavorites(e, user.username)}>
-                                    <input type="hidden" name="remove_from_favorites" value={listing.id} />
+                            ) : wishlistIds.includes(listing.id) ? (
+                                <form
+                                    onSubmit={(e) => {
+                                        removeFromWishlist(e, user.username, listing.id);
+                                    }}
+                                >
                                     <BtnIconNoBg>
                                         <i className="fa-solid fa-heart favorite"></i>
                                     </BtnIconNoBg>
                                 </form>
                             ) : (
-                                <form onSubmit={(e) => editFavorites(e, user.username)}>
-                                    <input type="hidden" name="add_to_favorites" value={listing.id} />
+                                <form
+                                    onSubmit={(e) => {
+                                        addToWishlist(e, user.username, listing.id);
+                                    }}
+                                >
+                                    <input type="hidden" name="listing" value={listing.id} />
                                     <BtnIconNoBg>
                                         <i className="fa-regular fa-heart"></i>
                                     </BtnIconNoBg>
@@ -94,11 +101,31 @@ export default function Details() {
                             )}
 
                             <div className="listing-image-list">
-                                {listing.image1 ? <img src={listing.image1 as string} onClick={onClickImage} /> : <></>}
-                                {listing.image2 ? <img src={listing.image2 as string} onClick={onClickImage} /> : <></>}
-                                {listing.image3 ? <img src={listing.image3 as string} onClick={onClickImage} /> : <></>}
-                                {listing.image4 ? <img src={listing.image4 as string} onClick={onClickImage} /> : <></>}
-                                {listing.image5 ? <img src={listing.image5 as string} onClick={onClickImage} /> : <></>}
+                                {listing.property.image1_path ? (
+                                    <img src={listing.property.image1_path} onClick={onClickImage} />
+                                ) : (
+                                    <></>
+                                )}
+                                {listing.property.image2_path ? (
+                                    <img src={listing.property.image2_path} onClick={onClickImage} />
+                                ) : (
+                                    <></>
+                                )}
+                                {listing.property.image3_path ? (
+                                    <img src={listing.property.image3_path} onClick={onClickImage} />
+                                ) : (
+                                    <></>
+                                )}
+                                {listing.property.image4_path ? (
+                                    <img src={listing.property.image4_path} onClick={onClickImage} />
+                                ) : (
+                                    <></>
+                                )}
+                                {listing.property.image5_path ? (
+                                    <img src={listing.property.image5_path} onClick={onClickImage} />
+                                ) : (
+                                    <></>
+                                )}
                             </div>
 
                             <div>
@@ -106,19 +133,41 @@ export default function Details() {
                                     <h3>Overview</h3>
                                 </span>
                                 <div className="listing-info">
-                                    <span>
-                                        <i className="fa-solid fa-expand"></i> {listing.property_size?.toString()} sqm
-                                    </span>
-                                    {listing.bedrooms ? (
+                                    {listing.property.lot_area ? (
                                         <span>
-                                            <i className="fa-solid fa-bed"></i> {listing.bedrooms.toString()}
+                                            <i className="fa-solid fa-expand"></i>{" "}
+                                            {listing.property.lot_area?.toString()} sqm
                                         </span>
                                     ) : (
                                         <></>
                                     )}
-                                    {listing.bathrooms ? (
+                                    {listing.property.floor_area ? (
                                         <span>
-                                            <i className="fa-solid fa-shower"></i> {listing.bathrooms.toString()}
+                                            <i className="fa-solid fa-expand"></i>{" "}
+                                            {listing.property.floor_area?.toString()} sqm
+                                        </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {listing.property.num_of_floors ? (
+                                        <span>
+                                            <i className="fa-solid fa-expand"></i>{" "}
+                                            {listing.property.num_of_floors?.toString()} sqm
+                                        </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {listing.property.bedrooms ? (
+                                        <span>
+                                            <i className="fa-solid fa-bed"></i> {listing.property.bedrooms.toString()}
+                                        </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {listing.property.bathrooms ? (
+                                        <span>
+                                            <i className="fa-solid fa-shower"></i>{" "}
+                                            {listing.property.bathrooms.toString()}
                                         </span>
                                     ) : (
                                         <></>
@@ -138,10 +187,17 @@ export default function Details() {
                             )}
                         </div>
                         <section>
-                            <ContactForm
-                                listing={listing as ListingType}
-                                seller={listing.seller_details as SellerType | SellerDetailsType}
-                            ></ContactForm>
+                            {listing.agent_account ? (
+                                <ContactForm
+                                    listing={listing}
+                                    agent_username={listing.agent_account.user.username}
+                                ></ContactForm>
+                            ) : (
+                                <ContactForm
+                                    listing={listing}
+                                    seller_username={listing.property.seller_account.user.username}
+                                ></ContactForm>
+                            )}
                         </section>
                     </>
                 ) : (

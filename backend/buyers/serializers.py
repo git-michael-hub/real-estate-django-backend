@@ -15,12 +15,27 @@ class WishlistEntryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WishlistEntry
-        fields = ['listing']
+        fields = ['pk', 'listing', 'date_added']
+        extra_kwargs = {'pk': {'read_only': True},
+                        'date_added': {'read_only': True}}
 
     def validate(self, attrs):
+        listing = attrs.get('listing')
         buyer_account = self.context['request'].user.buyer_account
+
+        if WishlistEntry.objects.filter(
+                listing=listing, buyer_account=buyer_account).exists():
+            raise serializers.ValidationError(
+                f"Listing {listing.pk} already added in wishlist.")
+
         attrs['buyer_account'] = buyer_account
         return attrs
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        listing = Listing.objects.get(pk=data['listing'])
+        data['listing'] = ListingListSerializer(listing).data
+        return data
 
 
 class WishlistEntryListSerializer(serializers.ModelSerializer):
@@ -28,7 +43,7 @@ class WishlistEntryListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WishlistEntry
-        fields = ['listing', 'date_added']
+        fields = ['pk', 'listing', 'date_added']
 
 
 class BuyerAccountRetrieveSerializer(serializers.ModelSerializer):

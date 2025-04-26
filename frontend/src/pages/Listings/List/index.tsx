@@ -10,12 +10,12 @@ import "./index.css";
 export default function List() {
     const { user } = useAuth();
     const { listings, page, pages, nextPageLink, previousPageLink, fetchListingsAndUpdateState } = useListing();
-    const { fetchFavoriteListings } = useBuyer();
+    const { fetchWishlist } = useBuyer();
 
     useEffect(() => {
         const init = async (): Promise<void> => {
             await fetchListingsAndUpdateState(window.location.search);
-            if (user) await fetchFavoriteListings(user.username);
+            if (user) await fetchWishlist(user.username);
         };
         init();
     }, []);
