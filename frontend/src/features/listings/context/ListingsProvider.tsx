@@ -66,6 +66,13 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
         return null;
     };
 
+    // GET 1 SPECIFIC LISTING AND UPDATE STATE
+    const fetchListingAndUpdateState = async (listingId: string | number): Promise<ListingType | null> => {
+        const listing: ListingType | null = await fetchListing(listingId);
+        setListing(listing);
+        return listing;
+    };
+
     // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS AND UPDATE STATE
     const fetchListingsAndUpdateState = async (searchParams: string): Promise<void> => {
         const paginated_listings = await fetchListings(searchParams);
@@ -127,6 +134,7 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
                 setPages,
                 setNextPageLink,
                 setPreviousPageLink,
+                fetchListingAndUpdateState,
                 fetchListingsAndUpdateState,
             }}
         >
@@ -152,6 +160,7 @@ export type ListingContextType = {
     setPages: React.Dispatch<React.SetStateAction<number>>;
     setNextPageLink: React.Dispatch<React.SetStateAction<string | null>>;
     setPreviousPageLink: React.Dispatch<React.SetStateAction<string | null>>;
+    fetchListingAndUpdateState: (listingId: string) => Promise<ListingType | null>;
     fetchListingsAndUpdateState: (searchParams: string) => Promise<void>;
 };
 
@@ -172,6 +181,7 @@ const initListingContextState: ListingContextType = {
     setPages: () => {},
     setNextPageLink: () => {},
     setPreviousPageLink: () => {},
+    fetchListingAndUpdateState: () => Promise.resolve(null),
     fetchListingsAndUpdateState: () => Promise.resolve(),
 };
 

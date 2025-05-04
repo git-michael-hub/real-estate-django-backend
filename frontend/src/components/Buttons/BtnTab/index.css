@@ -1,0 +1,26 @@
+.btn-tab {
+    color: var(--color-accent-2);
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 1rem;
+    border-bottom: 2px solid transparent;
+    /* border-bottom: 2px solid var(--color-accent-2); */
+}
+
+.btn-tab:hover {
+    cursor: pointer;
+    color: var(--color-accent-2-hov);
+    border-bottom: 2px solid var(--color-accent-2-hov);
+}
+
+.btn-tab > span,
+.btn-tab > i {
+    font-weight: 600;
+}

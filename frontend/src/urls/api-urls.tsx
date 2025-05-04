@@ -24,6 +24,8 @@ export const API_URLS = {
     },
 
     BUYER: {
+        RETRIEVE: (username: string): string => API_DIRECTORY.BUYER + `/${username}`,
+        EDIT: (username: string): string => API_DIRECTORY.BUYER + `/${username}`,
         WISHLIST: (username: string): string => API_DIRECTORY.BUYER + `/${username}/wishlist`,
         REMOVE_FROM_WISHLIST: (username: string, wishlistEntryPk: number): string =>
             API_DIRECTORY.BUYER + `/${username}/wishlist/${wishlistEntryPk}`,

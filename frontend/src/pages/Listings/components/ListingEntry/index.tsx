@@ -84,21 +84,45 @@ export default function ListingEntry({ listing }: { listing: BaseListingType }) 
                             <div className="listing-info">
                                 {listing.property.bedrooms ? (
                                     <span>
-                                        <i className="fa-solid fa-bed"></i> {listing.property.bedrooms.toString()}
+                                        <i className="fa-solid fa-bed" title="No. of Bedrooms"></i>{" "}
+                                        {listing.property.bedrooms.toString()}
                                     </span>
                                 ) : (
                                     <></>
                                 )}
                                 {listing.property.bathrooms ? (
                                     <span>
-                                        <i className="fa-solid fa-shower"></i> {listing.property.bathrooms.toString()}
+                                        <i className="fa-solid fa-shower" title="No. of Bathrooms"></i>{" "}
+                                        {listing.property.bathrooms.toString()}
                                     </span>
                                 ) : (
                                     <></>
                                 )}
-                                <span>
-                                    <i className="fa-solid fa-expand"></i> {listing.property.lot_area?.toString()} sqm
-                                </span>
+                                {listing.property.lot_area ? (
+                                    <span>
+                                        <i className="fa-solid fa-chart-area" title="Lot Area"></i>{" "}
+                                        {listing.property.lot_area.toString()} sqm
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
+
+                                {listing.property.floor_area ? (
+                                    <span>
+                                        <i className="fa-solid fa-expand" title="Floor Area"></i>{" "}
+                                        {listing.property.floor_area.toString()} sqm
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
+                                {listing.property.num_of_floors ? (
+                                    <span>
+                                        <i className="fa-solid fa-layer-group" title="No. of Floors"></i>{" "}
+                                        {listing.property.num_of_floors.toString()} floor/s
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
                             <div className="listing-seller-and-price">
                                 {listing.agent_account ? (

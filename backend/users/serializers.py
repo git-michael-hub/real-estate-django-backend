@@ -1,4 +1,5 @@
 from random import randint
+from datetime import datetime
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -127,6 +128,8 @@ class AuthUserRetrieveSerializer(serializers.ModelSerializer):
 
 
 class UserRetrieveSerializer(serializers.ModelSerializer):
+    date_joined = serializers.DateTimeField(format="%B %Y")
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email',

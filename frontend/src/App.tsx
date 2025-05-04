@@ -19,7 +19,8 @@ function App() {
                 <Route path="/reset-password/:token" element={<Pages.Auth.ResetPassword />} />
                 {/* <Route path="/unauthorized" element={<Pages.Auth.Unauthorized />} /> */}
                 <Route path="/listings" element={<Pages.Listings.List key={location.search} />} />
-                <Route path="/listings/:id" element={<Pages.Listings.Details />} />
+                <Route path="/listings/:listingId" element={<Pages.Listings.Details />} />
+                <Route path="/user/:username" element={<Pages.Buyers.Profile />} />
                 {/* <Route path="/listings/manage" element={<Pages.Listings.Manage />} /> */}
                 {/* <Route element={<RequireAuth roles={["seller"]} />}> */}
                 {/* <Route path="/listings/new" element={<Pages.Listings.New />} /> */}

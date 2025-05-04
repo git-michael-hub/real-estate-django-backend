@@ -110,7 +110,7 @@ function UserMenuDropdown({ setIsUserMenuDropdownVisible }: UserMenuDropdownType
     return (
         <ListDropDown onClick={() => setIsUserMenuDropdownVisible(false)}>
             <li>
-                <Link to={""}>@{user?.username}</Link>
+                <Link to={`/user/${user?.username}`}>@{user?.username}</Link>
             </li>
             <li>
                 <Link to={"/listings/manage"}>Manage Listings</Link>

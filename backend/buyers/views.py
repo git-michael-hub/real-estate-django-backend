@@ -6,8 +6,7 @@ from users.permissions import IsAccountOwner
 from .models import BuyerAccount, WishlistEntry
 from .permissions import IsBuyerAccountOwnerOrReadOnly, IsWishlistEntryOwner
 from .serializers import (
-    BuyerAccountRetrieveSerializer,
-    BuyerAccountUpdateSerializer,
+    BuyerAccountRetrieveUpdateSerializer,
     WishlistEntryCreateSerializer,
     WishlistEntryListSerializer
 )
@@ -16,12 +15,8 @@ from .serializers import (
 class BuyerAccountRetrieveUpdateView(RetrieveByUsernameMixin, generics.RetrieveUpdateAPIView):
     queryset = BuyerAccount.objects.all()
     permission_classes = [IsBuyerAccountOwnerOrReadOnly]
+    serializer_class = BuyerAccountRetrieveUpdateSerializer
     lookup_field = 'username'
-
-    def get_serializer_class(self):
-        if self.request.method in ['PATCH', 'POST']:
-            return BuyerAccountUpdateSerializer
-        return BuyerAccountRetrieveSerializer
 
 
 class WishlistEntryListCreateView(generics.ListCreateAPIView):

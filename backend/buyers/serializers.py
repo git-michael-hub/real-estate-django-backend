@@ -46,18 +46,13 @@ class WishlistEntryListSerializer(serializers.ModelSerializer):
         fields = ['pk', 'listing', 'date_added']
 
 
-class BuyerAccountRetrieveSerializer(serializers.ModelSerializer):
-    user = UserRetrieveSerializer()
+class BuyerAccountRetrieveUpdateSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer(read_only=True)
 
     class Meta:
         model = BuyerAccount
         fields = '__all__'
-
-
-class BuyerAccountUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BuyerAccount
-        exclude = ['user']
+        extra_kwargs = {'user': {'read_only': True}}
 
 
 class BuyerAccountListSerializer(serializers.ModelSerializer):

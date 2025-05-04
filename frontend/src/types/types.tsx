@@ -2,6 +2,12 @@ export type AccountType = "BuyerAccount" | "SellerAccount" | "AgentAccount";
 
 export type Role = "buyer" | "seller" | "agent";
 
+export type FormMessageType = {
+    success?: string[];
+    error?: string[];
+    non_field_errors?: string[];
+};
+
 export type AuthUserType = {
     id: number;
     username: string;
@@ -9,15 +15,12 @@ export type AuthUserType = {
     roles: Role[];
 };
 
-export type AuthFormMessageType = {
-    success?: string[];
-    error?: string[];
+export type AuthFormMessageType = FormMessageType & {
     username?: string[];
     email?: string[];
     first_name?: string[];
     last_name?: string[];
     password?: string[];
-    non_field_errors?: string[];
     new_password?: string[];
     confirm_password?: string[];
     email_verification_pin?: string[];
@@ -39,6 +42,11 @@ export type BaseBuyerAccountType = {
 export type BuyerAccountType = BaseBuyerAccountType & {
     bio: string;
     profile_image_path?: string;
+};
+
+export type BuyerFormMessageType = FormMessageType & {
+    bio?: string[];
+    profile_image_path?: string[];
 };
 
 export type BaseSellerAccountType = {

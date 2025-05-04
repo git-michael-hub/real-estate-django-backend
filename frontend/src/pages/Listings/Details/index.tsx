@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import useListing from "../../../features/listings/hooks/useListings";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import useBuyer from "../../../features/buyers/hooks/useBuyers";
-import { ListingType } from "../../../types/types";
 import helperFn from "../../../utils/form-functions";
+import { ListingType } from "../../../types/types";
 import NotFound from "../../NotFound";
 import BtnIconNoBg from "../../../components/Buttons/BtnIconNoBg";
 import ContactForm from "../components/ContactForm";
@@ -12,17 +13,17 @@ import "./index.css";
 
 export default function Details() {
     const [displayImage, setDisplayImage] = useState<string | null>(null);
-    const { listing, setListing, fetchListing } = useListing();
+    const { listing, setListing, fetchListingAndUpdateState } = useListing();
+    const { listingId } = useParams();
     const { user } = useAuth();
-    const { wishlistIds, fetchWishlist, addToWishlist, removeFromWishlist } = useBuyer();
+    const { wishlistIds, fetchWishlistAndUpdateState, addToWishlist, removeFromWishlist } = useBuyer();
 
     useEffect(() => {
         const initState = async () => {
-            const listing_id = window.location.pathname.slice(10);
-            const listing: ListingType | null = await fetchListing(listing_id);
-            setListing(listing);
+            if (!listingId) return setListing(null);
+            const listing: ListingType | null = await fetchListingAndUpdateState(listingId);
             if (listing?.property.image1_path) setDisplayImage(listing.property.image1_path);
-            if (user) await fetchWishlist(user.username);
+            if (user) await fetchWishlistAndUpdateState(user.username);
         };
         initState();
     }, []);
@@ -135,7 +136,7 @@ export default function Details() {
                                 <div className="listing-info">
                                     {listing.property.lot_area ? (
                                         <span>
-                                            <i className="fa-solid fa-expand"></i>{" "}
+                                            <i className="fa-solid fa-chart-area" title="Lot Area"></i>{" "}
                                             {listing.property.lot_area?.toString()} sqm
                                         </span>
                                     ) : (
@@ -143,7 +144,7 @@ export default function Details() {
                                     )}
                                     {listing.property.floor_area ? (
                                         <span>
-                                            <i className="fa-solid fa-expand"></i>{" "}
+                                            <i className="fa-solid fa-expand" title="Floor Area"></i>{" "}
                                             {listing.property.floor_area?.toString()} sqm
                                         </span>
                                     ) : (
@@ -151,22 +152,23 @@ export default function Details() {
                                     )}
                                     {listing.property.num_of_floors ? (
                                         <span>
-                                            <i className="fa-solid fa-expand"></i>{" "}
-                                            {listing.property.num_of_floors?.toString()} sqm
+                                            <i className="fa-solid fa-layer-group" title="No. of Floors"></i>{" "}
+                                            {listing.property.num_of_floors?.toString()} floor/s
                                         </span>
                                     ) : (
                                         <></>
                                     )}
                                     {listing.property.bedrooms ? (
                                         <span>
-                                            <i className="fa-solid fa-bed"></i> {listing.property.bedrooms.toString()}
+                                            <i className="fa-solid fa-bed" title="No. of Bedrooms"></i>{" "}
+                                            {listing.property.bedrooms.toString()}
                                         </span>
                                     ) : (
                                         <></>
                                     )}
                                     {listing.property.bathrooms ? (
                                         <span>
-                                            <i className="fa-solid fa-shower"></i>{" "}
+                                            <i className="fa-solid fa-shower" title="No. of Bathrooms"></i>{" "}
                                             {listing.property.bathrooms.toString()}
                                         </span>
                                     ) : (

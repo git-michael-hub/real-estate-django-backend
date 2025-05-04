@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from properties.models import PROPERTY_TYPE
 
-from .models import LISTING_STATUS, LISTING_TYPE, SORT_OPTIONS
+from .models import LISTING_STATUS, LISTING_TYPE, SORT_OPTIONS, Listing
 from .serializers import ListingQuerySerializer
 
 
@@ -47,10 +47,17 @@ class ListingQueryFiltersMixin:
             filters &= Q(price__lte=max_price)
         if min_price is not None:
             filters &= Q(price__gte=min_price)
-        if max_area is not None:
-            filters &= Q(property__lot_area__lte=max_area)
-        if min_area is not None:
-            filters &= Q(property__lot_area__gte=min_area)
+
+        if property_type != PROPERTY_TYPE.CONDOMINIUM:
+            if max_area is not None:
+                filters &= Q(property__lot_area__lte=max_area)
+            if min_area is not None:
+                filters &= Q(property__lot_area__gte=min_area)
+        else:
+            if max_area is not None:
+                filters &= Q(property__floor_area__lte=max_area)
+            if min_area is not None:
+                filters &= Q(property__floor_area__gte=min_area)
 
         listings = listings.filter(filters)
         listings = listings.order_by(SORT_OPTIONS.get(sort_by))
