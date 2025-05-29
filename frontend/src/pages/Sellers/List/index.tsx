@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
-import { apiFns, APIResponseType } from "../../../utils/api-service";
-import { API_DIRECTORY_SELLERS, SellerType } from "../../../features/sellers/context/SellersProvider";
+import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
+import { SellerAccountType } from "../../../types/types";
+import {} from "../../../features/sellers/context/SellersProvider";
 import "./index.css";
 import { Link } from "react-router-dom";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
+import { API_URLS } from "../../../urls/api-urls";
+import cookieHandler, { Token } from "../../../utils/cookie-handler";
 
 export default function List() {
-    const [sellers, setSellers] = useState<SellerType[]>([]);
+    const [sellers, setSellers] = useState<SellerAccountType[]>([]);
 
     useEffect(() => {
         const fetchSellers = async () => {
-            const response: APIResponseType = await apiFns.get(API_DIRECTORY_SELLERS);
-            const sellers: SellerType[] = response.data;
+            const token: Token = cookieHandler.get("token");
+            const headers: HeaderType = { Authorization: `Token ${token}` };
+            const response: APIResponseType = await apiFns.get(API_URLS.SELLER.LIST(), headers);
+            const sellers: SellerAccountType[] = response.data;
             console.log(sellers);
             setSellers(sellers);
         };
@@ -26,22 +31,26 @@ export default function List() {
 
                 {sellers.map((seller) => {
                     return (
-                        <li key={seller.id} className="seller-card-container">
-                            <Link to={`@${seller.username}`}>
-                                <img src={seller.seller_image_url} alt="" />
+                        <li key={seller.user.id} className="seller-card-container">
+                            <Link to={`@${seller.user.username}`}>
+                                <img src={seller.profile_image_path} alt="" />
                             </Link>
                             <div>
                                 <h3>
-                                    <Link to={`@${seller.username}`}>
-                                        {seller.first_name} {seller.last_name}
+                                    <Link to={`@${seller.user.username}`}>
+                                        {seller.user.first_name} {seller.user.last_name}
                                     </Link>
                                 </h3>
                                 <span>
-                                    <em>@{seller.username}</em>
+                                    <em>@{seller.user.username}</em>
                                 </span>
-                                <span>
-                                    <i className="fa-solid fa-phone"></i> {seller.contact_number_1}
-                                </span>
+                                {seller.contact_number_1 ? (
+                                    <span>
+                                        <i className="fa-solid fa-phone"></i> {seller.contact_number_1}
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
                                 {seller.contact_number_2 ? (
                                     <span>
                                         <i className="fa-solid fa-phone"></i> {seller.contact_number_2}
@@ -50,10 +59,10 @@ export default function List() {
                                     <></>
                                 )}
                                 <span>
-                                    <i className="fa-solid fa-envelope"></i> {seller.email}
+                                    <i className="fa-solid fa-envelope"></i> {seller.user.email}
                                 </span>
                             </div>
-                            <Link to={`@${seller.username}`}>
+                            <Link to={`@${seller.user.username}`}>
                                 <BtnBasicActive>Details</BtnBasicActive>
                             </Link>
                         </li>

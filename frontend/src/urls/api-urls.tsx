@@ -10,6 +10,7 @@ export const API_DIRECTORY = {
     SELLER: BASE_URL + "api/sellers",
     AGENT: BASE_URL + "api/agents",
     LISTING: BASE_URL + "api/listings",
+    PROPERTY: BASE_URL + "api/properties",
 };
 
 export const API_URLS = {
@@ -32,11 +33,15 @@ export const API_URLS = {
     },
 
     SELLER: {
+        LIST: (): string => API_DIRECTORY.SELLER + "/",
         RETRIEVE: (username: string): string => API_DIRECTORY.SELLER + `/${username}`,
+        EDIT: (username: string): string => API_DIRECTORY.SELLER + `/${username}`,
     },
 
     AGENT: {
+        LIST: (): string => API_DIRECTORY.AGENT + "/",
         RETRIEVE: (username: string): string => API_DIRECTORY.AGENT + `/${username}`,
+        EDIT: (username: string): string => API_DIRECTORY.AGENT + `/${username}`,
     },
 
     LISTING: {
@@ -44,5 +49,9 @@ export const API_URLS = {
             return searchParams ? API_DIRECTORY.LISTING + `/${searchParams}` : API_DIRECTORY.LISTING + "/";
         },
         RETRIEVE: (pk: string | number): string => API_DIRECTORY.LISTING + `/${pk}`,
+    },
+
+    PROPERTY: {
+        LIST: (): string => API_DIRECTORY.SELLER + "/",
     },
 } as const;

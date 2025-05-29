@@ -1,0 +1,15 @@
+#edit-profile-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 80px;
+}
+
+#edit-profile-btn span {
+    font-size: 0.8rem;
+    color: var(--color-secondary) !important;
+}
+
+#edit-profile-btn-link {
+    display: none;
+}

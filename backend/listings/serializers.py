@@ -27,6 +27,8 @@ class ListingRetrieveSerializer(ListingListSerializer):
 
 
 class ListingQuerySerializer(serializers.Serializer):
+    seller_username = serializers.CharField(max_length=100, required=False)
+    agent_username = serializers.CharField(max_length=100, required=False)
     listing_type = serializers.ChoiceField(
         choices=LISTING_TYPE.CHOICES, required=False)
     property_type = serializers.ChoiceField(

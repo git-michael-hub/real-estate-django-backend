@@ -1,0 +1,8 @@
+#profile-image {
+    max-width: 250px;
+    max-height: 250px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 5px;
+    overflow-clip-margin: unset;
+}

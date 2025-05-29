@@ -12,6 +12,7 @@ import Tag from "../../../components/Tag";
 import "./index.css";
 
 export default function Details() {
+    const [isReady, setIsReady] = useState<boolean>(false);
     const [displayImage, setDisplayImage] = useState<string | null>(null);
     const { listing, setListing, fetchListingAndUpdateState } = useListing();
     const { listingId } = useParams();
@@ -24,6 +25,7 @@ export default function Details() {
             const listing: ListingType | null = await fetchListingAndUpdateState(listingId);
             if (listing?.property.image1_path) setDisplayImage(listing.property.image1_path);
             if (user) await fetchWishlistAndUpdateState(user.username);
+            setIsReady(true);
         };
         initState();
     }, []);
@@ -35,177 +37,181 @@ export default function Details() {
 
     return (
         <main id="details-page">
-            <div id="details-grid-container">
-                {listing ? (
-                    <>
-                        <header>
-                            <h2>{listing.title}</h2>
-                            <div>
-                                <b>
-                                    Php {helperFn.insertComma(listing.price as number)}{" "}
-                                    {listing.listing_type === "FR" ? <>/ mo.</> : <></>}
-                                </b>{" "}
-                                <Tag className="tag-1">{listing.listing_type_display}</Tag>{" "}
-                                <Tag className="tag-2">{listing.property.property_type_display}</Tag>
-                            </div>
-                            <address>
-                                <i className="fa-solid fa-location-dot"></i>{" "}
-                                {`${listing.property.street}, ${listing.property.barangay}, ${listing.property.city}, ${listing.property.province}`}
-                            </address>
-                            {!user ? (
-                                <></>
-                            ) : wishlistIds.includes(listing.id) ? (
-                                <form
-                                    onSubmit={(e) => {
-                                        removeFromWishlist(e, user.username, listing.id);
-                                    }}
-                                >
-                                    <BtnIconNoBg>
-                                        <i className="fa-solid fa-heart favorite"></i>
-                                    </BtnIconNoBg>
-                                </form>
-                            ) : (
-                                <form
-                                    onSubmit={(e) => {
-                                        addToWishlist(e, user.username, listing.id);
-                                    }}
-                                >
-                                    <input type="hidden" name="listing" value={listing.id} />
-                                    <BtnIconNoBg>
-                                        <i className="fa-regular fa-heart"></i>
-                                    </BtnIconNoBg>
-                                </form>
-                            )}
-                        </header>
-                        <div className="listing-details">
-                            {displayImage ? (
-                                <img src={displayImage} alt="" className="listing-image" />
-                            ) : (
-                                <figure>
-                                    <img
-                                        src="/static/images/256px-Image_not_available.png"
-                                        alt=""
-                                        className="listing-image"
-                                    />
-                                    {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
-                                    <figcaption className="listing-image-figcaption">
-                                        Image by{" "}
-                                        <a
-                                            target="_blank"
-                                            rel="noopener"
-                                            href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
-                                        >
-                                            Freepik
-                                        </a>
-                                    </figcaption>
-                                </figure>
-                            )}
+            {isReady ? (
+                <div id="details-grid-container">
+                    {listing ? (
+                        <>
+                            <header>
+                                <h2>{listing.title}</h2>
+                                <div>
+                                    <b>
+                                        Php {helperFn.insertComma(listing.price as number)}{" "}
+                                        {listing.listing_type === "FR" ? <>/ mo.</> : <></>}
+                                    </b>{" "}
+                                    <Tag className="tag-1">{listing.listing_type_display}</Tag>{" "}
+                                    <Tag className="tag-2">{listing.property.property_type_display}</Tag>
+                                </div>
+                                <address>
+                                    <i className="fa-solid fa-location-dot"></i>{" "}
+                                    {`${listing.property.street}, ${listing.property.barangay}, ${listing.property.city}, ${listing.property.province}`}
+                                </address>
+                                {!user ? (
+                                    <></>
+                                ) : wishlistIds.includes(listing.id) ? (
+                                    <form
+                                        onSubmit={(e) => {
+                                            removeFromWishlist(e, user.username, listing.id);
+                                        }}
+                                    >
+                                        <BtnIconNoBg>
+                                            <i className="fa-solid fa-heart favorite"></i>
+                                        </BtnIconNoBg>
+                                    </form>
+                                ) : (
+                                    <form
+                                        onSubmit={(e) => {
+                                            addToWishlist(e, user.username, listing.id);
+                                        }}
+                                    >
+                                        <input type="hidden" name="listing" value={listing.id} />
+                                        <BtnIconNoBg>
+                                            <i className="fa-regular fa-heart"></i>
+                                        </BtnIconNoBg>
+                                    </form>
+                                )}
+                            </header>
+                            <div className="listing-details">
+                                {displayImage ? (
+                                    <img src={displayImage} alt="" className="listing-image" />
+                                ) : (
+                                    <figure>
+                                        <img
+                                            src="/static/images/256px-Image_not_available.png"
+                                            alt=""
+                                            className="listing-image"
+                                        />
+                                        {/* NOTE: ATTRIBUTION IS DEVELOPMENT ONLY. SHOULD PROVIDE OWN DEFAULT IMAGE ON PRODUCTION. */}
+                                        <figcaption className="listing-image-figcaption">
+                                            Image by{" "}
+                                            <a
+                                                target="_blank"
+                                                rel="noopener"
+                                                href="https://www.freepik.com/free-photo/house-with-yard-sign-sale_25625077.htm#fromView=search&page=1&position=2&uuid=c32d462e-2f45-43ad-887d-8f8818355d1b"
+                                            >
+                                                Freepik
+                                            </a>
+                                        </figcaption>
+                                    </figure>
+                                )}
 
-                            <div className="listing-image-list">
-                                {listing.property.image1_path ? (
-                                    <img src={listing.property.image1_path} onClick={onClickImage} />
-                                ) : (
-                                    <></>
-                                )}
-                                {listing.property.image2_path ? (
-                                    <img src={listing.property.image2_path} onClick={onClickImage} />
-                                ) : (
-                                    <></>
-                                )}
-                                {listing.property.image3_path ? (
-                                    <img src={listing.property.image3_path} onClick={onClickImage} />
-                                ) : (
-                                    <></>
-                                )}
-                                {listing.property.image4_path ? (
-                                    <img src={listing.property.image4_path} onClick={onClickImage} />
-                                ) : (
-                                    <></>
-                                )}
-                                {listing.property.image5_path ? (
-                                    <img src={listing.property.image5_path} onClick={onClickImage} />
-                                ) : (
-                                    <></>
-                                )}
-                            </div>
-
-                            <div>
-                                <span>
-                                    <h3>Overview</h3>
-                                </span>
-                                <div className="listing-info">
-                                    {listing.property.lot_area ? (
-                                        <span>
-                                            <i className="fa-solid fa-chart-area" title="Lot Area"></i>{" "}
-                                            {listing.property.lot_area?.toString()} sqm
-                                        </span>
+                                <div className="listing-image-list">
+                                    {listing.property.image1_path ? (
+                                        <img src={listing.property.image1_path} onClick={onClickImage} />
                                     ) : (
                                         <></>
                                     )}
-                                    {listing.property.floor_area ? (
-                                        <span>
-                                            <i className="fa-solid fa-expand" title="Floor Area"></i>{" "}
-                                            {listing.property.floor_area?.toString()} sqm
-                                        </span>
+                                    {listing.property.image2_path ? (
+                                        <img src={listing.property.image2_path} onClick={onClickImage} />
                                     ) : (
                                         <></>
                                     )}
-                                    {listing.property.num_of_floors ? (
-                                        <span>
-                                            <i className="fa-solid fa-layer-group" title="No. of Floors"></i>{" "}
-                                            {listing.property.num_of_floors?.toString()} floor/s
-                                        </span>
+                                    {listing.property.image3_path ? (
+                                        <img src={listing.property.image3_path} onClick={onClickImage} />
                                     ) : (
                                         <></>
                                     )}
-                                    {listing.property.bedrooms ? (
-                                        <span>
-                                            <i className="fa-solid fa-bed" title="No. of Bedrooms"></i>{" "}
-                                            {listing.property.bedrooms.toString()}
-                                        </span>
+                                    {listing.property.image4_path ? (
+                                        <img src={listing.property.image4_path} onClick={onClickImage} />
                                     ) : (
                                         <></>
                                     )}
-                                    {listing.property.bathrooms ? (
-                                        <span>
-                                            <i className="fa-solid fa-shower" title="No. of Bathrooms"></i>{" "}
-                                            {listing.property.bathrooms.toString()}
-                                        </span>
+                                    {listing.property.image5_path ? (
+                                        <img src={listing.property.image5_path} onClick={onClickImage} />
                                     ) : (
                                         <></>
                                     )}
                                 </div>
-                            </div>
 
-                            {listing.description ? (
-                                <div className="listing-description">
-                                    <h3>
-                                        <span>Description</span>
-                                    </h3>
-                                    <p>{listing.description}</p>
+                                <div>
+                                    <span>
+                                        <h3>Overview</h3>
+                                    </span>
+                                    <div className="listing-info">
+                                        {listing.property.lot_area ? (
+                                            <span>
+                                                <i className="fa-solid fa-chart-area" title="Lot Area"></i>{" "}
+                                                {listing.property.lot_area?.toString()} sqm
+                                            </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {listing.property.floor_area ? (
+                                            <span>
+                                                <i className="fa-solid fa-expand" title="Floor Area"></i>{" "}
+                                                {listing.property.floor_area?.toString()} sqm
+                                            </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {listing.property.num_of_floors ? (
+                                            <span>
+                                                <i className="fa-solid fa-layer-group" title="No. of Floors"></i>{" "}
+                                                {listing.property.num_of_floors?.toString()} floor/s
+                                            </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {listing.property.bedrooms ? (
+                                            <span>
+                                                <i className="fa-solid fa-bed" title="No. of Bedrooms"></i>{" "}
+                                                {listing.property.bedrooms.toString()}
+                                            </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {listing.property.bathrooms ? (
+                                            <span>
+                                                <i className="fa-solid fa-shower" title="No. of Bathrooms"></i>{" "}
+                                                {listing.property.bathrooms.toString()}
+                                            </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </div>
                                 </div>
-                            ) : (
-                                <></>
-                            )}
-                        </div>
-                        <section>
-                            {listing.agent_account ? (
-                                <ContactForm
-                                    listing={listing}
-                                    agent_username={listing.agent_account.user.username}
-                                ></ContactForm>
-                            ) : (
-                                <ContactForm
-                                    listing={listing}
-                                    seller_username={listing.property.seller_account.user.username}
-                                ></ContactForm>
-                            )}
-                        </section>
-                    </>
-                ) : (
-                    <NotFound></NotFound>
-                )}
-            </div>
+
+                                {listing.description ? (
+                                    <div className="listing-description">
+                                        <h3>
+                                            <span>Description</span>
+                                        </h3>
+                                        <p>{listing.description}</p>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
+                            <section>
+                                {listing.agent_account ? (
+                                    <ContactForm
+                                        listing={listing}
+                                        agent_username={listing.agent_account.user.username}
+                                    ></ContactForm>
+                                ) : (
+                                    <ContactForm
+                                        listing={listing}
+                                        seller_username={listing.property.seller_account.user.username}
+                                    ></ContactForm>
+                                )}
+                            </section>
+                        </>
+                    ) : (
+                        <NotFound></NotFound>
+                    )}
+                </div>
+            ) : (
+                <h2>Loading...</h2>
+            )}
         </main>
     );
 }

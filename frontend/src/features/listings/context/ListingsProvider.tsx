@@ -60,6 +60,7 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
 
     // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS
     const fetchListings = async (searchParams?: string): Promise<PaginatedListingsType | null> => {
+        console.log(API_URLS.LISTING.SEARCH(searchParams));
         const response: APIResponseType = await apiFns.get(API_URLS.LISTING.SEARCH(searchParams));
         if (response.success) return response.data;
         console.log(response.err_messages);

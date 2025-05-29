@@ -130,13 +130,13 @@ export default function ContactForm({ listing, agent_username, seller_username }
             )}
             {seller_account ? (
                 <>
-                    <h3>Contact Agent</h3>
+                    <h3>Contact Seller</h3>
                     <div className="seller-contact-info-container">
-                        <Link to={`/agents/@${seller_account.user.username}`}>
+                        <Link to={`/sellers/${seller_account.user.username}`}>
                             <img src={seller_account.profile_image_path} alt="" />
                         </Link>
                         <ul>
-                            <Link to={`/agents/@${seller_account.user.username}`}>
+                            <Link to={`/sellers/@${seller_account.user.username}`}>
                                 <b>{seller_account.business_name}</b>
                             </Link>
                             <li>

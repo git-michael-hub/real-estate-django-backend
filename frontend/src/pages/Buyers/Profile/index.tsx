@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import useBuyer from "../../../features/buyers/hooks/useBuyers";
-import "./index.css";
 import { useParams } from "react-router-dom";
+import { BuyerAccountType } from "../../../types/types";
+import useBuyer from "../../../features/buyers/hooks/useBuyers";
 import useAuth from "../../../features/auth/hooks/useAuth";
-import ListingEntry from "../../Listings/components/ListingEntry";
 import NotFound from "../../NotFound";
+import ListingEntry from "../../Listings/components/ListingEntry";
 import BtnTab from "../../../components/Buttons/BtnTab";
-import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
-import BtnLink from "../../../components/Buttons/BtnLink";
 import DefaultModal from "../../../components/Modal/DefaultModal";
 import EditProfileForm from "./components/EditProfileForm";
-import { BuyerAccountType } from "../../../types/types";
+import ProfileImage from "../../../components/Profile/ProfileImage";
+import EditProfileBtn from "../../../components/Profile/EditProfileBtn";
+import "./index.css";
+import ProfileDetailsContainer from "../../../components/Profile/ProfileDetailsContainer";
 
 export default function Profile() {
     const { username } = useParams();
@@ -41,84 +42,61 @@ export default function Profile() {
 
             <main id="buyer-profile-page">
                 {buyer ? (
-                    <>
-                        <div id="buyer-profile-grid-container">
-                            <div>
-                                <section id="buyer-profile-details-container">
-                                    {buyer.profile_image_path ? (
-                                        <img src={buyer.profile_image_path} alt="" />
+                    <div id="buyer-profile-grid-container">
+                        <div>
+                            <ProfileDetailsContainer>
+                                <ProfileImage profile_image_path={buyer.profile_image_path}></ProfileImage>
+
+                                <div>
+                                    {user?.username === username ? (
+                                        <EditProfileBtn action={setIsEditModalVisible}></EditProfileBtn>
                                     ) : (
-                                        <img
-                                            src="/static/images/default-profile-picture.jpg"
-                                            alt="Photo by Muhammad Khaleeq on https://www.vecteezy.com/vector-art/288638-broker-vector-icon"
-                                            className="default-profile-picture"
-                                        />
+                                        <></>
                                     )}
+                                    <h2>
+                                        {buyer.user.first_name} {buyer.user.last_name}
+                                    </h2>
+                                    <em>@{buyer.user.username}</em>
+                                    <span>
+                                        <i className="fa-solid fa-envelope"></i> {buyer.user.email}
+                                    </span>
+                                    <span>
+                                        <i className="fa-regular fa-calendar"></i>Joined on {buyer.user.date_joined}
+                                    </span>
+                                    {buyer.bio ? <p>{buyer.bio}</p> : <></>}
+                                </div>
+                            </ProfileDetailsContainer>
 
-                                    <div>
-                                        {user?.username === username ? (
-                                            <>
-                                                <BtnBasicActive
-                                                    id="edit-profile-btn"
-                                                    onClick={() => setIsEditModalVisible(true)}
-                                                >
-                                                    <span>Edit</span>
-                                                </BtnBasicActive>
-                                                <BtnLink
-                                                    id="edit-profile-btn-link"
-                                                    onClick={() => setIsEditModalVisible(true)}
-                                                >
-                                                    <span>Edit</span>
-                                                </BtnLink>
-                                            </>
-                                        ) : (
-                                            <></>
-                                        )}
-                                        <h2>
-                                            {buyer.user.first_name} {buyer.user.last_name}
-                                        </h2>
-                                        <em>@{buyer.user.username}</em>
-                                        <span>
-                                            <i className="fa-solid fa-envelope"></i> {buyer.user.email}
-                                        </span>
-                                        <span>
-                                            <i className="fa-regular fa-calendar"></i>Joined on {buyer.user.date_joined}
-                                        </span>
-                                        {buyer.bio ? <p>{buyer.bio}</p> : <></>}
+                            {user?.username === username ? (
+                                <>
+                                    <div className="profile-btn-container">
+                                        <BtnTab disabled>
+                                            <span>Favorite Listings</span>
+                                        </BtnTab>
                                     </div>
-                                </section>
-
-                                {user?.username === username ? (
-                                    <>
-                                        <div id="buyer-profile-btn-container">
-                                            <BtnTab id="fav-listing-btn">
-                                                <span>Favorite Listings</span>
-                                            </BtnTab>
-                                        </div>
-                                        <ul>
-                                            {wishlist.map((wishlistEntry) => {
-                                                return (
-                                                    <ListingEntry
-                                                        listing={wishlistEntry.listing}
-                                                        key={wishlistEntry.listing.id}
-                                                    />
-                                                );
-                                            })}
-                                        </ul>
-                                        {/* <PageBtns
+                                    <ul>
+                                        {wishlist.map((wishlistEntry) => {
+                                            return (
+                                                <ListingEntry
+                                                    listing={wishlistEntry.listing}
+                                                    key={wishlistEntry.listing.id}
+                                                />
+                                            );
+                                        })}
+                                    </ul>
+                                    {/* <PageBtns
                                     page={page}
                                     pages={pages}
                                     previousPageLink={previousPageLink}
                                     nextPageLink={nextPageLink}
                                     action={fetchListingsAndUpdateState}
                                 ></PageBtns> */}
-                                    </>
-                                ) : (
-                                    <></>
-                                )}
-                            </div>
+                                </>
+                            ) : (
+                                <></>
+                            )}
                         </div>
-                    </>
+                    </div>
                 ) : (
                     <NotFound></NotFound>
                 )}

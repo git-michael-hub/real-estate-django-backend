@@ -25,8 +25,11 @@ class ListingQueryFiltersMixin:
         query_serializer.is_valid(raise_exception=True)
         validated_data = query_serializer.validated_data
 
+        seller_username = validated_data.get('seller_username')
+        agent_username = validated_data.get('agent_username')
         property_type = validated_data.get('property_type')
         listing_type = validated_data.get('listing_type')
+
         province = validated_data.get('province')
         city = validated_data.get('city')
         min_price = validated_data.get('min_price', 0)
@@ -35,6 +38,11 @@ class ListingQueryFiltersMixin:
         max_area = validated_data.get('max_area')
         sort_by = validated_data.get('sort_by')
 
+        if seller_username:
+            filters &= Q(agent_account__isnull=True,
+                         property__seller_account__user__username=seller_username)
+        if agent_username:
+            filters &= Q(agent_account__user__username=agent_username)
         if property_type in dict(PROPERTY_TYPE.CHOICES):
             filters &= Q(property__property_type=property_type)
         if listing_type in dict(LISTING_TYPE.CHOICES):
@@ -48,16 +56,18 @@ class ListingQueryFiltersMixin:
         if min_price is not None:
             filters &= Q(price__gte=min_price)
 
-        if property_type != PROPERTY_TYPE.CONDOMINIUM:
-            if max_area is not None:
-                filters &= Q(property__lot_area__lte=max_area)
-            if min_area is not None:
-                filters &= Q(property__lot_area__gte=min_area)
-        else:
+        if property_type == PROPERTY_TYPE.CONDOMINIUM:
             if max_area is not None:
                 filters &= Q(property__floor_area__lte=max_area)
             if min_area is not None:
                 filters &= Q(property__floor_area__gte=min_area)
+        else:
+            if max_area is not None:
+                filters &= (Q(property__lot_area__lte=max_area)
+                            | Q(property__floor_area__lte=max_area, property__property_type=PROPERTY_TYPE.CONDOMINIUM))
+            if min_area is not None:
+                filters &= (Q(property__lot_area__gte=min_area)
+                            | Q(property__floor_area__gte=min_area, property__property_type=PROPERTY_TYPE.CONDOMINIUM))
 
         listings = listings.filter(filters)
         listings = listings.order_by(SORT_OPTIONS.get(sort_by))

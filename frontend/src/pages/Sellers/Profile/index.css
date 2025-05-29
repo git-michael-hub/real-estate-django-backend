@@ -64,14 +64,6 @@
     width: 100%;
 }
 
-#seller-profile-btn-container {
-    margin-bottom: 10px;
-}
-
-#seller-profile-btn-container .basic-btn {
-    width: max-content;
-}
-
 @media only screen and (max-width: 1020px) {
     #seller-profile-grid-container {
         display: flex;

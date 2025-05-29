@@ -71,6 +71,7 @@ class SellerAccountUpdateSerializer(serializers.ModelSerializer):
 
 class SellerAccountRetrieveSerializer(serializers.ModelSerializer):
     user = UserRetrieveSerializer()
+    date_approved = serializers.DateTimeField(format="%B %Y")
 
     class Meta:
         model = SellerAccount

@@ -67,7 +67,8 @@ class AgentAccountListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AgentAccount
-        fields = ['pk', 'user', 'agent_name', 'bio', 'profile_image_path']
+        fields = ['pk', 'user', 'agent_name', 'bio',
+                  'profile_image_path']
 
 
 class AgentAccountUpdateSerializer(serializers.ModelSerializer):
@@ -79,6 +80,7 @@ class AgentAccountUpdateSerializer(serializers.ModelSerializer):
 class AgentAccountRetrieveSerializer(serializers.ModelSerializer):
     user = UserRetrieveSerializer()
     pk = serializers.SerializerMethodField()
+    date_approved = serializers.DateTimeField(format="%B %Y")
 
     class Meta:
         model = AgentAccount

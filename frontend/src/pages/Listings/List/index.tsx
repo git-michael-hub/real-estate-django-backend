@@ -18,6 +18,7 @@ export default function List() {
             if (user) await fetchWishlist(user.username);
         };
         init();
+        console.log(listings);
     }, []);
 
     return (

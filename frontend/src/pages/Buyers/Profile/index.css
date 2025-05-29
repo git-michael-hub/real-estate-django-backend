@@ -33,22 +33,6 @@
     text-overflow: ellipsis;
 }
 
-#buyer-profile-details-container #edit-profile-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 80px;
-}
-
-#buyer-profile-details-container #edit-profile-btn span {
-    font-size: 0.8rem;
-    color: var(--color-secondary) !important;
-}
-
-#buyer-profile-details-container #edit-profile-btn-link {
-    display: none;
-}
-
 #buyer-profile-details-container div {
     display: flex;
     flex-direction: column;
@@ -78,15 +62,6 @@
     text-overflow: ellipsis;
 }
 
-#buyer-profile-details-container img {
-    max-width: 250px;
-    max-height: 250px;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    border-radius: 5px;
-    overflow-clip-margin: unset;
-}
-
 #buyer-profile-details-container i {
     color: var(--color-accent-2);
     margin-right: 10px;
@@ -98,17 +73,23 @@
     width: 100%;
 }
 
-#buyer-profile-btn-container {
-    margin-bottom: 10px;
+.profile-btn-container {
+    display: flex;
+    gap: 10px;
 }
 
-#buyer-profile-btn-container #fav-listing-btn {
+.profile-btn-container .btn-tab:disabled {
     border-bottom: 2px solid var(--color-accent-2);
 }
-#buyer-profile-btn-container #fav-listing-btn:hover {
+.profile-btn-container .btn-tab:hover {
+    border-bottom: 2px solid var(--color-accent-2-hov);
+    cursor: pointer;
+}
+
+.profile-btn-container .btn-tab:disabled:hover {
     color: var(--color-accent-2);
-    border-bottom: 2px solid var(--color-accent-2);
     cursor: default;
+    border-bottom: 2px solid var(--color-accent-2);
 }
 
 @media only screen and (max-width: 1020px) {

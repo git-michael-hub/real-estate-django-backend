@@ -1,0 +1,110 @@
+#profile-details-container {
+    display: flex;
+    padding: 20px;
+    padding-top: 40px;
+    padding-right: 40px;
+    gap: 20px;
+    background-color: var(--color-secondary);
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#profile-details-container p {
+    display: -webkit-box;
+    color: var(--text-color-3);
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#profile-details-container div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+
+#profile-details-container h2 {
+    color: var(--color-accent-2);
+    margin: 0;
+    font-size: 1.8rem;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+}
+
+#profile-details-container em {
+    color: var(--text-color-3);
+    margin-bottom: 20px;
+}
+
+#profile-details-container span {
+    color: var(--text-color-3);
+    text-wrap: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+#profile-details-container i {
+    color: var(--color-accent-2);
+    margin-right: 10px;
+}
+
+#profile-details-container hr {
+    border-top: 1px solid var(--text-color-3);
+    opacity: 0.5;
+    width: 100%;
+}
+
+@media only screen and (max-width: 1020px) {
+    #profile-details-container #edit-profile-btn {
+        display: none;
+    }
+
+    #profile-details-container #edit-profile-btn-link {
+        display: inline-block;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+
+    #profile-details-container #edit-profile-btn-link {
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    #buyer-profile-grid-container {
+        max-width: 600px;
+        margin: 60px auto;
+        gap: 20px;
+    }
+
+    #profile-details-container img {
+        max-width: 200px;
+        max-height: 200px;
+    }
+
+    #profile-details-container h2 {
+        font-size: 1.2rem;
+    }
+
+    #profile-details-container em,
+    #profile-details-container span,
+    #profile-details-container p {
+        font-size: 0.8rem;
+        line-height: 20px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #profile-details-container img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+}

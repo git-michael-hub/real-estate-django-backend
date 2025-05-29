@@ -25,8 +25,10 @@ function App() {
                 {/* <Route element={<RequireAuth roles={["seller"]} />}> */}
                 {/* <Route path="/listings/new" element={<Pages.Listings.New />} /> */}
                 {/* </Route> */}
-                {/* <Route path="/agents" element={<Pages.Sellers.List />} /> */}
-                {/* <Route path="/agents/:username" element={<Pages.Sellers.Profile />} /> */}
+                {/* <Route path="/sellers" element={<Pages.Sellers.List />} /> */}
+                <Route path="/sellers/:username" element={<Pages.Sellers.Profile />} />
+                <Route path="/agents/" element={<Pages.Agents.List />} />
+                <Route path="/agents/:username" element={<Pages.Agents.Profile />} />
 
                 <Route path="*" element={<Pages.NotFound />} />
             </Route>

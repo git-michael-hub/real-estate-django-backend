@@ -5,6 +5,8 @@ import App from "./App.tsx";
 import { AuthProvider } from "./features/auth/context/AuthProvider.tsx";
 import { ListingProvider } from "./features/listings/context/ListingsProvider.tsx";
 import { BuyersProvider } from "./features/buyers/context/BuyersProvider.tsx";
+import { SellersProvider } from "./features/sellers/context/SellersProvider.tsx";
+import { AgentsProvider } from "./features/agents/context/AgentsProvider.tsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -13,7 +15,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <AuthProvider>
                 <ListingProvider>
                     <BuyersProvider>
-                        <App />
+                        <SellersProvider>
+                            <AgentsProvider>
+                                <App />
+                            </AgentsProvider>
+                        </SellersProvider>
                     </BuyersProvider>
                 </ListingProvider>
             </AuthProvider>

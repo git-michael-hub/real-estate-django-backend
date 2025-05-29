@@ -128,12 +128,17 @@ export default function ListingEntry({ listing }: { listing: BaseListingType }) 
                                 {listing.agent_account ? (
                                     <div>
                                         <img src={listing.agent_account.profile_image_path} alt="" />
-                                        <Link to={`/agents/@${listing.agent_account.user.username}`}>
+                                        <Link to={`/agents/${listing.agent_account.user.username}`}>
                                             {listing.agent_account.agent_name}
                                         </Link>
                                     </div>
                                 ) : (
-                                    <></>
+                                    <div>
+                                        <img src={listing.property.seller_account.profile_image_path} alt="" />
+                                        <Link to={`/sellers/${listing.property.seller_account.user.username}`}>
+                                            {listing.property.seller_account.business_name}
+                                        </Link>
+                                    </div>
                                 )}
                                 {listing.listing_type === "FR" ? (
                                     <b>Php {helperFn.insertComma(listing.price)} / mo. </b>
