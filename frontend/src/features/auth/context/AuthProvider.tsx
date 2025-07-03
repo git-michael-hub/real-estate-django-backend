@@ -3,7 +3,8 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { apiFns, HeaderType } from "../../../utils/api-service";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { APIResponseType } from "../../../utils/api-service";
-import { AuthUserType, AuthFormMessageType } from "../../../types/types";
+import { AuthUserType } from "../../../types/auth";
+import { AuthFormMessageType } from "../../../types/formMessages";
 import { API_URLS } from "../../../urls/api-urls";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };

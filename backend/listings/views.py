@@ -8,6 +8,8 @@ from sellers.permissions import IsSeller
 
 from users.permissions import IsAccountOwner
 
+from properties.models import PROPERTY_STATUS
+
 from .models import Listing, LISTING_STATUS
 from .mixins import ListingDestroyMixin, ListingQueryFiltersMixin
 from .permissions import IsListingPropertySeller, IsListingAgent
@@ -39,22 +41,30 @@ class ListingRetrieveView(generics.RetrieveAPIView):
         return Listing.objects.filter(status=LISTING_STATUS.ACTIVE)
 
 
-class SellerListingListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAccountOwner, IsSeller]
+class SellerListingListCreateView(ListingQueryFiltersMixin, generics.ListCreateAPIView):
+    permission_classes = [IsSeller]
+    pagination_class = ListingPagination
 
     def get_queryset(self):
+        listings = Listing.objects.all()
         seller_account = self.request.user.seller_account
-        return Listing.objects.filter(property__seller_account=seller_account)
+        filters = Q(property__seller_account=seller_account,
+                    agent_account=None)
+        return self.filter_by_default_queries(listings, filters)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return SellerListingCreateSerializer
         return ListingListSerializer
 
+    def perform_create(self, serializer):
+        listing_instance = serializer.save()
+        listing_instance.property.update_status(PROPERTY_STATUS.LISTED)
+
 
 class SellerListingRetrieveDestroyView(ListingDestroyMixin, generics.RetrieveDestroyAPIView):
     serializer_class = ListingRetrieveSerializer
-    permission_classes = [IsAccountOwner, IsListingPropertySeller]
+    permission_classes = [IsListingPropertySeller]
     lookup_field = 'pk'
 
     def get_queryset(self):

@@ -4,13 +4,13 @@ import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";
 import SelectWithLabel from "../../../../components/Forms/SelectWithLabel";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import BtnToggle from "../../../../components/Buttons/BtnToggle";
-import "./index.css";
 import InputBasic from "../../../../components/Forms/InputBasic";
 import useListing from "../../../../features/listings/hooks/useListings";
+import "./index.css";
 
 export default function ListingSearchForm() {
     const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState<boolean>(false);
-    const { fetchListingsAndUpdateState } = useListing();
+    const { getListings } = useListing();
     const navigate = useNavigate();
 
     function showMoreOptions(e: React.MouseEvent<HTMLButtonElement>): void {
@@ -27,7 +27,7 @@ export default function ListingSearchForm() {
         e.preventDefault();
         const formData: FormData = new FormData(e.currentTarget);
         const params: URLSearchParams = new URLSearchParams(formData as any); // NO WORK AROUND FOR THIS YET
-        await fetchListingsAndUpdateState(`?${params.toString()}`);
+        await getListings(`?${params.toString()}`);
         navigate(`/listings/?${params.toString()}`);
     }
 

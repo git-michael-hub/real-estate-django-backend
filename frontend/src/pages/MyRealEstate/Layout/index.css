@@ -1,0 +1,51 @@
+#my-real-estate-layout {
+    display: flex;
+    height: calc(100vh - 73px);
+    width: 100vw;
+}
+
+#my-real-estate-layout .nav-panel {
+    display: flex;
+    flex-direction: column;
+    max-width: fit-content;
+}
+
+#my-real-estate-layout .nav-panel figure,
+#my-real-estate-layout .nav-panel > div {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-accent-2);
+}
+
+#my-real-estate-layout .nav-panel figure {
+    margin: 0;
+    padding: 20px;
+}
+
+#my-real-estate-layout .nav-panel figure em {
+    display: flex;
+    justify-self: center;
+    color: var(--color-secondary);
+    margin-top: 5px;
+}
+
+#my-real-estate-layout .nav-panel img {
+    width: 200px;
+}
+
+#my-real-estate-layout .nav-panel .nav-list {
+    height: 100%;
+}
+
+#my-real-estate-layout .nav-panel .nav-list a {
+    padding: 8px 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    color: var(--color-accent-1);
+    font-weight: bold;
+}
+
+#my-real-estate-layout .nav-panel .nav-list a:hover {
+    color: var(--color-secondary);
+}

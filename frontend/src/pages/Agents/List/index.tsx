@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiFns, APIResponseType } from "../../../utils/api-service";
-import { AgentAccountType } from "../../../types/types";
+import { AgentAccountType } from "../../../types/agent";
 import { Link } from "react-router-dom";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import { API_URLS } from "../../../urls/api-urls";

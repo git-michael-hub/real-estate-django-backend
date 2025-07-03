@@ -31,6 +31,8 @@ class PropertyAgentAssignmentCreateSerializer(serializers.ModelSerializer):
 
 class AssignedAgentListSerializer(serializers.ModelSerializer):
     agent = AgentAccountListSerializer()
+    date_added = serializers.DateTimeField(
+        format="%B %d, %Y", read_only=True)
 
     class Meta:
         model = PropertyAgentAssignment
@@ -39,6 +41,8 @@ class AssignedAgentListSerializer(serializers.ModelSerializer):
 
 class AssignedPropertyListSerializer(serializers.ModelSerializer):
     property = PropertyListSerializer()
+    date_added = serializers.DateTimeField(
+        format="%B %d, %Y", read_only=True)
 
     class Meta:
         model = PropertyAgentAssignment

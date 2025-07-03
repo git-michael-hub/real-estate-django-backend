@@ -9,9 +9,12 @@ from .models import Listing, LISTING_STATUS, LISTING_TYPE, SORT_OPTIONS
 
 
 class ListingListSerializer(serializers.ModelSerializer):
-    listing_type_display = serializers.SerializerMethodField()
     property = PropertyListSerializer()
     agent_account = AgentAccountListSerializer(allow_null=True)
+    listing_type_display = serializers.SerializerMethodField(read_only=True)
+    status_display = serializers.SerializerMethodField(read_only=True)
+    created_at = serializers.DateTimeField(
+        format="%B %d, %Y", read_only=True)
 
     class Meta:
         model = Listing
@@ -20,6 +23,9 @@ class ListingListSerializer(serializers.ModelSerializer):
     def get_listing_type_display(self, obj):
         return obj.get_listing_type_display()
 
+    def get_status_display(self, obj):
+        return obj.get_status_display()
+
 
 class ListingRetrieveSerializer(ListingListSerializer):
     class Meta(ListingListSerializer.Meta):
@@ -27,12 +33,16 @@ class ListingRetrieveSerializer(ListingListSerializer):
 
 
 class ListingQuerySerializer(serializers.Serializer):
+    property = serializers.PrimaryKeyRelatedField(
+        queryset=Property.objects.all(), required=False)
     seller_username = serializers.CharField(max_length=100, required=False)
     agent_username = serializers.CharField(max_length=100, required=False)
     listing_type = serializers.ChoiceField(
         choices=LISTING_TYPE.CHOICES, required=False)
     property_type = serializers.ChoiceField(
         choices=PROPERTY_TYPE.CHOICES, required=False)
+    status = serializers.ChoiceField(
+        choices=LISTING_STATUS.CHOICES, required=False)
     province = serializers.CharField(max_length=100, required=False)
     city = serializers.CharField(max_length=100, required=False)
     min_price = serializers.IntegerField(required=False)

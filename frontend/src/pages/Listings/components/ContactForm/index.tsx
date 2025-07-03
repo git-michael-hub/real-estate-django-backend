@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ListingType, SellerAccountType, AgentAccountType } from "../../../../types/types";
+import { ListingType } from "../../../../types/listing";
+import { SellerAccountType } from "../../../../types/seller";
+import { AgentAccountType } from "../../../../types/agent";
 import { apiFns, APIResponseType } from "../../../../utils/api-service";
 import { API_URLS } from "../../../../urls/api-urls";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";

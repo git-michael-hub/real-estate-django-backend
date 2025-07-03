@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
+import { BaseListingType } from "../../../../types/listing";
 import useAuth from "../../../../features/auth/hooks/useAuth";
 import useBuyer from "../../../../features/buyers/hooks/useBuyers";
-import { BaseListingType } from "../../../../types/types";
-import helperFn from "../../../../utils/form-functions";
+import helperFn from "../../../../utils/form-utils";
 import BtnIconNoBg from "../../../../components/Buttons/BtnIconNoBg";
 import "./index.css";
 

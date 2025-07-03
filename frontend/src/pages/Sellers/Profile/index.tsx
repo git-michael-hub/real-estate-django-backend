@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import ContactForm from "../../Listings/components/ContactForm";
-import "./index.css";
 import ListingEntry from "../../Listings/components/ListingEntry";
 import useListing from "../../../features/listings/hooks/useListings";
 import PageBtns from "../../../components/PageBtns";
 import NotFound from "../../NotFound";
 import useSeller from "../../../features/sellers/hooks/useSellers";
-import { useParams } from "react-router-dom";
 import ProfileImage from "../../../components/Profile/ProfileImage";
 import EditProfileBtn from "../../../components/Profile/EditProfileBtn";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import DefaultModal from "../../../components/Modal/DefaultModal";
 import ProfileDetailsContainer from "../../../components/Profile/ProfileDetailsContainer";
 import BtnTab from "../../../components/Buttons/BtnTab";
+import "./index.css";
 
 export default function Profile() {
     const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
@@ -20,13 +20,13 @@ export default function Profile() {
     const { username } = useParams();
     const { user } = useAuth();
     const { seller, fetchSellerAndUpdateState, setSeller } = useSeller();
-    const { listings, page, pages, previousPageLink, nextPageLink, fetchListingsAndUpdateState } = useListing();
+    const { listings, page, pages, previousPageLink, nextPageLink, getListings } = useListing();
 
     useEffect(() => {
         const init = async () => {
             if (!username) return setSeller(null);
             await fetchSellerAndUpdateState(username);
-            await fetchListingsAndUpdateState(`?seller_username=${username}`);
+            await getListings(`?seller_username=${username}`);
         };
 
         init();
@@ -102,7 +102,7 @@ export default function Profile() {
                                         pages={pages}
                                         previousPageLink={previousPageLink}
                                         nextPageLink={nextPageLink}
-                                        action={fetchListingsAndUpdateState}
+                                        action={getListings}
                                     ></PageBtns>
                                 </>
                             ) : (

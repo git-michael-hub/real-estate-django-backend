@@ -19,13 +19,13 @@ export default function Profile() {
     const { username } = useParams();
     const { user } = useAuth();
     const { agent, fetchAgentAndUpdateState, setAgent } = useAgent();
-    const { listings, page, pages, previousPageLink, nextPageLink, fetchListingsAndUpdateState } = useListing();
+    const { listings, page, pages, previousPageLink, nextPageLink, getListings } = useListing();
 
     useEffect(() => {
         const init = async () => {
             if (!username) return setAgent(null);
             await fetchAgentAndUpdateState(username);
-            await fetchListingsAndUpdateState(`?agent_username=${username}`);
+            await getListings(`?agent_username=${username}`);
         };
 
         init();
@@ -91,7 +91,7 @@ export default function Profile() {
                                         pages={pages}
                                         previousPageLink={previousPageLink}
                                         nextPageLink={nextPageLink}
-                                        action={fetchListingsAndUpdateState}
+                                        action={getListings}
                                     ></PageBtns>
                                 </>
                             ) : (

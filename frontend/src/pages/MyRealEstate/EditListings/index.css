@@ -1,0 +1,86 @@
+#edit-listings-page {
+    width: 100%;
+    height: calc(100vh - 73px);
+    background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#edit-listings-form {
+    padding: 40px;
+    height: calc(100vh - 73px - 70px);
+    overflow-y: scroll;
+}
+
+#edit-listings-form > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#edit-listings-form > div > div > div {
+    margin-top: 20px;
+}
+
+#edit-listings-form .select-with-label-container {
+    max-width: 500px;
+}
+
+#edit-listings-form #edit-listings-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+}
+
+#edit-listings-form #edit-listings-details {
+    max-width: 500px;
+}
+
+#edit-listings-form #edit-listings-details > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#edit-listings-form #edit-listings-details > div > div {
+    max-width: 200px;
+}
+
+#edit-listings-form #edit-listings-details span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#edit-listings-form #edit-listings-btn {
+    width: fit-content;
+    font-size: 0.8rem;
+    margin-top: 50px;
+}
+
+#edit-listings-form .property-card {
+    width: 500px;
+    padding: 20px;
+    border: 1px solid rgb(214, 214, 214);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+#edit-listings-form .property-card img {
+    width: 100%;
+    margin-bottom: 20px;
+    aspect-ratio: 1.8/1;
+    object-fit: cover;
+}
+#edit-listings-form .property-card span {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+}
+
+#edit-listings-form textarea {
+    width: 100%;
+}

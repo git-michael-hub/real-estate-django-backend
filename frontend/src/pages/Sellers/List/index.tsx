@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
-import { SellerAccountType } from "../../../types/types";
-import {} from "../../../features/sellers/context/SellersProvider";
-import "./index.css";
 import { Link } from "react-router-dom";
-import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
+import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
+import { SellerAccountType } from "../../../types/seller";
 import { API_URLS } from "../../../urls/api-urls";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
+import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
+import "./index.css";
 
 export default function List() {
     const [sellers, setSellers] = useState<SellerAccountType[]>([]);

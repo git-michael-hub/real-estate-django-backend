@@ -53,14 +53,6 @@ urlpatterns = [
          AssignedAgentRetrieveDestroyView.as_view(),
          name='assigned-agent-retrieve-destroy'),
 
-    path('<str:username>/listings',
-         SellerListingListCreateView.as_view(),
-         name='seller-listing-list-create'),
-
-    path('<str:username>/listings/<int:pk>',
-         SellerListingRetrieveDestroyView.as_view(),
-         name='seller-listing-retrieve-destory'),
-
     path('<str:username>/offers',
          SellerOfferListCreateView.as_view(),
          name='seller-offer-list-create'),

@@ -1,0 +1,21 @@
+.basic-btn-disabled {
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    border: 1px solid #f0f0f0;
+    background-color: #f0f0f0;
+    width: 100%;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.basic-btn-disabled,
+.basic-btn-disabled span {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+}

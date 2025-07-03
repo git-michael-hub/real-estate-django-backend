@@ -10,8 +10,8 @@ export const API_DIRECTORY = {
     SELLER: BASE_URL + "api/sellers",
     AGENT: BASE_URL + "api/agents",
     LISTING: BASE_URL + "api/listings",
-    PROPERTY: BASE_URL + "api/properties",
-};
+    PROPERTY: BASE_URL + `api/properties`,
+} as const;
 
 export const API_URLS = {
     AUTH: {
@@ -45,13 +45,38 @@ export const API_URLS = {
     },
 
     LISTING: {
-        SEARCH: (searchParams?: string): string => {
+        RETRIEVE: (pk: string | number): string => API_DIRECTORY.LISTING + `/${pk}`,
+        RETRIEVE_FOR_SELLER: (pk: string | number): string => API_DIRECTORY.LISTING + `/seller_account/${pk}`,
+        RETRIEVE_FOR_AGENT: (pk: string | number): string => API_DIRECTORY.LISTING + `/agent_account/${pk}`,
+        LIST: (searchParams?: string): string => {
             return searchParams ? API_DIRECTORY.LISTING + `/${searchParams}` : API_DIRECTORY.LISTING + "/";
         },
-        RETRIEVE: (pk: string | number): string => API_DIRECTORY.LISTING + `/${pk}`,
+        LIST_FOR_SELLER: (searchParams?: string): string => {
+            return searchParams
+                ? API_DIRECTORY.LISTING + `/seller_account${searchParams}`
+                : API_DIRECTORY.LISTING + "/seller_account";
+        },
+        LIST_FOR_AGENT: (searchParams?: string): string => {
+            return searchParams
+                ? API_DIRECTORY.LISTING + `/agent_account/${searchParams}`
+                : API_DIRECTORY.LISTING + "/seller_account";
+        },
+        CREATE_FOR_SELLER: (): string => API_DIRECTORY.LISTING + "/seller_account",
+        CREATE_FOR_AGENT: (): string => API_DIRECTORY.LISTING + "/agent_account",
+        DELETE_FOR_SELLER: (pk: string | number): string => API_DIRECTORY.LISTING + `/seller_account/${pk}`,
+        DELETE_FOR_AGENT: (pk: string | number): string => API_DIRECTORY.LISTING + `/agent_account"/${pk}`,
+        EDIT_FOR_SELLER: (pk: string | number): string => API_DIRECTORY.LISTING + `/seller_account"/${pk}`,
+        EDIT_FOR_AGENT: (pk: string | number): string => API_DIRECTORY.LISTING + `/agent_account"/${pk}`,
     },
 
     PROPERTY: {
-        LIST: (): string => API_DIRECTORY.SELLER + "/",
+        LIST: (searchParams?: string): string => {
+            return searchParams ? API_DIRECTORY.PROPERTY + `/${searchParams}` : API_DIRECTORY.PROPERTY + "/";
+        },
+        CREATE: (): string => API_DIRECTORY.PROPERTY + "/",
+        RETRIEVE: (pk: string | number): string => API_DIRECTORY.PROPERTY + `/${pk}`,
+        DELETE: (pk: string | number): string => API_DIRECTORY.PROPERTY + `/${pk}`,
+        EDIT: (pk: string | number): string => API_DIRECTORY.PROPERTY + `/${pk}`,
+        ASSIGNED_AGENTS: (pk: string | number): string => API_DIRECTORY.PROPERTY + `/${pk}/assigned-agents`,
     },
 } as const;

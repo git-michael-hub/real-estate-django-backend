@@ -1,14 +1,27 @@
-from rest_framework import serializers, exceptions
+from rest_framework import serializers
 
 from sellers.models import SellerAccount
 from sellers.serializers import SellerAccountListSerializer, SellerAccountRetrieveSerializer
 
-from .models import Property, PROPERTY_TYPE, PROPERTY_STATUS
+from .models import Property, PROPERTY_TYPE, PROPERTY_STATUS, SORT_OPTIONS
+
+
+class PropertyQuerySerializer(serializers.Serializer):
+    sort_by = serializers.ChoiceField(
+        choices=SORT_OPTIONS.CHOICES, required=False)
+    status = serializers.ChoiceField(
+        choices=PROPERTY_STATUS.CHOICES, required=False)
+    property_type = serializers.ChoiceField(
+        choices=PROPERTY_TYPE.CHOICES, required=False)
 
 
 class PropertyListSerializer(serializers.ModelSerializer):
-    seller_account = SellerAccountListSerializer()
-    property_type_display = serializers.SerializerMethodField()
+    seller_account = SellerAccountListSerializer(read_only=True)
+    property_type_display = serializers.SerializerMethodField(read_only=True)
+    status_display = serializers.SerializerMethodField(read_only=True)
+    address = serializers.SerializerMethodField(read_only=True)
+    date_created = serializers.DateTimeField(
+        format="%B %d, %Y", read_only=True)
 
     class Meta:
         model = Property
@@ -16,6 +29,12 @@ class PropertyListSerializer(serializers.ModelSerializer):
 
     def get_property_type_display(self, obj):
         return obj.get_property_type_display()
+
+    def get_status_display(self, obj):
+        return obj.get_status_display()
+
+    def get_address(self, obj):
+        return obj.get_address()
 
 
 class PropertyCreateSerializer(serializers.ModelSerializer):

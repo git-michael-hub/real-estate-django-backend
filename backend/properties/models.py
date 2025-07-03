@@ -31,9 +31,29 @@ class PROPERTY_STATUS:
         (SOLD, 'Sold')
     ]
 
+    def get_values():
+        return [PROPERTY_STATUS.READY_FOR_LISTING, PROPERTY_STATUS.LISTED, PROPERTY_STATUS.HOLD, PROPERTY_STATUS.SOLD]
+
 
 def upload_to(instance, filename):
     return f"images/properties/{instance.id}/{filename}"
+
+
+class SORT_OPTIONS:
+    A_TO_Z = 'ATZ'
+    Z_TO_A = 'ZTA'
+    OLD_TO_NEW = 'OTN'
+    NEW_TO_OLD = 'NTO'
+
+    CHOICES = [
+        (A_TO_Z, 'street'),
+        (Z_TO_A, '-street'),
+        (OLD_TO_NEW, 'date_created'),
+        (NEW_TO_OLD, '-date_created')
+    ]
+
+    def get(choice, default='-date_created'):
+        return dict(SORT_OPTIONS.CHOICES).get(choice, default)
 
 
 class Property(models.Model):
@@ -98,6 +118,15 @@ class Property(models.Model):
         'after_listing': ['image1_path', 'image2_path', 'image3_path', 'image4_path', 'image5_path']
     }
 
+    def get_address(self):
+        address = ''
+        if self.street:
+            address += f'{self.street}, '
+        if self.barangay:
+            address += f'{self.barangay}, '
+        address += f'{self.city}, {self.province}'
+        return address
+
     def is_property_agent(self, agent_account):
         return self.assigned_agents.filter(agent=agent_account).exists()
 
@@ -119,3 +148,11 @@ class Property(models.Model):
 
         raise TypeError(
             f"Expected excluded_listing_pk to be of type 'None' or 'int' but got '{type(excluded_listing_pk).__name__}'")
+
+    def update_status(self, status):
+        if status in PROPERTY_STATUS.get_values():
+            self.status = status
+            self.save()
+            return
+        raise ValueError(
+            f"Expected one of the following: {PROPERTY_STATUS.get_values()}. Got {status} instead.")

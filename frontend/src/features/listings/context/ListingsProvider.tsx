@@ -1,44 +1,9 @@
 import { createContext, useState } from "react";
-import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
-import cookieHandler, { Token } from "../../../utils/cookie-handler";
-import { BaseListingType, ListingType } from "../../../types/types";
+import { apiFns, APIResponseType } from "../../../utils/api-service";
+import { ListingType } from "../../../types/listing";
 import { API_URLS } from "../../../urls/api-urls";
-
-export type PaginatedListingsType = {
-    count: number;
-    links: {
-        next: string | null;
-        previous: string | null;
-    };
-    pages: number;
-    results: BaseListingType[];
-};
-
-export type ListingFormMessageStateType = {
-    success?: string[];
-    error?: string[];
-    title?: string[];
-    listing_type?: string[];
-    property_type?: string[];
-    price?: string[];
-    image1_path?: string[];
-    image2_path?: string[];
-    image3_path?: string[];
-    image4_path?: string[];
-    image5_path?: string[];
-    lot_area?: string[];
-    floor_area?: string[];
-    num_of_floors?: string[];
-    description?: string[];
-    bedrooms?: string[];
-    bathrooms?: string[];
-    province?: string[];
-    city?: string[];
-    baranggay?: string[];
-    street?: string[];
-};
-
-export const API_DIRECTORY_LISTINGS = "api/listings/";
+import { authFns } from "../../../utils/auth-utils";
+import { PaginatedListingsType } from "../../../types/listing";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
@@ -51,34 +16,33 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
     const [previousPageLink, setPreviousPageLink] = useState<string | null>(null);
 
     // GET 1 SPECIFIC LISTING
-    const fetchListing = async (listingId: string | number): Promise<ListingType | null> => {
-        const response: APIResponseType = await apiFns.get(API_URLS.LISTING.RETRIEVE(listingId));
-        if (response.success) return response.data;
-        console.log(response.err_messages);
-        return null;
-    };
-
-    // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS
-    const fetchListings = async (searchParams?: string): Promise<PaginatedListingsType | null> => {
-        console.log(API_URLS.LISTING.SEARCH(searchParams));
-        const response: APIResponseType = await apiFns.get(API_URLS.LISTING.SEARCH(searchParams));
+    const _mainGetOneListing = async (url: string): Promise<ListingType | null> => {
+        const response: APIResponseType = await apiFns.get(url, authFns.createAuthorizationHeader());
         if (response.success) return response.data;
         console.log(response.err_messages);
         return null;
     };
 
     // GET 1 SPECIFIC LISTING AND UPDATE STATE
-    const fetchListingAndUpdateState = async (listingId: string | number): Promise<ListingType | null> => {
-        const listing: ListingType | null = await fetchListing(listingId);
+    const _mainGetOneListingAndUpdateState = async (url: string): Promise<ListingType | null> => {
+        const listing: ListingType | null = await _mainGetOneListing(url);
         setListing(listing);
         return listing;
     };
 
+    // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS
+    const _mainGetListings = async (url: string): Promise<PaginatedListingsType | null> => {
+        const response: APIResponseType = await apiFns.get(url, authFns.createAuthorizationHeader());
+        if (response.success) return response.data;
+        console.log(response.err_messages);
+        return null;
+    };
+
     // GET A LIST OF LISTING BASED ON SEARCH PARAMETERS AND UPDATE STATE
-    const fetchListingsAndUpdateState = async (searchParams: string): Promise<void> => {
-        const paginated_listings = await fetchListings(searchParams);
+    const _mainGetListingsAndUpdateState = async (url: string): Promise<PaginatedListingsType | null> => {
+        const paginated_listings = await _mainGetListings(url);
         if (paginated_listings) {
-            const urlSearchParams = new URLSearchParams(searchParams);
+            const urlSearchParams = new URLSearchParams(url);
             const page = urlSearchParams.get("page");
             if (page) setPage(Number(page));
             if (page === null) setPage(1);
@@ -87,56 +51,126 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
             setNextPageLink(paginated_listings.links.next);
             setPreviousPageLink(paginated_listings.links.previous);
         }
+        return paginated_listings;
     };
 
-    const deleteListing = async (listingId: number): Promise<boolean> => {
-        try {
-            const token: Token = cookieHandler.get("token");
-            const headers: HeaderType = { Authorization: `Token ${token}` };
-            const response: APIResponseType = await apiFns.del(`${API_DIRECTORY_LISTINGS}${listingId}`, headers);
-            return response.success;
-        } catch (error) {
-            return false;
-        }
+    const _mainCreateListing = async (formData: FormData, url: string): Promise<APIResponseType> => {
+        const response: APIResponseType = await apiFns.post(url, formData, authFns.createAuthorizationHeader());
+        if (!response.success) console.log(response.err_messages);
+        return response;
     };
 
-    const editListing = async (formData: FormData, listingId: number): Promise<APIResponseType | null> => {
-        try {
-            const token: Token = cookieHandler.get("token");
-            const headers: HeaderType = { Authorization: `Token ${token}` };
-            const response: APIResponseType = await apiFns.patch(
-                `${API_DIRECTORY_LISTINGS}${listingId}`,
-                formData,
-                headers
-            );
-            return response;
-        } catch (error) {
-            alert("An error occurred");
-            return null;
-        }
+    const _mainEditListing = async (formData: FormData, url: string): Promise<APIResponseType> => {
+        const response: APIResponseType = await apiFns.patch(url, formData, authFns.createAuthorizationHeader());
+        if (!response.success) console.log(response.err_messages);
+        return response;
+    };
+
+    const _mainDeleteListing = async (url: string): Promise<boolean> => {
+        const response: APIResponseType = await apiFns.del(url, authFns.createAuthorizationHeader());
+        if (!response.success) console.log(response.err_messages);
+        return response.success;
+    };
+
+    const getOneListing = async (
+        listingId: string | number,
+        updateState: boolean = true
+    ): Promise<ListingType | null> => {
+        if (updateState) return await _mainGetOneListingAndUpdateState(API_URLS.LISTING.RETRIEVE(listingId));
+        return await _mainGetOneListing(API_URLS.LISTING.RETRIEVE(listingId));
+    };
+
+    const getOneListingForSeller = async (
+        listingId: string | number,
+        updateState: boolean = true
+    ): Promise<ListingType | null> => {
+        if (updateState) return await _mainGetOneListingAndUpdateState(API_URLS.LISTING.RETRIEVE_FOR_SELLER(listingId));
+        return await _mainGetOneListing(API_URLS.LISTING.RETRIEVE_FOR_SELLER(listingId));
+    };
+
+    const getOneListingForAgent = async (
+        listingId: string | number,
+        updateState: boolean = true
+    ): Promise<ListingType | null> => {
+        if (updateState) return await _mainGetOneListingAndUpdateState(API_URLS.LISTING.RETRIEVE_FOR_AGENT(listingId));
+        return await _mainGetOneListing(API_URLS.LISTING.RETRIEVE_FOR_AGENT(listingId));
+    };
+
+    const getListings = async (
+        searchParams?: string,
+        updateState: boolean = true
+    ): Promise<PaginatedListingsType | null> => {
+        if (updateState) return await _mainGetListingsAndUpdateState(API_URLS.LISTING.LIST(searchParams));
+        return await _mainGetListings(API_URLS.LISTING.LIST(searchParams));
+    };
+
+    const getListingsForSeller = async (
+        searchParams?: string,
+        updateState: boolean = true
+    ): Promise<PaginatedListingsType | null> => {
+        if (updateState) return await _mainGetListingsAndUpdateState(API_URLS.LISTING.LIST_FOR_SELLER(searchParams));
+        return await _mainGetListings(API_URLS.LISTING.LIST_FOR_SELLER(searchParams));
+    };
+
+    const getListingsForAgent = async (
+        searchParams?: string,
+        updateState: boolean = true
+    ): Promise<PaginatedListingsType | null> => {
+        if (updateState) return await _mainGetListingsAndUpdateState(API_URLS.LISTING.LIST_FOR_AGENT(searchParams));
+        return await _mainGetListings(API_URLS.LISTING.LIST_FOR_AGENT(searchParams));
+    };
+
+    const createListingForSeller = async (formData: FormData): Promise<APIResponseType> => {
+        return await _mainCreateListing(formData, API_URLS.LISTING.CREATE_FOR_SELLER());
+    };
+
+    const createListingForAgent = async (formData: FormData): Promise<APIResponseType> => {
+        return await _mainCreateListing(formData, API_URLS.LISTING.CREATE_FOR_AGENT());
+    };
+
+    const editListingForSeller = async (formData: FormData, listingId: number): Promise<APIResponseType> => {
+        return await _mainEditListing(formData, API_URLS.LISTING.EDIT_FOR_SELLER(listingId));
+    };
+
+    const editListingForAgent = async (formData: FormData, listingId: number): Promise<APIResponseType> => {
+        return await _mainEditListing(formData, API_URLS.LISTING.EDIT_FOR_AGENT(listingId));
+    };
+
+    const deleteListingForSeller = async (listingId: number | string): Promise<boolean> => {
+        return await _mainDeleteListing(API_URLS.LISTING.DELETE_FOR_SELLER(listingId));
+    };
+
+    const deleteListingForAgent = async (listingId: number | string): Promise<boolean> => {
+        return await _mainDeleteListing(API_URLS.LISTING.DELETE_FOR_AGENT(listingId));
     };
 
     return (
         <ListingContext.Provider
             value={{
                 listing,
-                setListing,
                 listings,
-                setListings,
-                fetchListing,
-                fetchListings,
-                deleteListing,
-                editListing,
                 page,
                 pages,
                 nextPageLink,
                 previousPageLink,
+                setListing,
+                setListings,
                 setPage,
                 setPages,
                 setNextPageLink,
                 setPreviousPageLink,
-                fetchListingAndUpdateState,
-                fetchListingsAndUpdateState,
+                getOneListing,
+                getOneListingForSeller,
+                getOneListingForAgent,
+                getListings,
+                getListingsForSeller,
+                getListingsForAgent,
+                createListingForSeller,
+                createListingForAgent,
+                deleteListingForSeller,
+                deleteListingForAgent,
+                editListingForSeller,
+                editListingForAgent,
             }}
         >
             {children}
@@ -146,44 +180,56 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
 
 export type ListingContextType = {
     listing: ListingType | null;
-    setListing: React.Dispatch<React.SetStateAction<ListingType | null>>;
     listings: ListingType[];
-    setListings: React.Dispatch<React.SetStateAction<ListingType[]>>;
-    fetchListing: (path: string) => Promise<ListingType | null>;
-    fetchListings: (searchParams: string) => Promise<PaginatedListingsType | null>;
-    deleteListing: (listingId: number) => Promise<boolean>;
-    editListing: (formData: FormData, listingId: number) => Promise<APIResponseType | null>;
     page: number;
     pages: number;
     nextPageLink: string | null;
     previousPageLink: string | null;
+    setListing: React.Dispatch<React.SetStateAction<ListingType | null>>;
+    setListings: React.Dispatch<React.SetStateAction<ListingType[]>>;
     setPage: React.Dispatch<React.SetStateAction<number>>;
     setPages: React.Dispatch<React.SetStateAction<number>>;
     setNextPageLink: React.Dispatch<React.SetStateAction<string | null>>;
     setPreviousPageLink: React.Dispatch<React.SetStateAction<string | null>>;
-    fetchListingAndUpdateState: (listingId: string) => Promise<ListingType | null>;
-    fetchListingsAndUpdateState: (searchParams: string) => Promise<void>;
+    getOneListing: (listingId: string | number, updateState?: boolean) => Promise<ListingType | null>;
+    getOneListingForSeller: (listingId: string | number, updateState?: boolean) => Promise<ListingType | null>;
+    getOneListingForAgent: (listingId: string | number, updateState?: boolean) => Promise<ListingType | null>;
+    getListings: (searchParams?: string, updateState?: boolean) => Promise<PaginatedListingsType | null>;
+    getListingsForSeller: (searchParams?: string, updateState?: boolean) => Promise<PaginatedListingsType | null>;
+    getListingsForAgent: (searchParams?: string, updateState?: boolean) => Promise<PaginatedListingsType | null>;
+    createListingForSeller: (formData: FormData) => Promise<APIResponseType>;
+    createListingForAgent: (formData: FormData) => Promise<APIResponseType>;
+    editListingForSeller: (formData: FormData, listingId: number) => Promise<APIResponseType>;
+    editListingForAgent: (formData: FormData, listingId: number) => Promise<APIResponseType>;
+    deleteListingForSeller: (listingId: number | string) => Promise<boolean>;
+    deleteListingForAgent: (listingId: number | string) => Promise<boolean>;
 };
 
 const initListingContextState: ListingContextType = {
     listing: null,
-    setListing: () => {},
     listings: [],
-    setListings: () => {},
-    fetchListing: () => Promise.resolve(null),
-    fetchListings: () => Promise.resolve(null),
-    deleteListing: () => Promise.resolve(false),
-    editListing: () => Promise.resolve(null),
     page: 1,
     pages: 1,
     nextPageLink: null,
     previousPageLink: null,
+    setListing: () => {},
+    setListings: () => {},
     setPage: () => {},
     setPages: () => {},
     setNextPageLink: () => {},
     setPreviousPageLink: () => {},
-    fetchListingAndUpdateState: () => Promise.resolve(null),
-    fetchListingsAndUpdateState: () => Promise.resolve(),
+    getOneListing: () => Promise.resolve(null),
+    getOneListingForSeller: () => Promise.resolve(null),
+    getOneListingForAgent: () => Promise.resolve(null),
+    getListings: () => Promise.resolve(null),
+    getListingsForSeller: () => Promise.resolve(null),
+    getListingsForAgent: () => Promise.resolve(null),
+    createListingForSeller: () => Promise.resolve({ success: false }),
+    createListingForAgent: () => Promise.resolve({ success: false }),
+    editListingForSeller: () => Promise.resolve({ success: false }),
+    editListingForAgent: () => Promise.resolve({ success: false }),
+    deleteListingForSeller: () => Promise.resolve(false),
+    deleteListingForAgent: () => Promise.resolve(false),
 };
 
 const ListingContext = createContext<ListingContextType>(initListingContextState);

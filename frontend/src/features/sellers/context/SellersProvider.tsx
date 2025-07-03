@@ -2,7 +2,7 @@ import { createContext, useState } from "react";
 import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { API_URLS } from "../../../urls/api-urls";
-import { SellerAccountType } from "../../../types/types";
+import { SellerAccountType } from "../../../types/seller";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 

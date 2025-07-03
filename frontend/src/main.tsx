@@ -8,20 +8,23 @@ import { BuyersProvider } from "./features/buyers/context/BuyersProvider.tsx";
 import { SellersProvider } from "./features/sellers/context/SellersProvider.tsx";
 import { AgentsProvider } from "./features/agents/context/AgentsProvider.tsx";
 import "./index.css";
+import { PropertyProvider } from "./features/properties/context/PropertiesProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <BrowserRouter>
             <AuthProvider>
-                <ListingProvider>
-                    <BuyersProvider>
-                        <SellersProvider>
-                            <AgentsProvider>
-                                <App />
-                            </AgentsProvider>
-                        </SellersProvider>
-                    </BuyersProvider>
-                </ListingProvider>
+                <PropertyProvider>
+                    <ListingProvider>
+                        <BuyersProvider>
+                            <SellersProvider>
+                                <AgentsProvider>
+                                    <App />
+                                </AgentsProvider>
+                            </SellersProvider>
+                        </BuyersProvider>
+                    </ListingProvider>
+                </PropertyProvider>
             </AuthProvider>
         </BrowserRouter>
     </React.StrictMode>

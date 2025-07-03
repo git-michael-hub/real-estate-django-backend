@@ -29,6 +29,23 @@ function App() {
                 <Route path="/sellers/:username" element={<Pages.Sellers.Profile />} />
                 <Route path="/agents/" element={<Pages.Agents.List />} />
                 <Route path="/agents/:username" element={<Pages.Agents.Profile />} />
+                <Route element={<Pages.MyRealEstate.Layout />}>
+                    <Route path="/my-real-estate/dashboard" element={<Pages.MyRealEstate.Dashboard />} />
+                    <Route path="/my-real-estate/properties" element={<Pages.MyRealEstate.Properties />} />
+                    <Route path="/my-real-estate/properties/new" element={<Pages.MyRealEstate.NewProperties />} />
+                    <Route path="/my-real-estate/properties/:propertyId" element={<Pages.MyRealEstate.Property />} />
+                    <Route
+                        path="/my-real-estate/properties/:propertyId/edit"
+                        element={<Pages.MyRealEstate.EditProperties />}
+                    />
+                    <Route path="/my-real-estate/listings" element={<Pages.MyRealEstate.Listings />} />
+                    <Route path="/my-real-estate/listings/new" element={<Pages.MyRealEstate.NewListings />} />
+                    <Route
+                        path="/my-real-estate/listings/:listingId/edit"
+                        element={<Pages.MyRealEstate.EditListings />}
+                    />
+                    <Route path="/my-real-estate/agents" element={<Pages.MyRealEstate.Agents />} />
+                </Route>
 
                 <Route path="*" element={<Pages.NotFound />} />
             </Route>

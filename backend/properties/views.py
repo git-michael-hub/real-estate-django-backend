@@ -1,11 +1,13 @@
+from django.db.models import Q
+
 from rest_framework import generics, status
 from rest_framework.response import Response
 
 from sellers.permissions import IsSeller
 
-from users.permissions import IsAccountOwner
-
+from .mixins import PropertyQueryFiltersMixin
 from .models import Property, PROPERTY_STATUS
+from .pagination import PropertyPagination
 from .serializers import (
     PropertyListSerializer,
     PropertyCreateSerializer,
@@ -16,13 +18,14 @@ from .serializers import (
 from .permissions import IsPropertyOwner
 
 
-class PropertyListCreateView(generics.ListCreateAPIView):
+class PropertyListCreateView(PropertyQueryFiltersMixin, generics.ListCreateAPIView):
+    pagination_class = PropertyPagination
+
     def get_queryset(self):
+        properties = Property.objects.all()
         seller_account = self.request.user.seller_account
-        queryset = Property.objects.filter(
-            seller_account=seller_account,
-            is_deleted=False)
-        return queryset
+        filters = Q(is_deleted=False, seller_account=seller_account)
+        return self.filter_by_default_queries(properties, filters)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -31,8 +34,8 @@ class PropertyListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [IsAccountOwner(), IsSeller()]
-        return [IsPropertyOwner()]
+            return [IsSeller()]
+        return []
 
 
 class PropertyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):

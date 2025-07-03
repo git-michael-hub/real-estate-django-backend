@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../../../features/auth/hooks/useAuth";
-import { AuthFormMessageType } from "../../../../types/types";
+import { AuthFormMessageType } from "../../../../types/formMessages";
 import InputWithLabel from "../../../../components/Forms/InputWithLabel";
 import Message from "../../../../components/Message";
 import BtnBasicActive from "../../../../components/Buttons/BtnBasicActive";

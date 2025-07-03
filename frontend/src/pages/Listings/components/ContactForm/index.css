@@ -16,6 +16,7 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    align-items: center;
 }
 
 .contact-form .seller-contact-info-container > a {

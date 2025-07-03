@@ -25,10 +25,12 @@ class ListingQueryFiltersMixin:
         query_serializer.is_valid(raise_exception=True)
         validated_data = query_serializer.validated_data
 
+        property = validated_data.get('property')
         seller_username = validated_data.get('seller_username')
         agent_username = validated_data.get('agent_username')
         property_type = validated_data.get('property_type')
         listing_type = validated_data.get('listing_type')
+        status = validated_data.get('status')
 
         province = validated_data.get('province')
         city = validated_data.get('city')
@@ -38,6 +40,8 @@ class ListingQueryFiltersMixin:
         max_area = validated_data.get('max_area')
         sort_by = validated_data.get('sort_by')
 
+        if property:
+            filters &= Q(property=property)
         if seller_username:
             filters &= Q(agent_account__isnull=True,
                          property__seller_account__user__username=seller_username)
@@ -47,6 +51,8 @@ class ListingQueryFiltersMixin:
             filters &= Q(property__property_type=property_type)
         if listing_type in dict(LISTING_TYPE.CHOICES):
             filters &= Q(listing_type=listing_type)
+        if status in dict(LISTING_STATUS.CHOICES):
+            filters &= Q(status=status)
         if province:
             filters &= Q(property__province__icontains=province)
         if city:

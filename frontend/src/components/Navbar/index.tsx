@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useAuth from "../../features/auth/hooks/useAuth";
 import ListDropDown from "../List/ListDropDown";
-import { AuthFormMessageType } from "../../types/types";
+import { AuthFormMessageType } from "../../types/formMessages";
 import BtnIconRound from "../Buttons/BtnIconRound";
 
 import "./index.css";
@@ -107,13 +107,22 @@ function UserMenuDropdown({ setIsUserMenuDropdownVisible }: UserMenuDropdownType
         console.log(messages);
     }
 
+    function onClickSwitchProfile(e: React.MouseEvent<HTMLAnchorElement>) {
+        e.preventDefault();
+    }
+
     return (
         <ListDropDown onClick={() => setIsUserMenuDropdownVisible(false)}>
             <li>
                 <Link to={`/user/${user?.username}`}>@{user?.username}</Link>
             </li>
             <li>
-                <Link to={"/listings/manage"}>Manage Listings</Link>
+                <Link to={"/my-real-estate/dashboard"}>Dashboard</Link>
+            </li>
+            <li>
+                <Link to="/" onClick={onClickSwitchProfile}>
+                    Switch Profile
+                </Link>
             </li>
             <li>
                 <button type="button" onClick={onClickLogout}>

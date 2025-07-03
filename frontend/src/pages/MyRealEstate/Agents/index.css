@@ -1,0 +1,8 @@
+#my-agents-page {
+    width: 100%;
+    height: calc(100vh - 73px);
+    background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}

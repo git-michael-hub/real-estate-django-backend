@@ -1,0 +1,91 @@
+#new-listings-page {
+    width: 100%;
+    height: calc(100vh - 73px);
+    background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#new-listings-form {
+    padding: 40px;
+    height: calc(100vh - 73px - 70px);
+    overflow-y: scroll;
+}
+
+#new-listings-form > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#new-listings-form > div > div > div {
+    margin-top: 20px;
+}
+
+#new-listings-form .select-with-label-container {
+    max-width: 500px;
+}
+
+#new-listings-form #new-listings-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+}
+
+#new-listings-form #new-listings-details {
+    max-width: 500px;
+}
+
+#new-listings-form #new-listings-details > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#new-listings-form #new-listings-details > div > div {
+    max-width: 200px;
+}
+
+#new-listings-form #new-listings-details span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#new-listings-form #new-listings-details span i {
+    width: 1rem;
+    color: var(--color-accent-2);
+}
+
+#new-listings-form #add-new-listings-btn {
+    width: fit-content;
+    font-size: 0.8rem;
+    margin-top: 50px;
+}
+
+#new-listings-form .property-card {
+    width: 500px;
+    padding: 20px;
+    border: 1px solid rgb(214, 214, 214);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+#new-listings-form .property-card img {
+    width: 100%;
+    margin-bottom: 20px;
+    aspect-ratio: 1.8/1;
+    object-fit: cover;
+}
+#new-listings-form .property-card span {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+}
+
+#new-listings-form textarea {
+    width: 100%;
+}

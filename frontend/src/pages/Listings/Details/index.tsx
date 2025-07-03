@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ListingType } from "../../../types/listing";
 import useListing from "../../../features/listings/hooks/useListings";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import useBuyer from "../../../features/buyers/hooks/useBuyers";
-import helperFn from "../../../utils/form-functions";
-import { ListingType } from "../../../types/types";
+import helperFn from "../../../utils/form-utils";
 import NotFound from "../../NotFound";
 import BtnIconNoBg from "../../../components/Buttons/BtnIconNoBg";
 import ContactForm from "../components/ContactForm";
 import Tag from "../../../components/Tag";
+import Spinner from "../../../components/Spinner";
 import "./index.css";
 
 export default function Details() {
     const [isReady, setIsReady] = useState<boolean>(false);
     const [displayImage, setDisplayImage] = useState<string | null>(null);
-    const { listing, setListing, fetchListingAndUpdateState } = useListing();
+    const { listing, setListing, getOneListing } = useListing();
     const { listingId } = useParams();
     const { user } = useAuth();
     const { wishlistIds, fetchWishlistAndUpdateState, addToWishlist, removeFromWishlist } = useBuyer();
@@ -22,9 +23,12 @@ export default function Details() {
     useEffect(() => {
         const initState = async () => {
             if (!listingId) return setListing(null);
-            const listing: ListingType | null = await fetchListingAndUpdateState(listingId);
+            const listing: ListingType | null = await getOneListing(listingId);
             if (listing?.property.image1_path) setDisplayImage(listing.property.image1_path);
             if (user) await fetchWishlistAndUpdateState(user.username);
+            for (let i = 0; i < 1000000000; i++) {
+                1 + 1;
+            }
             setIsReady(true);
         };
         initState();
@@ -210,7 +214,7 @@ export default function Details() {
                     )}
                 </div>
             ) : (
-                <h2>Loading...</h2>
+                <Spinner></Spinner>
             )}
         </main>
     );

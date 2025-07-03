@@ -43,14 +43,6 @@ urlpatterns = [
          AssignedPropertyRetrieveView.as_view(),
          name='assigned-property-retrieve'),
 
-    path('<str:username>/listings',
-         AgentListingListCreateView.as_view(),
-         name='agent-listing-list-create'),
-
-    path('<str:username>/listings/<int:pk>',
-         AgentListingRetrieveUpdateDestroyView.as_view(),
-         name='agent-listing-retrieve-update-destroy'),
-
     path('<str:username>/offers',
          AgentOfferListCreateView.as_view(),
          name='agent-offer-list-create'),

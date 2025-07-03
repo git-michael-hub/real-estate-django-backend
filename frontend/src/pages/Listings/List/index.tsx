@@ -9,12 +9,12 @@ import "./index.css";
 
 export default function List() {
     const { user } = useAuth();
-    const { listings, page, pages, nextPageLink, previousPageLink, fetchListingsAndUpdateState } = useListing();
+    const { listings, page, pages, nextPageLink, previousPageLink, getListings } = useListing();
     const { fetchWishlist } = useBuyer();
 
     useEffect(() => {
         const init = async (): Promise<void> => {
-            await fetchListingsAndUpdateState(window.location.search);
+            await getListings(window.location.search);
             if (user) await fetchWishlist(user.username);
         };
         init();
@@ -46,7 +46,7 @@ export default function List() {
                         pages={pages}
                         nextPageLink={nextPageLink}
                         previousPageLink={previousPageLink}
-                        action={fetchListingsAndUpdateState}
+                        action={getListings}
                         enableNavigate={true}
                     ></PageBtns>
                 </div>

@@ -1,0 +1,126 @@
+#my-property-page {
+    width: 100%;
+    height: calc(100vh - 73px);
+    background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#my-property-page > section {
+    padding: 20px;
+    padding-bottom: 100px;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+#my-property-page > section > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#my-property-page > section > div button {
+    width: fit-content;
+    font-size: 0.8rem;
+}
+
+#my-property-page h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#my-property-page h4 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#my-property-page .row-1,
+#my-property-page .row-2,
+#my-property-page .row-3 {
+    margin-top: 40px;
+}
+
+#my-property-page em {
+    font-size: 0.8rem;
+}
+
+#my-property-page .row-1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#my-property-page .column-1 div {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    align-items: center;
+}
+
+#my-property-page .column-2 ul li {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    margin-left: 20px;
+}
+
+#my-property-page .column-2 ul li > * {
+    margin: 0;
+}
+
+#my-property-page .column-3 ul li {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    margin-left: 20px;
+}
+
+#my-property-page .column-3 ul li > * {
+    margin: 0;
+}
+
+#my-property-page .row-2 {
+    max-width: 1200px;
+}
+
+#my-property-page .row-2 > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+#my-property-page .row-2 img {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1.8/1;
+}
+
+#my-property-page .row-2 .no-image-available {
+    border: 1px solid gray;
+}
+
+#my-property-page .row-3 li,
+#my-property-page .row-3 ul > div {
+    display: grid;
+    justify-items: center;
+    grid-template-columns: 0.5fr 2.5fr 1.5fr 1.5fr 1.5fr 1.5fr;
+    gap: 20px;
+}
+
+#my-property-page .row-3 li:hover {
+    cursor: pointer;
+    background-color: var(--color-primary);
+}
+
+#my-property-page .row-3 li em a:hover {
+    text-decoration: underline;
+}
+
+#my-property-page .row-3 li em,
+#my-property-page .row-3 ul > div strong {
+    font-size: 0.8rem;
+}
+
+#my-property-page .row-3 .not-found {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}

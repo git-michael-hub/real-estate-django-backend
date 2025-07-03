@@ -2,17 +2,15 @@ import useAuth from "../../../features/auth/hooks/useAuth";
 import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { useNavigate } from "react-router-dom";
-import {
-    API_DIRECTORY_LISTINGS,
-    ListingFormMessageStateType,
-    ListingType,
-} from "../../../features/listings/context/ListingsProvider";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";
 import HeaderSection from "./components/HeaderSection";
 import ImageListSection from "./components/ImageListSection";
 import DetailsSection from "./components/DetailsSection";
 import { useState } from "react";
 import "./index.css";
+import { ListingType } from "../../../types/transaction";
+import { ListingFormMessageStateType } from "../../../types/listing";
+import { API_URLS } from "../../../urls/api-urls";
 
 export default function New() {
     const navigate = useNavigate();
@@ -27,14 +25,14 @@ export default function New() {
 
         const formData = new FormData(e.currentTarget);
         if (user) formData.append("seller", user.id.toString());
-        if (listing?.image1) formData.append("image1", listing?.image1);
-        if (listing?.image2) formData.append("image2", listing?.image2);
-        if (listing?.image3) formData.append("image3", listing?.image3);
-        if (listing?.image4) formData.append("image4", listing?.image4);
-        if (listing?.image5) formData.append("image5", listing?.image5);
+        if (listing?.image1_path) formData.append("image1_path", listing?.image1_path);
+        if (listing?.image2_path) formData.append("image2_path", listing?.image2_path);
+        if (listing?.image3_path) formData.append("image3_path", listing?.image3_path);
+        if (listing?.image4_path) formData.append("image4_path", listing?.image4_path);
+        if (listing?.image5_path) formData.append("image5_path", listing?.image5_path);
         const headers: HeaderType = { Authorization: `Token ${token}` };
         try {
-            const response: APIResponseType = await apiFns.post(`${API_DIRECTORY_LISTINGS}`, formData, headers);
+            const response: APIResponseType = await apiFns.post(API_URLS.LISTING.CREATE(), formData, headers);
             if (response.success) {
                 const data: ListingType = response.data;
                 navigate(`/listings/${data.id}`);

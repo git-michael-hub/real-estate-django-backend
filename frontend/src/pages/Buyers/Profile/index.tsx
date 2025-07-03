@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BuyerAccountType } from "../../../types/types";
+import { BuyerAccountType } from "../../../types/buyer";
 import useBuyer from "../../../features/buyers/hooks/useBuyers";
 import useAuth from "../../../features/auth/hooks/useAuth";
 import NotFound from "../../NotFound";
@@ -10,8 +10,8 @@ import DefaultModal from "../../../components/Modal/DefaultModal";
 import EditProfileForm from "./components/EditProfileForm";
 import ProfileImage from "../../../components/Profile/ProfileImage";
 import EditProfileBtn from "../../../components/Profile/EditProfileBtn";
-import "./index.css";
 import ProfileDetailsContainer from "../../../components/Profile/ProfileDetailsContainer";
+import "./index.css";
 
 export default function Profile() {
     const { username } = useParams();

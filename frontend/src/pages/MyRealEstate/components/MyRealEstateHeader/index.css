@@ -1,0 +1,42 @@
+.my-real-estate-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-accent-2);
+    padding: 20px;
+}
+
+.my-real-estate-header h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 40px;
+}
+
+.my-real-estate-header h2 span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-accent-2);
+    display: inline-flex;
+    align-self: center;
+    gap: 15px;
+}
+
+.my-real-estate-header h2 span i {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.my-real-estate-header > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.my-real-estate-header .basic-btn-active,
+.my-real-estate-header .basic-btn-disabled {
+    width: fit-content;
+    font-size: 0.8rem;
+}

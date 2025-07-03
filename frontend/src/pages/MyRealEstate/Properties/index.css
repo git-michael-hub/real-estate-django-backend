@@ -1,0 +1,119 @@
+#my-properties-page {
+    width: 100%;
+    height: calc(100vh - 73px);
+    background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#my-properties-page header {
+    padding-right: 15px;
+}
+
+#my-properties-page header,
+#my-properties-page .property-list-item {
+    display: grid;
+    padding-left: 20px;
+    grid-template-columns: 20px 100px 1fr 0.5fr 0.5fr 0.5fr 100px;
+    gap: 20px;
+}
+
+#my-properties-page > section {
+    height: calc(100vh - 73px - 70px);
+}
+
+#my-properties-page .property-list {
+    height: calc(100vh - 73px - 70px - 67px);
+    overflow-y: scroll;
+}
+
+#my-properties-page .property-list-item {
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+#my-properties-page .property-list-item:hover {
+    background-color: var(--color-primary);
+    cursor: pointer;
+}
+
+#my-properties-page .property-list-item a:hover {
+    text-decoration: underline;
+}
+
+#my-properties-page .property-list-item img {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1.8/1;
+}
+
+#my-properties-page .property-list-item address,
+#my-properties-page .property-list-item > span {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+#my-properties-page header h3 {
+    display: flex;
+    justify-self: center;
+}
+
+#my-properties-page .property-list-item .btn-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#my-properties-page .property-list-item .btn-container .icon-btn-no-bg i {
+    color: rgb(209, 209, 209);
+}
+
+#my-properties-page .property-list-item .btn-container .icon-btn-no-bg:hover .fa-pen-to-square {
+    color: var(--color-accent-2);
+}
+
+#my-properties-page .property-list-item .btn-container .icon-btn-no-bg:hover .fa-trash {
+    color: red;
+}
+
+#property-dropdown {
+    position: relative;
+}
+
+#property-dropdown .dropdown {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: fit-content;
+    right: 0;
+    margin-top: 5px;
+    background-color: var(--color-secondary);
+    box-shadow: var(--default-box-shadow);
+}
+
+#property-dropdown .dropdown li {
+    font-size: small;
+    text-wrap: nowrap;
+    background: none;
+    outline: none;
+    border: none;
+    color: var(--color-accent-2);
+    padding: 8px 10px;
+    width: 100%;
+    text-align: start;
+    box-sizing: border-box;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+#property-dropdown .dropdown li:hover {
+    cursor: pointer;
+    background-color: var(--color-accent-2);
+    color: var(--color-secondary);
+}

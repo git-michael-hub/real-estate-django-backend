@@ -3,6 +3,10 @@
     justify-content: center;
 }
 
+#details-page .spinner {
+    margin-top: 250px;
+}
+
 #details-grid-container {
     display: grid;
     grid-template-columns: 1fr auto;

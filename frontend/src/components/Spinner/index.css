@@ -1,0 +1,21 @@
+.spinner {
+    font-size: 6em;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent-2);
+    animation: spin 2s linear infinite;
+    overflow: hidden;
+    text-decoration: none !important;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

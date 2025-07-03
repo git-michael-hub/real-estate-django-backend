@@ -2,7 +2,8 @@ import { createContext, useState } from "react";
 import { apiFns, APIResponseType, HeaderType } from "../../../utils/api-service";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { API_URLS } from "../../../urls/api-urls";
-import { WishlistType, WishlistEntryType, BuyerAccountType } from "../../../types/types";
+import { BuyerAccountType } from "../../../types/buyer";
+import { WishlistType, WishlistEntryType } from "../../../types/wishlist";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
