@@ -141,6 +141,21 @@
     width: 300px;
 }
 
+#navbar .default-modal > div > div > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#navbar .default-modal > div > div > div > strong {
+    line-height: 1.5rem;
+}
+
+#navbar .default-modal > div > div > div > span {
+    color: var(--text-color-3);
+    font-size: small;
+    line-height: 0.9rem;
+}
+
 #navbar .default-modal > div > div > span {
     font-size: 0.8rem;
     color: var(--color-accent-2);

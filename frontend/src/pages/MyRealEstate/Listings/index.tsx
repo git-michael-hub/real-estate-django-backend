@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { C_LISTINGS } from "../../../constants/listings";
+import { C_AUTH } from "../../../constants/auth";
 import { ListingSortOptionDisplayType, ListingSortOptionType } from "../../../types/listing";
+import useAuth from "../../../features/auth/hooks/useAuth";
 import useListing from "../../../features/listings/hooks/useListings";
 import helperFn from "../../../utils/form-utils";
 import Spinner from "../../../components/Spinner";
@@ -22,13 +24,28 @@ export default function Listings() {
     const [params, setParams] = useState<URLSearchParams>(
         new URLSearchParams({ sort_by: C_LISTINGS.SORT_OPTIONS.NEW_TO_OLD.value })
     );
-    const { listings, getListingsForSeller, deleteListingForSeller, setListings } = useListing();
+    const {
+        listings,
+        getListingsForSeller,
+        getListingsForAgent,
+        deleteListingForSeller,
+        deleteListingForAgent,
+        setListings,
+    } = useListing();
+    const { getAuthRole } = useAuth();
     const dropDownRef = useRef<HTMLUListElement>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const init = async () => {
-            await getListingsForSeller();
+            if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT) {
+                await getListingsForAgent();
+                console.log("get for agent");
+            }
+            if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER) {
+                await getListingsForSeller();
+                console.log("get for seller");
+            }
             for (let i = 0; i < 1000000000; i++) {
                 1 + 1;
             }
@@ -42,7 +59,8 @@ export default function Listings() {
         const newParams = new URLSearchParams(params.toString());
         newParams.set("sort_by", sortOption);
         setParams(newParams);
-        await getListingsForSeller(`?${newParams.toString()}`);
+        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT) await getListingsForAgent(`?${newParams.toString()}`);
+        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER) await getListingsForSeller(`?${newParams.toString()}`);
         setIsSortDropdownVisible(false);
     }
 
@@ -83,6 +101,12 @@ export default function Listings() {
             if (listing.id.toString() !== deleteListingId) return listing;
         });
         setListings([...newListings]);
+    }
+
+    async function deleteListing(objectId: string | number) {
+        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT) return await deleteListingForAgent(objectId);
+        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER) return await deleteListingForSeller(objectId);
+        return false;
     }
 
     function toNewListings(e: React.MouseEvent<HTMLButtonElement>) {
@@ -175,7 +199,7 @@ export default function Listings() {
                 <ConfirmDeleteForm
                     setIsConfirmDeleteFormActive={setIsConfirmDeleteFormActive}
                     objectId={deleteListingId}
-                    deleteFunction={deleteListingForSeller}
+                    deleteFunction={deleteListing}
                     callback={deleteCallback}
                 ></ConfirmDeleteForm>
             )}

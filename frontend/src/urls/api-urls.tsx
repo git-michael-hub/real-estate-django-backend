@@ -59,7 +59,7 @@ export const API_URLS = {
         LIST_FOR_AGENT: (searchParams?: string): string => {
             return searchParams
                 ? API_DIRECTORY.LISTING + `/agent_account/${searchParams}`
-                : API_DIRECTORY.LISTING + "/seller_account";
+                : API_DIRECTORY.LISTING + "/agent_account";
         },
         CREATE_FOR_SELLER: (): string => API_DIRECTORY.LISTING + "/seller_account",
         CREATE_FOR_AGENT: (): string => API_DIRECTORY.LISTING + "/agent_account",

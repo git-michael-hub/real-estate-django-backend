@@ -22,11 +22,19 @@
     padding: 20px;
 }
 
+#my-real-estate-layout .nav-panel figure strong {
+    display: flex;
+    justify-self: center;
+    color: white;
+    margin-top: 5px;
+}
+
 #my-real-estate-layout .nav-panel figure em {
     display: flex;
     justify-self: center;
     color: var(--color-secondary);
-    margin-top: 5px;
+    font-size: small;
+    line-height: 1rem;
 }
 
 #my-real-estate-layout .nav-panel img {
