@@ -1,16 +1,36 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuth from "../../features/auth/hooks/useAuth";
 import ListDropDown from "../List/ListDropDown";
 import { AuthFormMessageType } from "../../types/formMessages";
 import BtnIconRound from "../Buttons/BtnIconRound";
 
 import "./index.css";
+import DefaultModal from "../Modal/DefaultModal";
+import useBuyer from "../../features/buyers/hooks/useBuyers";
+import useAgent from "../../features/agents/hooks/useAgents";
+import useSeller from "../../features/sellers/hooks/useSellers";
 
 export default function Navbar() {
     const [isUserMenuDropdownVisible, setIsUserMenuDropdownVisible] = useState<boolean>(false);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isNavDropdownVisible, setIsNavDropdownVisible] = useState<boolean>(false);
-    const { user } = useAuth();
+    const { user, setAuthRole, authRole } = useAuth();
+    const { buyer, fetchBuyerAndUpdateState } = useBuyer();
+    const { seller, fetchSellerAndUpdateState } = useSeller();
+    const { agent, fetchAgentAndUpdateState } = useAgent();
+
+    useEffect(() => {
+        const init = async () => {
+            if (user) {
+                await fetchBuyerAndUpdateState(user.username);
+                await fetchSellerAndUpdateState(user.username);
+                await fetchAgentAndUpdateState(user.username);
+            }
+        };
+
+        init();
+    }, []);
 
     function onClickNavUsername(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
@@ -49,7 +69,10 @@ export default function Navbar() {
                                 <i className="fa-solid fa-user"></i>
                             </BtnIconRound>
                             {isUserMenuDropdownVisible ? (
-                                <UserMenuDropdown setIsUserMenuDropdownVisible={setIsUserMenuDropdownVisible} />
+                                <UserMenuDropdown
+                                    setIsUserMenuDropdownVisible={setIsUserMenuDropdownVisible}
+                                    setIsModalVisible={setIsModalVisible}
+                                />
                             ) : (
                                 <></>
                             )}
@@ -67,7 +90,10 @@ export default function Navbar() {
                                 <i className="fa-solid fa-user"></i>
                             </BtnIconRound>
                             {isUserMenuDropdownVisible ? (
-                                <UserMenuDropdown setIsUserMenuDropdownVisible={setIsUserMenuDropdownVisible} />
+                                <UserMenuDropdown
+                                    setIsUserMenuDropdownVisible={setIsUserMenuDropdownVisible}
+                                    setIsModalVisible={setIsModalVisible}
+                                />
                             ) : (
                                 <></>
                             )}
@@ -89,15 +115,70 @@ export default function Navbar() {
                     </span>
                 </nav>
             </div>
+            <DefaultModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}>
+                <div onClick={() => setAuthRole("buyer")}>
+                    {buyer?.profile_image_path ? (
+                        <img src={buyer?.profile_image_path.toString()} alt="" className="profile-image-round" />
+                    ) : (
+                        <img src="/static/images/default-profile-picture.jpg" alt="" className="profile-image-round" />
+                    )}
+                    <div>
+                        <strong>
+                            {buyer?.user.first_name} {buyer?.user.last_name}
+                        </strong>
+                        {authRole === "buyer" ? <span>Active</span> : <></>}
+                    </div>
+                </div>
+                {seller ? (
+                    <div onClick={() => setAuthRole("seller")}>
+                        {seller.profile_image_path ? (
+                            <img src={seller?.profile_image_path.toString()} alt="" className="profile-image-round" />
+                        ) : (
+                            <img
+                                src="/static/images/default-profile-picture.jpg"
+                                alt=""
+                                className="profile-image-round"
+                            />
+                        )}
+                        <div>
+                            <strong>{seller?.business_name}</strong>
+                            {authRole === "seller" ? <span>Active</span> : <></>}
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
+
+                {agent ? (
+                    <div onClick={() => setAuthRole("agent")}>
+                        {agent.profile_image_path ? (
+                            <img src={agent?.profile_image_path.toString()} alt="" className="profile-image-round" />
+                        ) : (
+                            <img
+                                src="/static/images/default-profile-picture.jpg"
+                                alt=""
+                                className="profile-image-round"
+                            />
+                        )}
+                        <div>
+                            <strong>{agent?.agent_name}</strong>
+                            {authRole === "agent" ? <span>Active</span> : <></>}
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
+            </DefaultModal>
         </header>
     );
 }
 
 type UserMenuDropdownType = {
     setIsUserMenuDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function UserMenuDropdown({ setIsUserMenuDropdownVisible }: UserMenuDropdownType) {
+function UserMenuDropdown({ setIsUserMenuDropdownVisible, setIsModalVisible }: UserMenuDropdownType) {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
@@ -109,27 +190,30 @@ function UserMenuDropdown({ setIsUserMenuDropdownVisible }: UserMenuDropdownType
 
     function onClickSwitchProfile(e: React.MouseEvent<HTMLAnchorElement>) {
         e.preventDefault();
+        setIsModalVisible(true);
     }
 
     return (
-        <ListDropDown onClick={() => setIsUserMenuDropdownVisible(false)}>
-            <li>
-                <Link to={`/user/${user?.username}`}>@{user?.username}</Link>
-            </li>
-            <li>
-                <Link to={"/my-real-estate/dashboard"}>Dashboard</Link>
-            </li>
-            <li>
-                <Link to="/" onClick={onClickSwitchProfile}>
-                    Switch Profile
-                </Link>
-            </li>
-            <li>
-                <button type="button" onClick={onClickLogout}>
-                    Logout
-                </button>
-            </li>
-        </ListDropDown>
+        <>
+            <ListDropDown onClick={() => setIsUserMenuDropdownVisible(false)}>
+                <li>
+                    <Link to={`/user/${user?.username}`}>@{user?.username}</Link>
+                </li>
+                <li>
+                    <Link to={"/my-real-estate/dashboard"}>Dashboard</Link>
+                </li>
+                <li>
+                    <Link to="/" onClick={onClickSwitchProfile}>
+                        Switch Profile
+                    </Link>
+                </li>
+                <li>
+                    <button type="button" onClick={onClickLogout}>
+                        Logout
+                    </button>
+                </li>
+            </ListDropDown>
+        </>
     );
 }
 

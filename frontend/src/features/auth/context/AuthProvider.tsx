@@ -3,15 +3,17 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { apiFns, HeaderType } from "../../../utils/api-service";
 import cookieHandler, { Token } from "../../../utils/cookie-handler";
 import { APIResponseType } from "../../../utils/api-service";
-import { AuthUserType } from "../../../types/auth";
+import { AuthRole, AuthUserType } from "../../../types/auth";
 import { AuthFormMessageType } from "../../../types/formMessages";
 import { API_URLS } from "../../../urls/api-urls";
+import { C_AUTH } from "../../../constants/auth";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
 export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => {
     const [user, setUser] = useState<AuthUserType | null>(null);
     const [isReady, setIsReady] = useState<boolean>(false);
+    const [authRole, setAuthRole] = useState<AuthRole>(C_AUTH.ACCOUNT_ROLE.BUYER);
     const navigate: NavigateFunction = useNavigate();
 
     // Runs everytime the page refreshes then runs fetchAuthUser.
@@ -115,6 +117,8 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 resetPassword,
                 isSeller,
                 isAgent,
+                authRole,
+                setAuthRole,
             }}
         >
             {isReady ? children : null}
@@ -134,6 +138,8 @@ export type AuthContextType = {
     resetPassword: (formData: FormData, resetToken: string) => Promise<AuthFormMessageType>;
     isSeller: () => boolean;
     isAgent: () => boolean;
+    authRole: AuthRole;
+    setAuthRole: React.Dispatch<React.SetStateAction<AuthRole>>;
 };
 
 // Initial state of the AuthContext
@@ -149,6 +155,8 @@ const initAuthContextState: AuthContextType = {
     resetPassword: () => Promise.resolve({}),
     isSeller: () => false,
     isAgent: () => false,
+    authRole: C_AUTH.ACCOUNT_ROLE.BUYER,
+    setAuthRole: () => {},
 };
 
 const AuthContext = createContext<AuthContextType>(initAuthContextState);

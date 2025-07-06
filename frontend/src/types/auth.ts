@@ -1,12 +1,14 @@
+import { C_AUTH } from "../constants/auth";
+
 export type AccountType = "BuyerAccount" | "SellerAccount" | "AgentAccount";
 
-export type Role = "buyer" | "seller" | "agent";
+export type AuthRole = (typeof C_AUTH.ACCOUNT_ROLE)[keyof typeof C_AUTH.ACCOUNT_ROLE];
 
 export type AuthUserType = {
     id: number;
     username: string;
     email: string;
-    roles: Role[];
+    roles: AuthRole[];
 };
 
 export type UserType = {
