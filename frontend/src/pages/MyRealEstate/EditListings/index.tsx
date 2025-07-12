@@ -8,7 +8,7 @@ import "./index.css";
 import BtnLink from "../../../components/Buttons/BtnLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import useListing from "../../../features/listings/hooks/useListings";
-import { ListingFormMessageStateType } from "../../../types/listing";
+import { ListingFormMessageStateType } from "../../../types/formMessages";
 import TextAreaBasic from "../../../components/Forms/TextAreaBasic";
 
 const LISTING_TYPE = {

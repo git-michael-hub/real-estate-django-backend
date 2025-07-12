@@ -32,23 +32,14 @@ export default function Listings() {
         deleteListingForAgent,
         setListings,
     } = useListing();
-    const { getAuthRole } = useAuth();
+    const { authRole } = useAuth();
     const dropDownRef = useRef<HTMLUListElement>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const init = async () => {
-            if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT) {
-                await getListingsForAgent();
-                console.log("get for agent");
-            }
-            if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER) {
-                await getListingsForSeller();
-                console.log("get for seller");
-            }
-            for (let i = 0; i < 1000000000; i++) {
-                1 + 1;
-            }
+            if (authRole === C_AUTH.ACCOUNT_ROLE.AGENT) await getListingsForAgent();
+            if (authRole === C_AUTH.ACCOUNT_ROLE.SELLER) await getListingsForSeller();
             setIsLoadingComplete(true);
         };
 
@@ -59,8 +50,8 @@ export default function Listings() {
         const newParams = new URLSearchParams(params.toString());
         newParams.set("sort_by", sortOption);
         setParams(newParams);
-        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT) await getListingsForAgent(`?${newParams.toString()}`);
-        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER) await getListingsForSeller(`?${newParams.toString()}`);
+        if (authRole === C_AUTH.ACCOUNT_ROLE.AGENT) await getListingsForAgent(`?${newParams.toString()}`);
+        if (authRole === C_AUTH.ACCOUNT_ROLE.SELLER) await getListingsForSeller(`?${newParams.toString()}`);
         setIsSortDropdownVisible(false);
     }
 
@@ -104,8 +95,8 @@ export default function Listings() {
     }
 
     async function deleteListing(objectId: string | number) {
-        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT) return await deleteListingForAgent(objectId);
-        if (getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER) return await deleteListingForSeller(objectId);
+        if (authRole === C_AUTH.ACCOUNT_ROLE.AGENT) return await deleteListingForAgent(objectId);
+        if (authRole === C_AUTH.ACCOUNT_ROLE.SELLER) return await deleteListingForSeller(objectId);
         return false;
     }
 

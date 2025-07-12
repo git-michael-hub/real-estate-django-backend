@@ -1,4 +1,5 @@
 import Layout from "./Layout";
+import Accounts from "./Accounts";
 import Dashboard from "./Dashboard";
 import Properties from "./Properties";
 import Listings from "./Listings";
@@ -11,6 +12,7 @@ import EditListings from "./EditListings";
 
 const MyRealEstate = {
     Layout,
+    Accounts,
     Dashboard,
     Properties,
     Property,

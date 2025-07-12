@@ -11,7 +11,7 @@ type SwitchAccountModalType = {
     setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export default function SwitchAccountModal({ isModalVisible, setIsModalVisible }: SwitchAccountModalType) {
-    const { setAuthRole, getAuthRole } = useAuth();
+    const { setAuthRole, authRole } = useAuth();
     const { buyer } = useBuyer();
     const { seller } = useSeller();
     const { agent } = useAgent();
@@ -36,7 +36,7 @@ export default function SwitchAccountModal({ isModalVisible, setIsModalVisible }
                         </strong>
                         <span>{C_AUTH.ACCOUNT_ROLE.BUYER} account</span>
                     </div>
-                    {getAuthRole() === "buyer" ? <span>Active</span> : <></>}
+                    {authRole === "buyer" ? <span>Active</span> : <></>}
                 </div>
             </div>
             {seller ? (
@@ -51,11 +51,14 @@ export default function SwitchAccountModal({ isModalVisible, setIsModalVisible }
                             <strong>{seller?.business_name}</strong>
                             <span>{C_AUTH.ACCOUNT_ROLE.SELLER} account</span>
                         </div>
-                        {getAuthRole() === "seller" ? <span>Active</span> : <></>}
+                        {authRole === "seller" ? <span>Active</span> : <></>}
                     </div>
                 </div>
             ) : (
-                <></>
+                <div className="add-account">
+                    <i className="fa-solid fa-circle-plus"></i>
+                    <span>Create Seller Account</span>
+                </div>
             )}
 
             {agent ? (
@@ -70,11 +73,14 @@ export default function SwitchAccountModal({ isModalVisible, setIsModalVisible }
                             <strong>{agent?.agent_name}</strong>
                             <span>{C_AUTH.ACCOUNT_ROLE.AGENT} account</span>
                         </div>
-                        {getAuthRole() === "agent" ? <span>Active</span> : <></>}
+                        {authRole === "agent" ? <span>Active</span> : <></>}
                     </div>
                 </div>
             ) : (
-                <></>
+                <div className="add-account">
+                    <i className="fa-solid fa-circle-plus"></i>
+                    <span>Create Agent Account</span>
+                </div>
             )}
         </DefaultModal>
     );

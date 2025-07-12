@@ -1,0 +1,95 @@
+#my-accounts-page {
+    width: 100%;
+    height: calc(100vh - 73px);
+    background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#my-accounts-page header {
+    padding-right: 15px;
+}
+
+#my-accounts-page > section {
+    overflow-y: scroll;
+    padding: 20px 40px;
+}
+
+#my-accounts-page > section > p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+#my-accounts-page > section > p > em {
+    font-weight: 300;
+}
+
+#my-accounts-page .account-card {
+    width: fit-content;
+    min-width: 360px;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 30px 0px;
+    box-shadow: var(--default-box-shadow);
+}
+
+#my-accounts-page .account-card:hover {
+    cursor: pointer;
+    background-color: var(--color-accent-2);
+    color: white;
+}
+
+#my-accounts-page .account-card h3 {
+    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+#my-accounts-page .account-card h3 i {
+    color: var(--color-accent-2);
+    font-size: 1.5rem;
+}
+
+#my-accounts-page .account-card:hover h3 i {
+    color: white;
+}
+
+#my-accounts-page .account-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    border: 1px solid var(--color-accent-2);
+    object-fit: cover;
+    overflow-clip-margin: unset;
+}
+
+#my-accounts-page .account-card > div {
+    display: flex;
+    gap: 10px;
+}
+
+#my-accounts-page .account-card > div > div {
+    display: flex;
+    flex-direction: column;
+}
+
+#my-accounts-page .add-account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-accent-2);
+    padding: 40px 20px;
+}
+
+#my-accounts-page .add-account i {
+    font-size: 4rem;
+}
+
+#my-accounts-page .add-account span {
+    font-size: 1.2rem;
+}
+
+#my-accounts-page .add-account:hover {
+    color: white;
+}

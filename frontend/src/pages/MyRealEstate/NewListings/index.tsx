@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { C_LISTINGS } from "../../../constants/listings";
+import { C_PROPERTIES } from "../../../constants/properties";
 import { ListingTypeDisplayType, ListingTypeType } from "../../../types/listing";
 import { ListingFormMessageStateType } from "../../../types/formMessages";
 import useProperty from "../../../features/properties/hooks/useProperties";
@@ -14,7 +15,6 @@ import BtnLink from "../../../components/Buttons/BtnLink";
 import TextAreaBasic from "../../../components/Forms/TextAreaBasic";
 import BtnBasicDisabled from "../../../components/Buttons/BtnBasicDisabled";
 import "./index.css";
-import { C_PROPERTIES } from "../../../constants/properties";
 
 export default function NewListings() {
     const [formMessages, setFormMessages] = useState<ListingFormMessageStateType>({});

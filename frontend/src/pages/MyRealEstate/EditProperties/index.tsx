@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PropertyFormMessageStateType } from "../../../features/properties/context/PropertiesProvider";
+import { PropertyFormMessageStateType } from "../../../types/formMessages";
 import { PropertyTypeType } from "../../../types/property";
 import useProperty from "../../../features/properties/hooks/useProperties";
 import BtnBasicActive from "../../../components/Buttons/BtnBasicActive";

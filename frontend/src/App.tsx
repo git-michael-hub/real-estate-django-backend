@@ -30,6 +30,7 @@ function App() {
                 <Route path="/agents/" element={<Pages.Agents.List />} />
                 <Route path="/agents/:username" element={<Pages.Agents.Profile />} />
                 <Route element={<Pages.MyRealEstate.Layout />}>
+                    <Route path="/my-real-estate/accounts" element={<Pages.MyRealEstate.Accounts />} />
                     <Route path="/my-real-estate/dashboard" element={<Pages.MyRealEstate.Dashboard />} />
                     <Route path="/my-real-estate/properties" element={<Pages.MyRealEstate.Properties />} />
                     <Route path="/my-real-estate/properties/new" element={<Pages.MyRealEstate.NewProperties />} />

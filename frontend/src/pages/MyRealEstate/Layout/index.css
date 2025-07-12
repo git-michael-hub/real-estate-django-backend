@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     max-width: fit-content;
+    background-color: var(--color-accent-2);
 }
 
 #my-real-estate-layout .nav-panel figure,
@@ -56,4 +57,15 @@
 
 #my-real-estate-layout .nav-panel .nav-list a:hover {
     color: var(--color-secondary);
+}
+
+#my-real-estate-layout .nav-panel .nav-list a i {
+    width: 20px;
+}
+
+#my-real-estate-layout .nav-panel .spinner {
+    width: 100px;
+    padding: 0px 70px;
+    color: white;
+    font-size: 3rem;
 }

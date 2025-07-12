@@ -50,7 +50,7 @@ export const ListingProvider = ({ children }: ChildrenType): React.ReactElement 
             setListings(paginated_listings.results);
             setNextPageLink(paginated_listings.links.next);
             setPreviousPageLink(paginated_listings.links.previous);
-        }
+        } else setListings([]);
         return paginated_listings;
     };
 

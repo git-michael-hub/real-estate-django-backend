@@ -10,10 +10,16 @@ import { C_AUTH } from "../../../constants/auth";
 
 type ChildrenType = { children?: React.ReactElement | React.ReactElement[] };
 
+const initAuthRole = (): AuthRole => {
+    const role: AuthRole | null = cookieHandler.get("authRole") as AuthRole | null;
+    if (role) return role;
+    return C_AUTH.ACCOUNT_ROLE.BUYER;
+};
+
 export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => {
     const [user, setUser] = useState<AuthUserType | null>(null);
     const [isReady, setIsReady] = useState<boolean>(false);
-    const [_authRole, _setAuthRole] = useState<AuthRole>(C_AUTH.ACCOUNT_ROLE.BUYER);
+    const [authRole, _setAuthRole] = useState<AuthRole>(initAuthRole());
     const navigate: NavigateFunction = useNavigate();
 
     // Runs everytime the page refreshes then runs fetchAuthUser.
@@ -108,12 +114,6 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
         cookieHandler.set("authRole", role);
     };
 
-    const getAuthRole = (): AuthRole => {
-        const role: AuthRole | null = cookieHandler.get("authRole") as AuthRole | null;
-        if (role) return role;
-        return _authRole;
-    };
-
     return (
         <AuthContext.Provider
             value={{
@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: ChildrenType): React.ReactElement => 
                 resetPassword,
                 isSeller,
                 isAgent,
-                getAuthRole,
+                authRole,
                 setAuthRole,
             }}
         >
@@ -150,7 +150,7 @@ export type AuthContextType = {
     isSeller: () => boolean;
     isAgent: () => boolean;
     setAuthRole: (role: AuthRole) => void;
-    getAuthRole: () => AuthRole;
+    authRole: AuthRole;
 };
 
 // Initial state of the AuthContext
@@ -167,7 +167,7 @@ const initAuthContextState: AuthContextType = {
     isSeller: () => false,
     isAgent: () => false,
     setAuthRole: () => {},
-    getAuthRole: () => C_AUTH.ACCOUNT_ROLE.BUYER,
+    authRole: C_AUTH.ACCOUNT_ROLE.BUYER,
 };
 
 const AuthContext = createContext<AuthContextType>(initAuthContextState);

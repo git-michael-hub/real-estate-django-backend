@@ -8,4 +8,8 @@ const ACCOUNT_ROLE = {
     AGENT: AGENT,
 } as const;
 
-export const C_AUTH = { ACCOUNT_ROLE };
+const PROFILE_IMAGE = "/static/images/default-profile-picture.jpg";
+
+const DEFAULT = { PROFILE_IMAGE: PROFILE_IMAGE };
+
+export const C_AUTH = { ACCOUNT_ROLE, DEFAULT };

@@ -11,7 +11,7 @@ type UserMenuDropdownType = {
 
 export default function UserMenuDropdown({ setIsUserMenuDropdownVisible, setIsModalVisible }: UserMenuDropdownType) {
     const navigate = useNavigate();
-    const { user, logout, getAuthRole } = useAuth();
+    const { user, logout, authRole } = useAuth();
 
     async function onClickLogout(): Promise<void> {
         const messages: AuthFormMessageType = await logout();
@@ -28,18 +28,22 @@ export default function UserMenuDropdown({ setIsUserMenuDropdownVisible, setIsMo
         <>
             <ListDropDown onClick={() => setIsUserMenuDropdownVisible(false)}>
                 <li>
-                    {getAuthRole() === C_AUTH.ACCOUNT_ROLE.BUYER ? (
+                    {authRole === C_AUTH.ACCOUNT_ROLE.BUYER ? (
                         <Link to={`/user/${user?.username}`}>@{user?.username}</Link>
-                    ) : getAuthRole() === C_AUTH.ACCOUNT_ROLE.SELLER ? (
+                    ) : authRole === C_AUTH.ACCOUNT_ROLE.SELLER ? (
                         <Link to={`/sellers/${user?.username}`}>@{user?.username}</Link>
-                    ) : getAuthRole() === C_AUTH.ACCOUNT_ROLE.AGENT ? (
+                    ) : authRole === C_AUTH.ACCOUNT_ROLE.AGENT ? (
                         <Link to={`/agents/${user?.username}`}>@{user?.username}</Link>
                     ) : (
                         <></>
                     )}
                 </li>
                 <li>
-                    <Link to={"/my-real-estate/dashboard"}>Dashboard</Link>
+                    {authRole !== C_AUTH.ACCOUNT_ROLE.BUYER ? (
+                        <Link to={"/my-real-estate/dashboard"}>My-Real-Estate</Link>
+                    ) : (
+                        <Link to={"/my-real-estate/accounts"}>My-Real-Estate</Link>
+                    )}
                 </li>
                 <li>
                     <Link to="/" onClick={onClickSwitchAccount}>
